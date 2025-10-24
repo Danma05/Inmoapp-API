@@ -1,26 +1,144 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InmoApp</title>
-  <style>
-    body {
-      background-color: #f7f7f7;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
-    h1 {
-      color: #005b96;
-    }
-    p {
-      color: #333;
-    }
-  </style>
-</head>
-<body>
-  <h1>🏠 Bienvenido a InmoAppiygj,hgkhjkuh</h1>
-  <p>Servidor funcionando correctamente.</p>
-</body>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900">
+
+    <title>Stitch Design</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex h-auto min-h-screen w-full flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7eff3] px-10 py-3">
+          <div class="flex items-center gap-4 text-[#0d171b]">
+            <div class="size-4">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-[#0d171b] text-lg font-bold leading-tight tracking-[-0.015em]">InmoApp</h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <div class="flex items-center gap-9"></div>
+            <div class="flex gap-2">
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1193d4] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Iniciar Sesión</span>
+              </button>
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7eff3] text-[#0d171b] text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Registrarse</span>
+              </button>
+            </div>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div class="@container">
+              <div class="@[480px]:p-4">
+                <div
+                  class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-lg items-center justify-center p-4"
+                  style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBvhwj6uzkvtAJw4EYouwJvlUKV9kJ9ng9qKIkD2SQKXANXaLvL_PBPDAQhicFsEX8mPPyjlq2cOvPduVnPZzMC6-FLFIU7fDIYI-UcoA8yE_7hPvOmqCc98DVoTH8Rqrb6E6UajXbDYw97nGQsFlTdj-V4INxl7rntnoY506n3FnRmujzhK9fXeqtzjHhUXhkM4hE3Mpbe1Tg9MStgKtqGxzkxIxjbchJDqIQ--AXshjVWwZpSC6zghedE4pqWVzv2llS-iM7AUw");'
+                >
+                  <h1
+                    class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] text-center"
+                  >
+                    Encuentra tu próximo hogar
+                  </h1>
+                  <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
+                    <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                      <div
+                        class="text-[#4c809a] flex border border-[#cfdfe7] bg-slate-50 items-center justify-center pl-[15px] rounded-l-lg border-r-0"
+                        data-icon="MagnifyingGlass"
+                        data-size="20px"
+                        data-weight="regular"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                          <path
+                            d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
+                          ></path>
+                        </svg>
+                      </div>
+                      <input
+                        placeholder="Ubicación"
+                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0d171b] focus:outline-0 focus:ring-0 border border-[#cfdfe7] bg-slate-50 focus:border-[#cfdfe7] h-full placeholder:text-[#4c809a] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal"
+                        value=""
+                      />
+                      <div class="flex items-center justify-center rounded-r-lg border-l-0 border border-[#cfdfe7] bg-slate-50 pr-[7px]">
+                        <button
+                          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#1193d4] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
+                        >
+                          <span class="truncate">Buscar</span>
+                        </button>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <h2 class="text-[#0d171b] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Inmuebles Destacados</h2>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+              <div class="flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiU3Han633eh_gIg_XLdouja8Nn6_h7knTcLhVdA_tqQIlG5RRhihNlXO9-tthZ_OCfzVT8GRn-Nnp0Qt8dOURcm9KzQNdwV4BpW016J-5m8n3lbu6XpHal6n4WHwFkHCdvhAe0A3SHfirvRsn89wPusgXlKN_KktytKOQELwFitfCYj6PgHiLhiy81aBqWYM4LZj3whTS3HH681W7AUeylCGD_lcmVCR-UGgEsrTEuoe_myNG7buRI4bRI4hgPFTQBnBiV7I62Q");'
+                ></div>
+                <div>
+                  <p class="text-[#0d171b] text-base font-medium leading-normal">Apartamento en el centro</p>
+                  <p class="text-[#4c809a] text-sm font-normal leading-normal">$1,500 / mes · Ciudad de Esperanza</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDixUcIrMBxWO8es6t1YWh3aEphHoBeGuJFNPHeMFI9rf-pVadOL0iH9-ZMEuhokS6_pO7se-JFzdd9-yMCavbeIumG24h-HI9xwqS7Lb4maoMo95O8D3Ou2AGpf-SwKFvU3fSlJgiCcWNfqtUmDM_ycbnO4s8iwq0CSfFOKMU6epQkD1gJoZQeXj8--Oyfffh7MMaGstmo1am-pOT9iivKxNKfuKRWe2PqtoXQUg7WIGiTl6h9iWBqtdLPxSQeCP_v_M5Fh8DquQ");'
+                ></div>
+                <div>
+                  <p class="text-[#0d171b] text-base font-medium leading-normal">Casa con jardín</p>
+                  <p class="text-[#4c809a] text-sm font-normal leading-normal">$2,200 / mes · Villa Tranquila</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMEeF2hun-X4M9lH9cpBgv84oku1NXsZZCbP0_P49Kxd5narVwNEevz7Rnp_AHmePCZs0Zd4ofqqXY2XuMg9ySGAaYoy-aS0TWdTxZwFvK36V4mkRIM4BWnFV2Pp-o5XyNub3C8R_dLRRqbK0qHBmvXgOPbFaxNsCkFf5xufXtqNicmBnb5wvGorHcci6bY1ZdouTMYG-0Iqag2zHwmY3IsINLCkA8zuqmjIn4XjoxvkETkKlGIs9AyaR3Qc-1dJ9NIVw0r3JQAw");'
+                ></div>
+                <div>
+                  <p class="text-[#0d171b] text-base font-medium leading-normal">Dúplex moderno</p>
+                  <p class="text-[#4c809a] text-sm font-normal leading-normal">$1,800 / mes · Pueblo Nuevo</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDuQ-9q5A76OGkFfwz_UyPRBQRoLZB6an4ziJdwSn5lDHbzoRPwwC9Lpi1wsLXdnGExaN4PdUoBwofPF9ZzxN0Qc3A0ssXOIQMavwlSrpK7FYkFjYRLuB9WcJWPF9UhdrJmhSkZpsQXmSkBnujdSuLzrwEIhKz27RxG_Jio66TAMkbS8hPu3m7THdAuBWF-GICW6w4uIATdwt41H4jbn2xvuTfS6LebHIUubK6naIja-REi8yT3uWaMW9qMvyfzZUbAjfuQMmBKRA");'
+                ></div>
+                <div>
+                  <p class="text-[#0d171b] text-base font-medium leading-normal">Estudio acogedor</p>
+                  <p class="text-[#4c809a] text-sm font-normal leading-normal">$900 / mes · Ciudad del Sol</p>
+                </div>
+              </div>
+            </div>
+            <footer class="flex flex-col gap-6 px-5 py-10 text-center @container">
+              <div class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
+                <a class="text-[#4c809a] text-base font-normal leading-normal min-w-40" href="#">Sobre Nosotros</a>
+                <a class="text-[#4c809a] text-base font-normal leading-normal min-w-40" href="#">Contacto</a>
+                <a class="text-[#4c809a] text-base font-normal leading-normal min-w-40" href="#">Términos y Condiciones</a>
+              </div>
+              <p class="text-[#4c809a] text-base font-normal leading-normal">© 2024 InmoApp. Todos los derechos reservados.</p>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
