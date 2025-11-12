@@ -1,0 +1,23 @@
+/* public/css/variables.css */
+:root {
+    /* Colores Principales (Ajustados a un estilo inmobiliario moderno) */
+    --primary-color: #2563EB;      /* Azul vibrante para botones/acciones */
+    --secondary-color: #1E293B;    /* Azul oscuro para textos/footer */
+    --accent-color: #3B82F6;       /* Azul claro para hovers */
+    
+    /* Fondos y Textos */
+    --bg-light: #F8FAFC;           /* Gris muy claro para fondos de sección */
+    --bg-white: #FFFFFF;
+    --text-dark: #0F172A;
+    --text-gray: #64748B;
+
+    /* Espaciado y Bordes */
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    
+    /* Medidas del Layout */
+    --container-width: 1200px;
+    --header-height: 70px;
+}
