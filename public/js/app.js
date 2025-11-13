@@ -1,31 +1,48 @@
 // public/js/app.js
-import { obtenerUsuarios } from './api.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Frontend cargado 🚀');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Frontend cargado y listo 🚀');
 
-    // Lógica del Modal de Login
+    // --- 1. LÓGICA DE LA VENTANA MODAL (Abrir y Cerrar) ---
     const loginBtn = document.getElementById('btn-login');
     const modal = document.getElementById('login-modal');
     const closeBtn = document.getElementById('close-modal');
 
-    // 1. Abrir modal
-    loginBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Evita que el enlace recargue la página
-        modal.classList.remove('hidden');
-    });
+    // Verificación de seguridad
+    if (loginBtn && modal && closeBtn) {
+        
+        // Abrir modal
+        loginBtn.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            modal.classList.remove('hidden');
+        });
 
-    // 2. Cerrar modal con la X
-    closeBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
-
-    // 3. Cerrar modal si haces clic fuera de la cajita blanca
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        // Cerrar modal con la X
+        closeBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
-        }
-    });
+        });
 
-    // ... resto de tu código anterior ...
+        // Cerrar modal clicando fuera
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    } else {
+        console.error("Error: No se encontraron los elementos del modal.");
+    }
+
+    // --- 2. LÓGICA DE INICIO DE SESIÓN (Redirección al Dashboard) ---
+    const loginForm = document.querySelector('.login-form');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Evita que el formulario intente enviar datos al servidor real por ahora
+            
+            console.log("Credenciales enviadas. Redirigiendo al Dashboard...");
+            
+            // Aquí ocurre la magia: Cambiamos la página manualmente
+            window.location.href = '/dashboard';
+        });
+    }
 });

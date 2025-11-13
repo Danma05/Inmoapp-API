@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - InmoApp</title>
+    
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">InmoApp<span class="dot">.</span></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-item active">
+                            <i class="fa-solid fa-border-all"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">
+                            <i class="fa-regular fa-building"></i> Mis Propiedades
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">
+                            <i class="fa-regular fa-envelope"></i> Mensajes 
+                            <span class="badge-pill">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">
+                            <i class="fa-regular fa-heart"></i> Favoritos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">
+                            <i class="fa-solid fa-gear"></i> Configuración
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="topbar">
+                <div class="welcome-text">
+                    <h1>Hola, Juan Carlos 👋</h1>
+                    <p>Bienvenido a tu panel de administración.</p>
+                </div>
+
+                <div class="user-actions">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" placeholder="Buscar propiedad...">
+                    </div>
+                    
+                    <button class="icon-btn notification">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="dot-indicator"></span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Juan+Carlos&background=2563EB&color=fff" alt="Perfil">
+                        <div class="profile-info">
+                            <span class="name">Juan Carlos</span>
+                            <span class="role">Agente</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="icon-wrapper blue">
+                        <i class="fa-solid fa-house"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>12</h3>
+                        <p>Propiedades Totales</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon-wrapper green">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>5</h3>
+                        <p>Vendidas / Rentadas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="icon-wrapper orange">
+                        <i class="fa-regular fa-eye"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>1.2k</h3>
+                        <p>Visitas Totales</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <div class="section-header">
+                    <h2>Propiedades Recientes</h2>
+                    <button class="btn btn-primary small">+ Nueva Propiedad</button>
+                </div>
+
+                <div class="properties-grid-dashboard">
+                    <article class="property-card-mini">
+                        <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=400" alt="Casa">
+                        <div class="info">
+                            <h4>Apto Moderno Chapinero</h4>
+                            <p class="location">Bogotá, Colombia</p>
+                            <div class="price">$450,000,000</div>
+                        </div>
+                        <div class="actions">
+                            <button class="action-btn edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </article>
+
+                    <article class="property-card-mini">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400" alt="Casa">
+                        <div class="info">
+                            <h4>Casa Quinta Cali</h4>
+                            <p class="location">Cali, Colombia</p>
+                            <div class="price">$2,500,000 /mes</div>
+                        </div>
+                        <div class="actions">
+                            <button class="action-btn edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </article>
+
+                    <article class="property-card-mini">
+                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400" alt="Casa">
+                        <div class="info">
+                            <h4>Loft Industrial</h4>
+                            <p class="location">Medellín, Colombia</p>
+                            <div class="price">$380,000,000</div>
+                        </div>
+                        <div class="actions">
+                            <button class="action-btn edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>

@@ -20,6 +20,11 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// --- NUEVA RUTA PARA EL DASHBOARD ---
+app.get('/dashboard', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
 // --- RUTAS DE SALUD (SIMPLIFICADA) ---
 app.get('/health', (_req, res) => res.json({ ok: true, mode: 'frontend-only' }));
 
