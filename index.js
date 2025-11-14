@@ -1,4 +1,4 @@
-// index.js – API completa con frontend + pg + reintentos + healthcheck
+// index.js – API completa con frontend + pg + reintentos + healthcheck.
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
