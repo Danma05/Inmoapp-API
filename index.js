@@ -1,48 +1,109 @@
-// index.js (Actualización de Rutas)
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// --- COMENTAMOS ESTO PARA QUE NO PIDA BASE DE DATOS ---
-// import pool from './db.js';
-// import { dbQuery } from './dbQuery.js';
+// index.js – API completa con frontend + pg + reintentos + healthcheck
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import pool from "./db.js";        // usa tu versión avanzada
+import { dbQuery } from "./dbQuery.js"; // usa tu versión avanzada
 
 const app = express();
 app.use(express.json());
 
-// Configurar ruta absoluta para servir archivos estáticos (TU FRONTEND)
+// ------------------------------------------------------------
+// STATIC / FRONTEND
+// ------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, 'public')));
 
-// --- RUTA PRINCIPAL (HOME) ---
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// --- RUTA DEL DASHBOARD (El dashboard original restaurado) ---
-app.get('/dashboard', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+app.get("/dashboard", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-// --- NUEVA RUTA DE MENÚ EXPLORAR (La página con filtros y listado) ---
-app.get('/explorar-menu', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'explorar-menu.html'));
+// ------------------------------------------------------------
+// HEALTHCHECKS
+// ------------------------------------------------------------
+app.get("/health", (_req, res) => {
+  res.json({ ok: true, service: "InmoApp API", mode: "full" });
 });
 
-// --- RUTAS DE SALUD (SIMPLIFICADA) ---
-app.get('/health', (_req, res) => res.json({ ok: true, mode: 'frontend-only' }));
-
-// --- RUTAS DE USUARIOS (SIMULADAS / MOCK) ---
-app.get('/usuarios', async (_req, res) => {
-    res.json([
-        { id: 1, nombre: "Usuario Prueba 1", correo: "test1@inmoapp.com" },
-        { id: 2, nombre: "Usuario Prueba 2", correo: "test2@inmoapp.com" }
-    ]);
+app.get("/health/db", async (_req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW() now");
+    res.json({ ok: true, db: "connected", now: result.rows[0].now });
+  } catch (e) {
+    console.error("❌ Error en health/db:", e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
-// --- PUERTO Y SERVIDOR ---
+// ------------------------------------------------------------
+// API: USUARIOS
+// ------------------------------------------------------------
+
+// GET usuarios
+app.get("/usuarios", async (_req, res) => {
+  try {
+    const result = await dbQuery("SELECT * FROM usuarios ORDER BY id DESC");
+    res.json(result.rows);
+  } catch (e) {
+    console.error("❌ Error GET /usuarios:", e);
+    res.status(500).json({ error: "Error obteniendo usuarios" });
+  }
+});
+
+// POST usuario
+app.post("/usuarios", async (req, res) => {
+  try {
+    const { nombre, correo, telefono } = req.body;
+
+    const query = `
+      INSERT INTO usuarios (nombre, correo, telefono)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `;
+
+    const values = [nombre, correo, telefono];
+    const result = await dbQuery(query, values);
+
+    res.status(201).json(result.rows[0]);
+  } catch (e) {
+    console.error("❌ Error POST /usuarios:", e);
+    res.status(500).json({ error: "Error creando usuario" });
+  }
+});
+
+// ------------------------------------------------------------
+// SERVER
+// ------------------------------------------------------------
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-  console.log(`🎨 MODO FRONTEND: Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`⚡ InmoApp API corriendo en puerto ${PORT}`);
 });
+
+// ------------------------------------------------------------
+// SHUTDOWN ELEGANTE
+// ------------------------------------------------------------
+async function shutdown(signal) {
+  console.log(`\n⛔ ${signal} recibido. Cerrando servidor...`);
+
+  server.close(async () => {
+    try {
+      console.log("⏳ Cerrando pool PostgreSQL...");
+      await pool.end();
+      console.log("✅ Pool cerrado.");
+      process.exit(0);
+    } catch (err) {
+      console.error("❌ Error cerrando pool:", err);
+      process.exit(1);
+    }
+  });
+}
+
+["SIGINT", "SIGTERM"].forEach(sig =>
+  process.on(sig, () => shutdown(sig))
+);
