@@ -1,0 +1,299 @@
+/* public/css/layout.css */
+
+/* =========================================
+   1. ESTILOS GENERALES
+   ========================================= */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* =========================================
+   2. HEADER PRINCIPAL (Rojo)
+   ========================================= */
+.main-header {
+    height: var(--header-height);
+    background-color: var(--brand-red);
+    color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+}
+.logo-box {
+    background: white; color: var(--brand-red); font-weight: 800;
+    padding: 4px 8px; border-radius: 4px; font-size: 1.1rem;
+}
+.logo-text { color: white; font-size: 1.3rem; font-weight: 500; }
+
+.auth-buttons { display: flex; align-items: center; gap: 20px; }
+
+.nav-link-white {
+    color: white; text-decoration: none; font-weight: 500;
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+.nav-link-white:hover { opacity: 0.9; }
+
+.btn-white {
+    background-color: white; color: var(--brand-red);
+    padding: 8px 20px; border-radius: 6px; font-weight: 600;
+    text-decoration: none; display: flex; align-items: center; gap: 8px;
+    transition: transform 0.2s;
+}
+.btn-white:hover { transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+
+/* =========================================
+   3. FOOTER GLOBAL (Oscuro)
+   ========================================= */
+.main-footer-dark {
+    background-color: #111827; color: white;
+    padding: 60px 0 20px; border-top: 1px solid #1F2937; font-size: 0.95rem;
+}
+
+.footer-grid-dark {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px; margin-bottom: 50px;
+}
+.footer-heading { font-size: 1.1rem; font-weight: 700; margin-bottom: 25px; color: white; }
+
+.contact-list, .links-list { list-style: none; padding: 0; }
+.contact-list li { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #D1D5DB; }
+.links-list li { margin-bottom: 12px; }
+.links-list a { color: #D1D5DB; text-decoration: none; transition: color 0.2s; }
+.links-list a:hover { color: white; text-decoration: underline; }
+
+.icon-red { color: var(--brand-red); font-size: 1.1rem; width: 20px; text-align: center; }
+.social-icons { display: flex; gap: 12px; }
+.social-btn {
+    width: 40px; height: 40px; background-color: #1F2937; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; text-decoration: none; transition: background 0.3s;
+}
+.social-btn:hover { background-color: var(--brand-red); }
+
+.footer-bottom-dark {
+    border-top: 1px solid #374151; padding-top: 25px;
+    text-align: center; color: #9CA3AF; font-size: 0.85rem;
+}
+.floating-help-btn {
+    position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+    background-color: #1F2937; color: white; border: 2px solid #374151;
+    border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.3s;
+}
+.floating-help-btn:hover { background-color: var(--brand-red); border-color: var(--brand-red); transform: translateY(-3px); }
+
+
+/* =========================================
+   4. MODALES: BASE Y LOGIN
+   ========================================= */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+    z-index: 9999; display: flex; justify-content: center; align-items: center;
+    opacity: 1; transition: opacity 0.3s ease;
+}
+.modal-overlay.hidden { opacity: 0; pointer-events: none; }
+
+.modal-content {
+    background: white; padding: 40px 35px; width: 100%; max-width: 420px;
+    border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative; text-align: center;
+    transform: scale(1); animation: modalEntry 0.3s ease-out;
+}
+@keyframes modalEntry { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.close-btn {
+    position: absolute; top: 15px; right: 20px; font-size: 1.5rem;
+    background: none; border: none; cursor: pointer; color: #94A3B8;
+}
+
+.login-header h2 { color: #1E293B; font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; }
+.login-header p { font-size: 1rem; color: #64748B; margin-bottom: 30px; }
+
+.form-group { text-align: left; margin-bottom: 20px; }
+.form-group label { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: #0F172A; }
+.input-wrapper.gray-style { position: relative; }
+.input-wrapper.gray-style input {
+    width: 100%; background-color: #F1F5F9; border: 1px solid #E2E8F0;
+    padding: 12px 40px; border-radius: 10px; outline: none;
+    font-size: 1rem; color: #334155; transition: all 0.3s;
+}
+.input-wrapper.gray-style input:focus {
+    border-color: #D32F2F; background-color: white;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+}
+
+.left-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94A3B8; }
+.right-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; }
+.red-icon { color: #DC2626; }
+
+.btn-red {
+    background-color: #DC2626; color: white; border: none; border-radius: 8px;
+    padding: 12px; font-size: 1rem; font-weight: 600; margin-top: 10px;
+    cursor: pointer; width: 100%; transition: background 0.3s;
+}
+.btn-red:hover { background-color: #B91C1C; }
+
+.forgot-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+.forgot-link { color: #DC2626; font-size: 0.9rem; text-decoration: none; font-weight: 500; }
+.modal-divider { display: flex; align-items: center; justify-content: center; margin: 25px 0; gap: 10px; }
+.modal-divider .line { height: 1px; background-color: #E2E8F0; flex: 1; }
+.modal-divider .circle-text { color: #94A3B8; font-size: 0.9rem; }
+.login-footer { font-size: 0.95rem; color: #64748B; }
+.register-link, .open-login-link { color: #DC2626; font-weight: 700; text-decoration: none; cursor: pointer;}
+
+
+/* =========================================
+   5. MODAL SELECCIÓN (COMPACTO)
+   ========================================= */
+.modal-content.modal-wide {
+    max-width: 650px; width: 90%; padding: 30px 25px;
+}
+.register-title { font-size: 1.4rem; color: #1F2937; margin-bottom: 25px; font-weight: 700; }
+.register-options { display: flex; flex-direction: column; gap: 15px; }
+
+.option-card {
+    display: flex; border: 1px solid #E5E7EB; border-radius: 12px;
+    overflow: hidden; text-align: left; background: white;
+    transition: all 0.2s ease; height: 130px;
+}
+.option-card:hover { border-color: var(--brand-red); transform: translateY(-2px); }
+
+.option-image { width: 160px; min-width: 160px; height: 100%; }
+.option-image img { width: 100%; height: 100%; object-fit: cover; }
+
+.option-info {
+    padding: 15px 20px; display: flex; flex-direction: column; justify-content: center; flex: 1;
+}
+.option-info h3 { font-size: 1.1rem; color: #1F2937; margin: 0 0 5px 0; font-weight: 700; }
+.option-info p {
+    font-size: 0.85rem; color: #6B7280; margin-bottom: 10px; line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.btn-blue-select {
+    background-color: #2563EB; color: white; border: none;
+    padding: 6px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; align-self: flex-start; transition: background 0.2s;
+}
+.btn-blue-select:hover { background-color: #1D4ED8; }
+
+@media (max-width: 600px) {
+    .option-card { flex-direction: column; height: auto; }
+    .option-image { width: 100%; height: 120px; }
+    .option-info { padding: 15px; }
+}
+
+
+/* =========================================
+   6. MODAL FORMULARIO REGISTRO
+   ========================================= */
+.modal-top-nav { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.nav-icon-btn { background: none; border: none; font-size: 1.2rem; color: #64748B; cursor: pointer; }
+.nav-icon-btn:hover { color: #1E293B; }
+
+.input-hint { font-size: 0.75rem; color: #94A3B8; margin-top: 4px; margin-bottom: 0; }
+
+.terms-check {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.85rem; color: #64748B; margin-bottom: 20px; text-align: left;
+}
+.terms-check input { margin-top: 3px; }
+.terms-check a { color: #DC2626; text-decoration: none; }
+
+
+/* =========================================
+   7. MODAL PASAPORTE (UPLOAD)
+   ========================================= */
+.passport-header { text-align: left; margin-bottom: 25px; }
+.passport-header h2 { font-size: 1.4rem; margin: 10px 0 5px 0; color: #111827; }
+.passport-header p { color: #6B7280; font-size: 0.9rem; }
+
+.brand-small { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #1E293B; font-size: 0.9rem; }
+.logo-box-sm { background: #1E293B; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
+
+.progress-section { margin-bottom: 30px; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: #4B5563; margin-bottom: 8px; }
+.progress-track { width: 100%; height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: #2563EB; border-radius: 4px; transition: width 0.4s ease; }
+
+.docs-title { text-align: left; font-size: 1rem; margin-bottom: 15px; color: #374151; }
+
+.docs-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+.doc-item {
+    display: flex; align-items: center; gap: 15px;
+    border: 1px solid #E5E7EB; border-radius: 10px; padding: 15px; background: white;
+}
+
+.doc-icon {
+    width: 40px; height: 40px; background: #F3F4F6; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; color: #6B7280; font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+.doc-info { flex: 1; text-align: left; }
+.doc-info h4 { font-size: 0.95rem; color: #1F293B; margin: 0 0 2px 0; font-weight: 600; }
+.doc-info p { font-size: 0.8rem; color: #9CA3AF; margin: 0; }
+
+.btn-upload {
+    background: white; border: 1px solid #BFDBFE; color: #2563EB;
+    padding: 6px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+}
+.btn-upload:hover { background: #EFF6FF; border-color: #2563EB; }
+
+.passport-footer { text-align: right; }
+
+/* --- ESTILOS DE ESTADO (UPLOAD COMPLETADO) --- */
+
+.doc-icon.success {
+    background-color: #DCFCE7; /* Verde claro */
+    color: #16A34A; /* Verde oscuro */
+    border: 1px solid #16A34A;
+}
+
+.btn-upload.uploaded {
+    background-color: #F3F4F6;
+    color: #16A34A;
+    border-color: #16A34A;
+}
+
+/* Botón Continuar (Gris) */
+.btn-gray-disabled {
+    background: #E5E7EB; color: #9CA3AF; border: none;
+    padding: 10px 24px; border-radius: 6px; font-weight: 600;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
+}
+
+/* Botón Continuar (Activo - Rojo) */
+.btn-finish-active {
+    background-color: var(--brand-red) !important;
+    color: white !important;
+    cursor: pointer !important;
+}
+.btn-finish-active:hover {
+    background-color: #B91C1C !important;
+}

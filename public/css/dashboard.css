@@ -1,0 +1,191 @@
+/* public/css/dashboard.css */
+
+/* --- HEADER --- */
+.explorer-header {
+    background-color: var(--brand-red);
+    height: var(--header-height);
+    color: white;
+    display: flex; align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 100; width: 100%;
+}
+.header-content {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 20px;
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+.logo-box {
+    background: white; color: var(--brand-red); font-weight: 800;
+    padding: 4px 8px; border-radius: 4px; font-size: 1.1rem;
+}
+.logo-text { font-size: 1.3rem; font-weight: 500; color: white; }
+.top-nav { display: flex; gap: 30px; }
+.top-nav a {
+    color: rgba(255, 255, 255, 0.9); text-decoration: none;
+    font-weight: 500; font-size: 0.95rem; transition: opacity 0.2s;
+}
+.top-nav a:hover, .top-nav a.active { opacity: 1; font-weight: 700; }
+.user-controls { display: flex; gap: 20px; align-items: center; }
+.icon-action {
+    background: none; border: none; color: white;
+    font-size: 1.2rem; cursor: pointer; position: relative;
+}
+.badge {
+    position: absolute; top: -5px; right: -5px;
+    background: white; color: var(--brand-red);
+    font-size: 0.6rem; font-weight: bold;
+    padding: 2px 5px; border-radius: 50%;
+}
+.icon-action.profile {
+    background: rgba(255,255,255,0.2);
+    width: 35px; height: 35px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* --- HERO SEARCH --- */
+.explorer-hero {
+    position: relative; min-height: 600px; height: calc(100vh - 140px);
+    display: flex; justify-content: center; align-items: center;
+    overflow: hidden; width: 100%;
+}
+.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+.hero-bg .overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(30, 41, 59, 0.4);
+}
+.search-container {
+    text-align: center; width: 100%; max-width: 800px;
+    padding: 0 20px; position: relative; z-index: 10;
+}
+.search-subtitle {
+    color: white; font-size: 1.1rem; margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.search-tabs {
+    display: inline-flex; background: rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius-full); padding: 4px;
+    margin-bottom: 15px; backdrop-filter: blur(4px);
+}
+.tab {
+    background: transparent; border: none; color: white;
+    padding: 8px 24px; border-radius: var(--radius-full);
+    cursor: pointer; font-weight: 500; transition: background 0.3s;
+}
+.tab.active { background-color: var(--brand-red); color: white; }
+.search-bar-big {
+    display: flex; background: white; padding: 8px;
+    border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.search-bar-big input {
+    flex: 1;Ql border: none; outline: none;
+    padding: 10px 20px; font-size: 1rem; color: var(--text-dark);
+}
+.btn-search-icon {
+    background-color: var(--brand-green); color: white;
+    border: none; width: 45px; height: 45px;
+    border-radius: 6px; cursor: pointer; font-size: 1.2rem;
+    transition: background 0.2s;
+}
+.btn-search-icon:hover { background-color: #388E3C; }
+
+/* =========================================
+   NUEVO: SECCIONES DEL CONTENIDO DASHBOARD
+   ========================================= */
+.dashboard-body {
+    padding: 60px 20px;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+.dashboard-section { margin-bottom: 60px; }
+
+.section-header-row {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 25px;
+}
+.dash-title {
+    font-size: 1.4rem; color: #1F2937; font-weight: 600; margin: 0;
+}
+.btn-outline-red-sm {
+    border: 1px solid var(--brand-red); color: var(--brand-red);
+    padding: 6px 16px; border-radius: 6px; text-decoration: none;
+    font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+}
+.btn-outline-red-sm:hover { background-color: var(--brand-red); color: white; }
+
+/* --- Cards Grandes (Destacadas) --- */
+.grid-2-cols {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px;
+}
+.prop-card-lg {
+    background: white; border: 1px solid #E5E7EB;
+    border-radius: 12px; overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.prop-card-lg:hover {
+    transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+.card-img { height: 300px; width: 100%; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; }
+.card-info { padding: 20px; }
+.price-red { color: var(--brand-red); font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+.prop-card-lg h3 { font-size: 1.1rem; color: #111827; margin: 0 0 5px; }
+.location { color: #6B7280; font-size: 0.9rem; margin-bottom: 10px; }
+.specs { font-size: 0.9rem; color: #4B5563; border-top: 1px solid #F3F4F6; padding-top: 10px; }
+
+/* --- Cards Pequeñas (Recientes) --- */
+.grid-4-cols {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;
+}
+.prop-card-sm {
+    background: white; border: 1px solid #E5E7EB;
+    border-radius: 12px; overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.prop-card-sm:hover {
+    transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+}
+.card-img-sm { height: 180px; position: relative; }
+.card-img-sm img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Botón Corazón en la imagen */
+.fav-btn {
+    position: absolute; top: 10px; right: 10px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: white; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #4B5563; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: color 0.2s;
+}
+.fav-btn:hover { color: var(--brand-red); }
+
+.card-info-sm { padding: 15px; }
+.prop-card-sm h3 { font-size: 1rem; color: #111827; margin: 0 0 5px; }
+/* Reutilizamos .price-red y .location definidos arriba */
+
+/* --- FOOTER --- */
+.dashboard-footer {
+    background-color: #111827; color: white; padding: 60px 0 20px;
+    width: 100%; margin: 0; border-top: 1px solid #1F2937;
+}
+.footer-grid-dark {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;
+}
+.footer-heading { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: white; }
+.contact-list, .links-list { list-style: none; padding: 0; }
+.contact-list li { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; color: #9CA3AF; font-size: 0.9rem; }
+.icon-red { color: var(--brand-red); width: 20px; text-align: center; }
+.links-list a { color: #9CA3AF; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+.links-list a:hover { color: white; }
+.social-icons { display: flex; gap: 10px; }
+.social-btn {
+    width: 36px; height: 36px; background-color: #1F2937;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: white; text-decoration: none; transition: background 0.3s;
+}
+.social-btn:hover { background-color: var(--brand-red); }
+.footer-bottom-dark {
+    border-top: 1px solid #1F2937; padding-top: 20px; text-align: center;
+    color: #6B7280; font-size: 0.85rem;
+}
