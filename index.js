@@ -87,14 +87,14 @@ app.post("/usuarios", async (req, res) => {
       telefono,
       rol,
       !!aceptaTerminos,
-      password // ⚠️ por ahora texto plano; luego se cambia a hash
+      password         // por ahora en plano; luego lo pasamos a hash
     ];
 
     const result = await dbQuery(query, values);
     res.status(201).json(result.rows[0]);
   } catch (e) {
     console.error("❌ Error POST /usuarios:", e);
-    res.status(500).json({ error: "Error creando usuario" });
+    res.status(500).json({ error: e.message });
   }
 });
 

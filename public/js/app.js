@@ -163,22 +163,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const res = await fetch('/usuarios', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         nombreCompleto,
                         correo,
                         telefono,
                         rol,
                         aceptaTerminos,
-                        password  // 👈 AQUÍ VA LA CONTRASEÑA
+                        password
                     })
                 });
 
                 if (!res.ok) {
-                    console.error('Error en /usuarios', res.status);
-                    alert('No se pudo registrar el usuario. Inténtalo más tarde.');
+                    const errorText = await res.text();
+                    console.error('Error en /usuarios', res.status, errorText);
+                    alert('No se pudo registrar el usuario. Intenta con otro correo o revisa la consola.');
                     return;
                 }
 
