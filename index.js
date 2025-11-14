@@ -1,4 +1,4 @@
-// index.js (VERSIÓN TEMPORAL PARA FRONTEND)
+// index.js (VERSIÓN CORREGIDA)
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,7 +20,7 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// --- NUEVA RUTA PARA EL DASHBOARD ---
+// --- ¡ESTO ES LO QUE FALTABA! RUTA DEL DASHBOARD ---
 app.get('/dashboard', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
@@ -29,7 +29,6 @@ app.get('/dashboard', (_req, res) => {
 app.get('/health', (_req, res) => res.json({ ok: true, mode: 'frontend-only' }));
 
 // --- RUTAS DE USUARIOS (SIMULADAS / MOCK) ---
-// Como no hay base de datos, devolvemos datos falsos para que el frontend no falle
 app.get('/usuarios', async (_req, res) => {
     res.json([
         { id: 1, nombre: "Usuario Prueba 1", correo: "test1@inmoapp.com" },

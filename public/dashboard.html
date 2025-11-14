@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - InmoApp</title>
+    <title>InmoApp - Explorar</title>
     
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/base.css">
@@ -13,161 +13,185 @@
 </head>
 <body>
 
-    <div class="dashboard-layout">
-        
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <a href="#" class="logo">InmoApp<span class="dot">.</span></a>
-            </div>
-
-            <nav class="sidebar-nav">
-                <ul>
-                    <li>
-                        <a href="#" class="nav-item active">
-                            <i class="fa-solid fa-border-all"></i> Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-item">
-                            <i class="fa-regular fa-building"></i> Mis Propiedades
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-item">
-                            <i class="fa-regular fa-envelope"></i> Mensajes 
-                            <span class="badge-pill">3</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-item">
-                            <i class="fa-regular fa-heart"></i> Favoritos
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-item">
-                            <i class="fa-solid fa-gear"></i> Configuración
-                        </a>
-                    </li>
-                </ul>
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/dashboard" class="brand">
+                <div class="logo-box">IA</div>
+                <span class="logo-text">InmoApp</span>
+            </a>
+            <nav class="top-nav">
+                <a href="#" class="active">Explorar</a>
+                <a href="#">Favoritos</a>
+                <a href="#">Visitas</a>
+                <a href="#">Postulaciones</a>
+                <a href="#">Mensajes</a>
             </nav>
-
-            <div class="sidebar-footer">
-                <a href="/" class="nav-item logout">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-                </a>
+            <div class="user-controls">
+                <button class="icon-action"><i class="fa-regular fa-heart"></i></button>
+                <button class="icon-action notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">2</span>
+                </button>
+                <div class="icon-action profile">
+                    <i class="fa-regular fa-user"></i>
+                </div>
             </div>
-        </aside>
+        </div>
+    </header>
 
-        <main class="main-content">
-            
-            <header class="topbar">
-                <div class="welcome-text">
-                    <h1>Hola, Juan Carlos 👋</h1>
-                    <p>Bienvenido a tu panel de administración.</p>
-                </div>
+    <main class="explorer-hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=1920" 
+                 alt="Fondo Propiedad"
+                 onerror="this.style.display='none'">
+            <div class="overlay"></div>
+        </div>
 
-                <div class="user-actions">
-                    <div class="search-box">
-                        <i class="fa-solid fa-search"></i>
-                        <input type="text" placeholder="Buscar propiedad...">
+        <div class="search-container">
+            <p class="search-subtitle">Busca entre 15.847 propiedades de agentes reconocidos</p>
+            <div class="search-tabs">
+                <button class="tab active">Residencial</button>
+                <button class="tab">Comercial</button>
+            </div>
+            <div class="search-bar-big">
+                <input type="text" placeholder="Ciudad, barrio, dirección o número MLS®">
+                <button class="btn-search-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div class="container dashboard-body">
+        
+        <section class="dashboard-section">
+            <div class="section-header-row">
+                <h2 class="dash-title">Propiedades destacadas</h2>
+                <a href="#" class="btn-outline-red-sm">Ver todas</a>
+            </div>
+
+            <div class="grid-2-cols">
+                <article class="prop-card-lg">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800" alt="Penthouse">
                     </div>
-                    
-                    <button class="icon-btn notification">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="dot-indicator"></span>
-                    </button>
-                    
-                    <div class="user-profile">
-                        <img src="https://ui-avatars.com/api/?name=Juan+Carlos&background=2563EB&color=fff" alt="Perfil">
-                        <div class="profile-info">
-                            <span class="name">Juan Carlos</span>
-                            <span class="role">Agente</span>
+                    <div class="card-info">
+                        <div class="price-red">$890.000.000</div>
+                        <h3>Penthouse de Lujo en el Centro</h3>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> Providencia, Santiago</p>
+                        <div class="specs">
+                            <span>3 habitaciones</span> • <span>2 baños</span> • <span>120 m²</span>
                         </div>
                     </div>
-                </div>
-            </header>
+                </article>
 
-            <section class="stats-section">
-                <div class="stat-card">
-                    <div class="icon-wrapper blue">
-                        <i class="fa-solid fa-house"></i>
+                <article class="prop-card-lg">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800" alt="Edificio">
                     </div>
-                    <div class="stat-details">
-                        <h3>12</h3>
-                        <p>Propiedades Totales</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="icon-wrapper green">
-                        <i class="fa-solid fa-check-circle"></i>
-                    </div>
-                    <div class="stat-details">
-                        <h3>5</h3>
-                        <p>Vendidas / Rentadas</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="icon-wrapper orange">
-                        <i class="fa-regular fa-eye"></i>
-                    </div>
-                    <div class="stat-details">
-                        <h3>1.2k</h3>
-                        <p>Visitas Totales</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="content-section">
-                <div class="section-header">
-                    <h2>Propiedades Recientes</h2>
-                    <button class="btn btn-primary small">+ Nueva Propiedad</button>
-                </div>
-
-                <div class="properties-grid-dashboard">
-                    <article class="property-card-mini">
-                        <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=400" alt="Casa">
-                        <div class="info">
-                            <h4>Apto Moderno Chapinero</h4>
-                            <p class="location">Bogotá, Colombia</p>
-                            <div class="price">$450,000,000</div>
+                    <div class="card-info">
+                        <div class="price-red">$650.000.000</div>
+                        <h3>Moderno Edificio Residencial</h3>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> Las Condes, Santiago</p>
+                        <div class="specs">
+                            <span>2 habitaciones</span> • <span>2 baños</span> • <span>95 m²</span>
                         </div>
-                        <div class="actions">
-                            <button class="action-btn edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </article>
+                    </div>
+                </article>
+            </div>
+        </section>
 
-                    <article class="property-card-mini">
+        <section class="dashboard-section">
+            <div class="section-header-row">
+                <h2 class="dash-title">Vistas recientemente</h2>
+            </div>
+
+            <div class="grid-4-cols">
+                <article class="prop-card-sm">
+                    <div class="card-img-sm">
                         <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400" alt="Casa">
-                        <div class="info">
-                            <h4>Casa Quinta Cali</h4>
-                            <p class="location">Cali, Colombia</p>
-                            <div class="price">$2,500,000 /mes</div>
-                        </div>
-                        <div class="actions">
-                            <button class="action-btn edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </article>
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-sm">
+                        <div class="price-red">$450.000.000</div>
+                        <h3>Apartamento Moderno</h3>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> Providencia, Santiago</p>
+                    </div>
+                </article>
 
-                    <article class="property-card-mini">
-                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400" alt="Casa">
-                        <div class="info">
-                            <h4>Loft Industrial</h4>
-                            <p class="location">Medellín, Colombia</p>
-                            <div class="price">$380,000,000</div>
-                        </div>
-                        <div class="actions">
-                            <button class="action-btn edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </article>
+                <article class="prop-card-sm">
+                    <div class="card-img-sm">
+                        <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=400" alt="Lujo">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-sm">
+                        <div class="price-red">$780.000.000</div>
+                        <h3>Apartamento de Lujo</h3>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> Las Condes, Santiago</p>
+                    </div>
+                </article>
+
+                <article class="prop-card-sm">
+                    <div class="card-img-sm">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400" alt="Acogedora">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-sm">
+                        <div class="price-red">$320.000.000</div>
+                        <h3>Casa Acogedora</h3>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> Ñuñoa, Santiago</p>
+                    </div>
+                </article>
+
+                <article class="prop-card-sm">
+                    <div class="card-img-sm">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400" alt="Oficina">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-sm">
+                        <div class="price-red">$950.000.000</div>
+                        <h3>Oficina Corporativa</h3>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> Centro, Santiago</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </div> <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
                 </div>
-            </section>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
-        </main>
-    </div>
+    <script type="module" src="/js/app.js"></script>
 </body>
 </html>

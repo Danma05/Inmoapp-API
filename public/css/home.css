@@ -1,166 +1,465 @@
 /* public/css/home.css */
 
-/* HERO SECTION */
+/* =========================================
+   1. HERO SECTION (Parte Superior)
+   ========================================= */
 .hero {
-    height: 600px;
-    background-image: url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1920'); /* Imagen de fondo */
+    height: calc(100vh - 140px);
+    min-height: 600px;
+    background-image: url('https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=1920'); 
     background-size: cover;
     background-position: center;
     position: relative;
 }
 
 .hero-overlay {
-    background: rgba(0, 0, 0, 0.4); /* Oscurecer imagen para leer texto */
+    background: rgba(30, 41, 59, 0.45); /* Oscuro azulado para contraste */
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.hero-content {
     text-align: center;
+    max-width: 900px;
+    color: white;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 400;
 }
 
 .hero-content h1 {
-    font-size: 3.5rem;
-    color: white;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-}
-
-.hero-content p {
-    font-size: 1.2rem;
-    color: #E2E8F0;
-    margin-bottom: 2.5rem;
-}
-
-/* BUSCADOR FLOTANTE */
-.search-bar {
-    background: white;
-    padding: 20px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    gap: 15px;
-    align-items: flex-end;
-    box-shadow: var(--shadow-lg);
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.input-group {
-    flex: 1;
-    text-align: left;
-}
-
-.input-group label {
-    display: block;
-    font-size: 0.85rem;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
     font-weight: 600;
-    color: var(--text-gray);
-    margin-bottom: 8px;
+    line-height: 1.3;
 }
 
-.input-group input, .input-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #CBD5E1;
-    border-radius: var(--radius-md);
+/* PESTAÑAS (Residencial / Comercial) */
+.search-tabs {
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50px;
+    padding: 4px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.tab {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.tab.active {
+    background-color: var(--brand-red); /* Rojo */
+    color: white;
+}
+
+/* BUSCADOR HERO */
+.search-bar-hero {
+    display: flex;
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    margin-bottom: 30px;
+}
+
+.search-bar-hero input {
+    flex: 1;
+    border: none;
     outline: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    color: #333;
 }
 
-.btn-search {
-    background-color: var(--primary-color);
+.btn-search-green {
+    background-color: var(--brand-green); /* Verde */
     color: white;
     border: none;
-    padding: 12px 30px;
-    border-radius: var(--radius-md);
-    font-weight: 600;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
     cursor: pointer;
-    height: 42px; /* Ajustar a la altura de los inputs */
+    font-size: 1.2rem;
+    transition: background 0.2s;
+}
+.btn-search-green:hover { background-color: #388E3C; }
+
+/* CTA INFERIOR (Guardar búsquedas) */
+.hero-cta-box {
+    margin-top: 20px;
+}
+.hero-cta-box p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
-/* SECCIÓN DESTACADOS */
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-outline-hero {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex; gap: 8px; align-items: center;
+    transition: background 0.2s;
+}
+.btn-outline-hero:hover { background: rgba(255,255,255,0.1); }
+
+.btn-red-hero {
+    background: var(--brand-red);
+    border: 1px solid var(--brand-red);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex; gap: 8px; align-items: center;
+    transition: background 0.2s;
+}
+.btn-red-hero:hover { background: #B71C1C; }
+
+
+/* =========================================
+   2. SECCIÓN DESTACADOS (Grid 4 Columnas)
+   ========================================= */
 .featured-section {
-    padding: 80px 0;
+    padding: 60px 0;
+    background-color: white;
 }
 
-.section-title {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 50px;
-    color: var(--secondary-color);
+/* Encabezado: Título izq, Botón der */
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
 }
 
-.properties-grid {
+.section-title-left {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.section-subtitle {
+    color: var(--text-gray);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Botón "Ver todas" */
+.btn-outline-red {
+    border: 1px solid var(--brand-red);
+    color: var(--brand-red);
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+.btn-outline-red:hover {
+    background-color: var(--brand-red);
+    color: white;
+}
+
+/* Grid de 4 columnas */
+.properties-grid-4 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
 }
 
-/* TARJETAS (CARDS) */
+/* Tarjeta de Propiedad */
 .property-card {
+    border: 1px solid #E5E7EB;
+    box-shadow: none;
+    border-radius: 12px;
+    transition: box-shadow 0.3s;
     background: white;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
+    overflow: hidden; /* Asegura que la imagen no se salga */
 }
-
 .property-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
 
 .card-image {
-    height: 220px;
+    height: 200px;
     position: relative;
 }
-
 .card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.tag {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: var(--primary-color);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-.tag.rent { background: #10B981; } /* Verde para arriendo */
-
+/* Contenido de la Tarjeta */
 .card-content {
     padding: 20px;
 }
 
 .card-content .price {
-    font-size: 1.25rem;
+    color: var(--brand-red);
+    font-size: 1.1rem;
     font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .card-content h3 {
-    font-size: 1.1rem;
-    margin: 5px 0;
-    color: var(--secondary-color);
+    font-size: 1rem;
+    margin: 0 0 4px 0;
+    font-weight: 600;
+    color: var(--text-dark);
 }
 
-.location {
+.card-content .location {
+    font-size: 0.85rem;
     color: var(--text-gray);
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-}
-
-.card-features {
+    margin: 0 0 12px 0;
     display: flex;
-    gap: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #F1F5F9;
-    color: var(--text-gray);
-    font-size: 0.9rem;
+    align-items: center;
+    gap: 5px;
 }
+
+.card-features-text {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    padding-top: 0;
+}
+
+/* Overlay de bloqueo ("Inicia sesión") */
+/* --- OVERLAY DE BLOQUEO ("Inicia sesión") --- */
+.login-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    
+    /* Fondo oscuro semi-transparente */
+    background: rgba(0, 0, 0, 0.7); 
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    z-index: 10;
+    padding: 20px;
+    backdrop-filter: blur(4px); /* Efecto borroso */
+
+    /* CAMBIO PRINCIPAL: Oculto por defecto */
+    opacity: 0; 
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* CAMBIO: Aparece al pasar el mouse por la imagen (.card-image) */
+.card-image:hover .login-overlay {
+    opacity: 1;
+}
+
+/* Animación extra: El icono sube ligeramente al aparecer */
+.login-overlay i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    transform: translateY(20px); 
+    transition: transform 0.3s ease;
+}
+
+.card-image:hover .login-overlay i {
+    transform: translateY(0);
+}
+
+.login-overlay span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.login-overlay i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.login-overlay span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* =========================================
+   3. FOOTER DARK (Estilo Completo)
+   ========================================= */
+
+.main-footer-dark {
+    background-color: #111827; /* Color oscuro de la imagen */
+    color: white;
+    padding: 60px 0 20px;
+    border-top: 1px solid #1F2937;
+    font-size: 0.95rem;
+}
+
+.footer-grid-dark {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 Columnas iguales */
+    gap: 40px;
+    margin-bottom: 50px;
+}
+
+.footer-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: white;
+}
+
+/* Columna Contacto */
+.contact-list {
+    list-style: none;
+    padding: 0;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    color: #D1D5DB; /* Gris claro texto */
+}
+
+.icon-red {
+    color: var(--brand-red); /* Iconos Rojos */
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Columna Social (Centrada visualmente en diseño) */
+.social-icons {
+    display: flex;
+    gap: 12px;
+}
+
+.social-btn {
+    width: 40px;
+    height: 40px;
+    background-color: #1F2937; /* Círculo gris oscuro */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.social-btn:hover {
+    background-color: var(--brand-red); /* Rojo al hover */
+}
+
+/* Columna Enlaces (Alineada un poco a la derecha en diseño web std) */
+.links-list {
+    list-style: none;
+    padding: 0;
+}
+
+.links-list li {
+    margin-bottom: 12px;
+}
+
+.links-list a {
+    color: #D1D5DB;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.links-list a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* Parte Inferior (Copyright) */
+.footer-bottom-dark {
+    border-top: 1px solid #374151;
+    padding-top: 25px;
+    text-align: center;
+    color: #9CA3AF;
+    font-size: 0.85rem;
+}
+
+/* Botón Flotante de Ayuda (?) */
+.floating-help-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: #1F2937; /* Oscuro */
+    color: white;
+    border: 2px solid #374151;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: all 0.3s;
+}
+
+.floating-help-btn:hover {
+    background-color: var(--brand-red);
+    border-color: var(--brand-red);
+    transform: translateY(-3px);
+}
+
+/* Responsive: En móviles poner columnas una debajo de otra */
+@media (max-width: 768px) {
+    .footer-grid-dark {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .contact-list li { justify-content: center; }
+    .social-icons { justify-content: center; }
+}
+
+.footer-bar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-outline-light {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    padding: 8px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+.btn-outline-light:hover { border-color: white; }

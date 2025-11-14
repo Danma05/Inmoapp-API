@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InmoApp - Tu nuevo hogar</title>
+    <title>InmoApp - Encuentra tu hogar</title>
     
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/base.css">
@@ -16,17 +16,18 @@
 
     <header class="main-header">
         <div class="container nav-container">
-            <a href="/" class="logo">InmoApp<span class="dot">.</span></a>
-            
-            <nav class="main-nav">
-                <a href="#" class="active">Inicio</a>
-                <a href="#">Propiedades</a>
-                <a href="#">Nosotros</a>
-            </nav>
+            <a href="/" class="brand-logo">
+                <div class="logo-box">IA</div>
+                <span class="logo-text">InmoApp</span>
+            </a>
 
             <div class="auth-buttons">
-                <a href="#" id="btn-login" class="btn btn-text">Inicia Sesión</a>
-                <a href="#" class="btn btn-primary">Regístrate</a>
+                <a href="#" class="nav-link-white open-login-btn">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Iniciar sesión
+                </a>
+                <a href="#" class="btn-white open-register-btn">
+                    <i class="fa-regular fa-user"></i> Registrarse
+                </a>
             </div>
         </div>
     </header>
@@ -35,71 +36,108 @@
         <section class="hero">
             <div class="hero-overlay">
                 <div class="container hero-content">
-                    <h1>Encuentra el hogar <br>de tus sueños</h1>
-                    <p>Explora las mejores propiedades en venta y alquiler en tu zona.</p>
+                    <p class="hero-subtitle">Encuentra tu hogar ideal</p>
+                    <h1>Busca entre 15.847 propiedades de agentes reconocidos</h1>
                     
-                    <form class="search-bar">
-                        <div class="input-group">
-                            <label><i class="fa-solid fa-location-dot"></i> Ubicación</label>
-                            <input type="text" placeholder="Ej. Bogotá, Norte...">
+                    <div class="search-tabs">
+                        <button class="tab active">Residencial</button>
+                        <button class="tab">Comercial</button>
+                    </div>
+
+                    <div class="search-bar-hero">
+                        <input type="text" placeholder="Ciudad, barrio, dirección o número MLS®">
+                        <button class="btn-search-green">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+
+                    <div class="hero-cta-box">
+                        <p>¿Quieres guardar tus búsquedas y propiedades favoritas?</p>
+                        <div class="cta-buttons">
+                            <button class="btn btn-outline-hero open-login-btn">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i> Iniciar sesión
+                            </button>
+                            <button class="btn btn-red-hero open-register-btn">
+                                <i class="fa-regular fa-user"></i> Registrarse gratis
+                            </button>
                         </div>
-                        <div class="input-group">
-                            <label><i class="fa-solid fa-house"></i> Tipo</label>
-                            <select>
-                                <option>Apartamento</option>
-                                <option>Casa</option>
-                                <option>Oficina</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label><i class="fa-solid fa-dollar-sign"></i> Precio</label>
-                            <select>
-                                <option>$100M - $300M</option>
-                                <option>$300M - $600M</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-search">Buscar</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section class="featured-section">
             <div class="container">
-                <h2 class="section-title">Propiedades Destacadas</h2>
-                
-                <div class="properties-grid">
+                <div class="section-header-row">
+                    <div class="header-titles">
+                        <h2 class="section-title-left">Propiedades destacadas</h2>
+                        <p class="section-subtitle">Descubre las mejores opciones disponibles</p>
+                    </div>
+                    <a href="#" class="btn-outline-red">Ver todas</a>
+                </div>
+
+                <div class="properties-grid-4">
                     <article class="property-card">
                         <div class="card-image">
-                            <span class="tag">Venta</span>
-                            <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=800" alt="Casa Moderna">
+                            <div class="login-overlay">
+                                <i class="fa-regular fa-user"></i>
+                                <span>Inicia sesión para ver más detalles</span>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400" alt="Propiedad">
                         </div>
                         <div class="card-content">
-                            <div class="price">$450,000,000 COP</div>
-                            <h3>Apartamento Moderno en Chapinero</h3>
-                            <p class="location"><i class="fa-solid fa-map-pin"></i> Bogotá, Colombia</p>
-                            <div class="card-features">
-                                <span><i class="fa-solid fa-bed"></i> 3</span>
-                                <span><i class="fa-solid fa-bath"></i> 2</span>
-                                <span><i class="fa-solid fa-ruler-combined"></i> 85m²</span>
-                            </div>
+                            <div class="price">$450.000.000</div>
+                            <h3>Apartamento Moderno</h3>
+                            <p class="location"><i class="fa-solid fa-location-dot"></i> Providencia, Santiago</p>
+                            <div class="card-features-text">2 hab • 2 baños • 85 m²</div>
                         </div>
                     </article>
 
                     <article class="property-card">
                         <div class="card-image">
-                            <span class="tag rent">Arriendo</span>
-                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800" alt="Casa Lujosa">
+                            <div class="login-overlay">
+                                <i class="fa-regular fa-user"></i>
+                                <span>Inicia sesión para ver más detalles</span>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=400" alt="Propiedad">
                         </div>
                         <div class="card-content">
-                            <div class="price">$2,500,000 /mes</div>
-                            <h3>Casa Familiar con Jardín</h3>
-                            <p class="location"><i class="fa-solid fa-map-pin"></i> Cali, Colombia</p>
-                            <div class="card-features">
-                                <span><i class="fa-solid fa-bed"></i> 4</span>
-                                <span><i class="fa-solid fa-bath"></i> 3</span>
-                                <span><i class="fa-solid fa-ruler-combined"></i> 150m²</span>
+                            <div class="price">$780.000.000</div>
+                            <h3>Apartamento de Lujo</h3>
+                            <p class="location"><i class="fa-solid fa-location-dot"></i> Las Condes, Santiago</p>
+                            <div class="card-features-text">3 hab • 3 baños • 140 m²</div>
+                        </div>
+                    </article>
+
+                    <article class="property-card">
+                        <div class="card-image">
+                            <div class="login-overlay">
+                                <i class="fa-regular fa-user"></i>
+                                <span>Inicia sesión para ver más detalles</span>
                             </div>
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400" alt="Propiedad">
+                        </div>
+                        <div class="card-content">
+                            <div class="price">$320.000.000</div>
+                            <h3>Casa Acogedora</h3>
+                            <p class="location"><i class="fa-solid fa-location-dot"></i> Ñuñoa, Santiago</p>
+                            <div class="card-features-text">2 hab • 1 baños • 75 m²</div>
+                        </div>
+                    </article>
+
+                    <article class="property-card">
+                        <div class="card-image">
+                            <div class="login-overlay">
+                                <i class="fa-regular fa-user"></i>
+                                <span>Inicia sesión para ver más detalles</span>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400" alt="Propiedad">
+                        </div>
+                        <div class="card-content">
+                            <div class="price">$950.000.000</div>
+                            <h3>Oficina Corporativa</h3>
+                            <p class="location"><i class="fa-solid fa-location-dot"></i> Centro, Santiago</p>
+                            <div class="card-features-text">3 baños • 200 m²</div>
                         </div>
                     </article>
                 </div>
@@ -107,71 +145,248 @@
         </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container footer-grid">
-            <div class="footer-col">
-                <h3>InmoApp.</h3>
-                <p>Hacemos fácil encontrar tu próximo hogar con tecnología y confianza.</p>
+    <footer class="main-footer-dark">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Políticas de Cookies</a></li>
+                        <li><a href="#">Ayuda</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Navegación</h4>
-                <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Propiedades</a></li>
-                    <li><a href="#">Agentes</a></li>
-                </ul>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
             </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <ul>
-                    <li><i class="fa-solid fa-envelope"></i> hola@inmoapp.com</li>
-                    <li><i class="fa-solid fa-phone"></i> +57 300 123 4567</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <button class="floating-help-btn"><i class="fa-solid fa-question"></i></button>
 
     <div id="login-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="close-modal" class="close-btn">&times;</button>
-            
             <div class="login-header">
-                <h2>Bienvenido de nuevo</h2>
-                <p>Ingresa a tu cuenta para gestionar tus propiedades.</p>
+                <h2>Iniciar Sesión</h2>
+                <p>Accede a tu cuenta de InmoApp</p>
             </div>
-
             <form class="login-form">
                 <div class="form-group">
-                    <label for="email">Correo Electrónico</label>
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="email" id="email" placeholder="nombre@ejemplo.com" required>
+                    <label>Correo electrónico</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-regular fa-envelope left-icon"></i>
+                        <input type="email" placeholder="tucorreo@ejemplo.com" required>
+                        <i class="fa-solid fa-unlock-keyhole right-icon red-icon"></i>
                     </div>
                 </div>
-
                 <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="password" placeholder="••••••••" required>
+                    <label>Contraseña</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-solid fa-lock left-icon"></i>
+                        <input type="password" placeholder="........" required>
+                        <i class="fa-regular fa-eye right-icon red-icon"></i>
+                    </div>
+                    <div class="forgot-row">
+                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
                     </div>
                 </div>
+                <button type="submit" class="btn btn-full btn-red">Iniciar Sesión</button>
+            </form>
+            <div class="modal-divider">
+                <span class="line"></span>
+                <span class="circle-text">o</span>
+                <span class="line"></span>
+            </div>
+            <div class="login-footer">
+                <p>¿No tienes una cuenta? <a href="#" class="register-link">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </div>
 
-                <div class="form-actions">
-                    <label class="checkbox-label">
-                        <input type="checkbox"> Recordarme
-                    </label>
-                    <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+    <div id="register-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-wide">
+            <button id="close-register" class="close-btn">&times;</button>
+            <h2 class="register-title">¿Qué deseas hacer en InmoApp?</h2>
+            <div class="register-options">
+                <div class="option-card">
+                    <div class="option-image">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400" alt="Arrendar">
+                    </div>
+                    <div class="option-info">
+                        <h3>Quiero Arrendar</h3>
+                        <p>Encuentra el lugar perfecto para vivir. Explora propiedades disponibles.</p>
+                        <button class="btn-blue-select">Seleccionar</button>
+                    </div>
+                </div>
+                <div class="option-card">
+                    <div class="option-image">
+                        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=400" alt="Publicar">
+                    </div>
+                    <div class="option-info">
+                        <h3>Quiero Publicar un Inmueble</h3>
+                        <p>Ofrece tu propiedad a una amplia audiencia. Gestiona tus anuncios.</p>
+                        <button class="btn-blue-select">Seleccionar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="register-form-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-top-nav">
+                <button id="back-to-selection" class="nav-icon-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="close-register-form" class="nav-icon-btn"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="login-header">
+                <h2>Crear Cuenta</h2>
+                <p>Únete a InmoApp y encuentra tu hogar ideal</p>
+            </div>
+            <form class="login-form">
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-regular fa-user left-icon"></i>
+                        <input type="text" placeholder="Juan Pérez" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-regular fa-envelope left-icon"></i>
+                        <input type="email" placeholder="tucorreo@ejemplo.com" required>
+                        <i class="fa-solid fa-lock right-icon red-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-solid fa-phone left-icon"></i>
+                        <input type="tel" placeholder="+57 300 123 4567" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-solid fa-lock left-icon"></i>
+                        <input type="password" placeholder="........" required>
+                        <i class="fa-regular fa-eye right-icon red-icon"></i>
+                    </div>
+                    <p class="input-hint">Mínimo 8 caracteres</p>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-solid fa-lock left-icon"></i>
+                        <input type="password" placeholder="........" required>
+                        <i class="fa-regular fa-eye right-icon red-icon"></i>
+                    </div>
+                </div>
+                <div class="terms-check">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a></label>
+                </div>
+                <button type="submit" class="btn btn-full btn-red">Crear Cuenta</button>
+            </form>
+            <div class="modal-divider">
+                <span class="line"></span>
+                <span class="circle-text">o</span>
+                <span class="line"></span>
+            </div>
+            <div class="login-footer">
+                <p>¿Ya tienes una cuenta? <a href="#" class="open-login-link">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="passport-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-wide">
+            <button id="close-passport" class="close-btn">&times;</button>
+            
+            <div class="passport-header">
+                <div class="brand-small">
+                    <div class="logo-box-sm">IA</div> InmoApp
+                </div>
+                <h2>Pasaporte del Arrendatario</h2>
+                <p>Completa tu perfil para aumentar las posibilidades de ser seleccionado.</p>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-labels">
+                    <span>Progreso</span>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="progress-bar-fill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <h3 class="docs-title">Documentos</h3>
+
+            <div class="docs-list">
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-regular fa-address-card"></i></div>
+                    <div class="doc-info">
+                        <h4>Documento de Identidad</h4>
+                        <p>Cédula, DNI o Pasaporte</p>
+                    </div>
+                    <input type="file" class="file-input" id="file-id" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('file-id').click()">Subir</button>
                 </div>
 
-                <button type="submit" class="btn btn-full btn-primary">Iniciar Sesión</button>
-            </form>
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div class="doc-info">
+                        <h4>Certificado de Solvencia</h4>
+                        <p>Bancario o score crediticio</p>
+                    </div>
+                    <input type="file" class="file-input" id="file-solvency" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('file-solvency').click()">Subir</button>
+                </div>
 
-            <div class="login-footer">
-                <p>¿Aún no tienes cuenta? <a href="#">Regístrate gratis</a></p>
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-solid fa-money-check-dollar"></i></div>
+                    <div class="doc-info">
+                        <h4>Comprobante de Ingresos</h4>
+                        <p>Últimos 3 extractos o nómina</p>
+                    </div>
+                    <input type="file" class="file-input" id="file-income" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('file-income').click()">Subir</button>
+                </div>
+
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-regular fa-folder-open"></i></div>
+                    <div class="doc-info">
+                        <h4>Otros Documentos</h4>
+                        <p>Referencias o codeudor</p>
+                    </div>
+                    <input type="file" class="file-input" id="file-others" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('file-others').click()">Subir</button>
+                </div>
+            </div>
+
+            <div class="passport-footer">
+                <button id="btn-finish-passport" class="btn-gray-disabled">Continuar</button>
             </div>
         </div>
     </div>
