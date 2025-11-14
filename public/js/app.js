@@ -121,16 +121,21 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             try {
-                // TOMAR DATOS DEL FORMULARIO SEGÚN PLACEHOLDERS
+                // TOMAR DATOS DEL FORMULARIO
                 const nombreInput = registerForm.querySelector('input[placeholder="Juan Pérez"]');
                 const correoInput = registerForm.querySelector('input[placeholder="tucorreo@ejemplo.com"]');
                 const telInput = registerForm.querySelector('input[placeholder="+57 300 123 4567"]');
                 const termsCheckbox = registerForm.querySelector('#terms');
 
+                const passwordInput = document.getElementById('register-password');
+                const passwordConfirmInput = document.getElementById('register-password-confirm');
+
                 const nombreCompleto = nombreInput?.value.trim() || '';
                 const correo = correoInput?.value.trim() || '';
                 const telefono = telInput?.value.trim() || '';
                 const aceptaTerminos = !!(termsCheckbox && termsCheckbox.checked);
+                const password = passwordInput?.value || '';
+                const passwordConfirm = passwordConfirmInput?.value || '';
 
                 const rol = selectedRole || 'ARRENDATARIO';
 
@@ -141,6 +146,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!aceptaTerminos) {
                     alert('Debes aceptar los términos y condiciones.');
+                    return;
+                }
+
+                if (!password || password.length < 8) {
+                    alert('La contraseña debe tener mínimo 8 caracteres.');
+                    return;
+                }
+
+                if (password !== passwordConfirm) {
+                    alert('Las contraseñas no coinciden.');
                     return;
                 }
 
@@ -156,7 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         correo,
                         telefono,
                         rol,
-                        aceptaTerminos
+                        aceptaTerminos,
+                        password  // 👈 AQUÍ VA LA CONTRASEÑA
                     })
                 });
 

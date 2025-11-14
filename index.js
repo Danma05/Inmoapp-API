@@ -64,12 +64,20 @@ app.post("/usuarios", async (req, res) => {
       correo,
       telefono,
       rol,              // 'ARRENDATARIO' o 'PROPIETARIO'
-      aceptaTerminos     // true / false
+      aceptaTerminos,   // true / false
+      password          // viene del frontend
     } = req.body;
 
     const query = `
-      INSERT INTO usuarios (nombre_completo, correo, telefono, rol, acepta_terminos)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO usuarios (
+        nombre_completo,
+        correo,
+        telefono,
+        rol,
+        acepta_terminos,
+        password_hash
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
 
@@ -78,7 +86,8 @@ app.post("/usuarios", async (req, res) => {
       correo,
       telefono,
       rol,
-      !!aceptaTerminos
+      !!aceptaTerminos,
+      password // ⚠️ por ahora texto plano; luego se cambia a hash
     ];
 
     const result = await dbQuery(query, values);
@@ -88,6 +97,7 @@ app.post("/usuarios", async (req, res) => {
     res.status(500).json({ error: "Error creando usuario" });
   }
 });
+
 
 app.post("/passport/init", async (req, res) => {
   try {
