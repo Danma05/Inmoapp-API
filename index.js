@@ -1,4 +1,4 @@
-// index.js (VERSIÓN CORREGIDA)
+// index.js (Actualización de Rutas)
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -15,14 +15,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- RUTA PRINCIPAL (HTML) ---
+// --- RUTA PRINCIPAL (HOME) ---
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// --- ¡ESTO ES LO QUE FALTABA! RUTA DEL DASHBOARD ---
+// --- RUTA DEL DASHBOARD (El dashboard original restaurado) ---
 app.get('/dashboard', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// --- NUEVA RUTA DE MENÚ EXPLORAR (La página con filtros y listado) ---
+app.get('/explorar-menu', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'explorar-menu.html'));
 });
 
 // --- RUTAS DE SALUD (SIMPLIFICADA) ---

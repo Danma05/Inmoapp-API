@@ -42,11 +42,13 @@
     display: flex; align-items: center; justify-content: center;
 }
 
-/* --- HERO SEARCH --- */
+/* --- HERO SEARCH (Dejamos los estilos base, pero no se usará el HERO en el listado) --- */
 .explorer-hero {
     position: relative; min-height: 600px; height: calc(100vh - 140px);
     display: flex; justify-content: center; align-items: center;
     overflow: hidden; width: 100%;
+    /* Estilo para que no ocupe espacio cuando no se usa (o puedes borrar el HTML si no lo quieres) */
+    /* Este estilo asume que el HERO solo se usa en index.html o como fondo en otras páginas, no en el listado */
 }
 .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
@@ -78,7 +80,7 @@
     border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 .search-bar-big input {
-    flex: 1;Ql border: none; outline: none;
+    flex: 1; border: none; outline: none;
     padding: 10px 20px; font-size: 1rem; color: var(--text-dark);
 }
 .btn-search-icon {
@@ -90,15 +92,15 @@
 .btn-search-icon:hover { background-color: #388E3C; }
 
 /* =========================================
-   NUEVO: SECCIONES DEL CONTENIDO DASHBOARD
+   SECCIONES DEL CONTENIDO DASHBOARD (Listado de Propiedades)
    ========================================= */
 .dashboard-body {
-    padding: 60px 20px;
+    padding: 30px 20px 60px; /* Ajustamos padding superior */
     max-width: var(--container-width);
     margin: 0 auto;
 }
 
-.dashboard-section { margin-bottom: 60px; }
+.dashboard-section { margin-bottom: 40px; }
 
 .section-header-row {
     display: flex; justify-content: space-between;
@@ -114,7 +116,7 @@
 }
 .btn-outline-red-sm:hover { background-color: var(--brand-red); color: white; }
 
-/* --- Cards Grandes (Destacadas) --- */
+/* --- Tarjetas Grandes (Destacadas - Eliminadas en la nueva versión) --- */
 .grid-2-cols {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px;
 }
@@ -134,7 +136,7 @@
 .location { color: #6B7280; font-size: 0.9rem; margin-bottom: 10px; }
 .specs { font-size: 0.9rem; color: #4B5563; border-top: 1px solid #F3F4F6; padding-top: 10px; }
 
-/* --- Cards Pequeñas (Recientes) --- */
+/* --- Tarjetas Pequeñas (Recientes - Ahora se usa prop-card-list) --- */
 .grid-4-cols {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;
 }
@@ -162,7 +164,177 @@
 
 .card-info-sm { padding: 15px; }
 .prop-card-sm h3 { font-size: 1rem; color: #111827; margin: 0 0 5px; }
-/* Reutilizamos .price-red y .location definidos arriba */
+
+
+/* =========================================
+   NUEVOS ESTILOS PARA LISTADO EXPLORAR
+   ========================================= */
+
+/* BARRA DE FILTROS - Estilo de la Captura */
+.filter-bar-full {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    background-color: var(--bg-white);
+    padding: 20px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.filter-group-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px; /* Para que no se colapse */
+    flex-grow: 1;
+}
+
+.filter-group-item label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 5px;
+}
+
+.filter-group-item select {
+    padding: 8px 10px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #1F2937;
+    background-color: white;
+}
+
+.btn-filter-action, .btn-save-search-action {
+    border: 1px solid var(--brand-red);
+    color: var(--brand-red);
+    padding: 9px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    margin-top: 10px; 
+}
+.btn-save-search-action {
+    background-color: var(--brand-red);
+    color: white;
+    margin-left: 10px;
+    border: 1px solid var(--brand-red);
+}
+.btn-save-search-action:hover { background-color: var(--primary-dark); }
+.btn-filter-action:hover { background-color: #FEF2F2; }
+
+
+/* ENCABEZADO Y ORDENAMIENTO */
+.listing-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.sort-controls-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #6B7280;
+}
+
+.sort-select {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.sort-select select {
+    border: 1px solid #D1D5DB;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* GRID DE 3 COLUMNAS */
+.grid-3-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 25px;
+}
+
+/* TARJETA DE PROPIEDAD EN LISTADO */
+.prop-card-list {
+    background: white; 
+    border: 1px solid #E5E7EB;
+    border-radius: 12px; 
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.prop-card-list:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+}
+
+.card-img-list { 
+    height: 180px; 
+    position: relative;
+}
+.card-img-list img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.card-info-list { 
+    padding: 15px; 
+}
+
+.card-info-list h3 { 
+    font-size: 1rem; 
+    color: #111827; 
+    margin: 0 0 4px; 
+    font-weight: 600;
+}
+
+.location-list {
+    color: #6B7280; 
+    font-size: 0.85rem; 
+    margin: 0 0 10px 0; /* Ajustamos margen inferior */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.specs-list {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #4B5563;
+    padding-top: 10px;
+    border-top: 1px solid #F3F4F6;
+}
+
+.specs-list span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.new-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--brand-red);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 5;
+}
+
 
 /* --- FOOTER --- */
 .dashboard-footer {
@@ -188,4 +360,242 @@
 .footer-bottom-dark {
     border-top: 1px solid #1F2937; padding-top: 20px; text-align: center;
     color: #6B7280; font-size: 0.85rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .filter-bar-full {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-group-item {
+        min-width: 100%;
+    }
+    .filter-group-item:last-child {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .btn-filter-action, .btn-save-search-action {
+        flex: 1;
+        margin-left: 0 !important;
+    }
+}
+@media (max-width: 600px) {
+    .listing-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .sort-controls-box {
+        align-self: flex-end;
+    }
+}
+
+/* =========================================
+   NUEVOS ESTILOS PARA LISTADO EXPLORAR
+   ========================================= */
+
+/* BARRA DE FILTROS - Estilo de la Captura */
+.filter-bar-full {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    background-color: var(--bg-white);
+    padding: 20px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.filter-group-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px; 
+    flex-grow: 1;
+}
+
+.filter-group-item:last-child {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.filter-group-item label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 5px;
+}
+
+.filter-group-item select {
+    padding: 8px 10px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #1F2937;
+    background-color: white;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%236B7280' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+.filter-actions {
+    min-width: 250px;
+}
+
+.btn-filter-action, .btn-save-search-action {
+    border: 1px solid var(--brand-red);
+    color: var(--brand-red);
+    padding: 9px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    margin-top: 10px; 
+    flex: 1;
+}
+.btn-save-search-action {
+    background-color: var(--brand-red);
+    color: white;
+    border: 1px solid var(--brand-red);
+}
+.btn-save-search-action:hover { background-color: var(--primary-dark); }
+.btn-filter-action:hover { background-color: #FEF2F2; }
+
+
+/* ENCABEZADO Y ORDENAMIENTO */
+.listing-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.sort-controls-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #6B7280;
+}
+
+.sort-select {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.sort-select select {
+    border: 1px solid #D1D5DB;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* GRID DE 3 COLUMNAS */
+.grid-3-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 25px;
+}
+
+/* TARJETA DE PROPIEDAD EN LISTADO */
+.prop-card-list {
+    background: white; 
+    border: 1px solid #E5E7EB;
+    border-radius: 12px; 
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.prop-card-list:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+}
+
+.card-img-list { 
+    height: 180px; 
+    position: relative;
+}
+.card-img-list img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.card-info-list { 
+    padding: 15px; 
+}
+
+.card-info-list h3 { 
+    font-size: 1rem; 
+    color: #111827; 
+    margin: 0 0 4px; 
+    font-weight: 600;
+}
+
+.location-list {
+    color: #6B7280; 
+    font-size: 0.85rem; 
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.specs-list {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #4B5563;
+    padding-top: 10px;
+    border-top: 1px solid #F3F4F6;
+}
+
+.specs-list span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.new-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--brand-red);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .filter-bar-full {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-group-item {
+        min-width: 100%;
+    }
+    .filter-group-item:last-child {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+@media (max-width: 600px) {
+    .listing-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .sort-controls-box {
+        align-self: flex-end;
+    }
 }

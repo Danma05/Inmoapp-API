@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InmoApp - Listado de Propiedades</title>
+    
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/dashboard" class="brand">
+                <div class="logo-box">IA</div>
+                <span class="logo-text">InmoApp</span>
+            </a>
+            <nav class="top-nav">
+                <a href="/explorar-menu" class="active">Explorar</a> 
+                <a href="#">Favoritos</a>
+                <a href="#">Visitas</a>
+                <a href="#">Postulaciones</a>
+                <a href="#">Mensajes</a>
+            </nav>
+            <div class="user-controls">
+                <button class="icon-action"><i class="fa-regular fa-heart"></i></button>
+                <button class="icon-action notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">2</span>
+                </button>
+                <div class="icon-action profile">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body" style="padding-top: 30px;">
+        
+        <section class="filter-bar-full">
+            <div class="filter-group-item">
+                <label>Precio Mínimo</label>
+                <select><option>Cualquiera</option><option>$50.000</option></select>
+            </div>
+            <div class="filter-group-item">
+                <label>Precio Máximo</label>
+                <select><option>Cualquiera</option><option>$1.000.000</option></select>
+            </div>
+            <div class="filter-group-item">
+                <label>Dormitorios</label>
+                <select><option>Cualquiera</option><option>2</option></select>
+            </div>
+            <div class="filter-group-item">
+                <label>Baños</label>
+                <select><option>Cualquiera</option><option>1</option></select>
+            </div>
+            <div class="filter-group-item">
+                <label>Operación</label>
+                <select><option>Comprar</option></select>
+            </div>
+            <div class="filter-group-item">
+                <label>Tipo Inmueble</label>
+                <select><option>Cualquiera</option><option>Apartamento</option></select>
+            </div>
+            <div class="filter-group-item filter-actions">
+                <button class="btn-filter-action"><i class="fa-solid fa-filter"></i> Filtros</button>
+                <button class="btn-save-search-action">Guardar Búsqueda</button>
+            </div>
+        </section>
+
+        <section class="listing-header-row">
+            <h2 class="dash-title">Listado de Propiedades</h2>
+            <div class="sort-controls-box">
+                <span>Resultados: 8 Propiedades</span>
+                <div class="sort-select">
+                    <label>Ordenar por</label>
+                    <select><option>Más Reciente</option></select>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-section listing-grid">
+            <div class="grid-3-cols">
+                <article class="prop-card-list">
+                    <div class="card-img-list">
+                        <span class="new-tag">Nuevos!</span>
+                        <img src="https://images.unsplash.com/photo-1549419192-333d1c255e4e?auto=format&fit=crop&w=400" alt="Apartamento Moderno">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-list">
+                        <div class="price-red">$575.000</div>
+                        <h3>4500 Rue Fulton #201</h3>
+                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
+                        <div class="specs-list">
+                            <span><i class="fa-solid fa-bed"></i> 2</span>
+                            <span><i class="fa-solid fa-bath"></i> 2</span>
+                            <span><i class="fa-solid fa-maximize"></i> 1250 sqft</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="prop-card-list">
+                    <div class="card-img-list">
+                        <span class="new-tag">Nuevos!</span>
+                        <img src="https://images.unsplash.com/photo-1550541748-038c1143c72b?auto=format&fit=crop&w=400" alt="Edificio de Lujo">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-list">
+                        <div class="price-red">$1.089.000</div>
+                        <h3>123 Av Park #105</h3>
+                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
+                        <div class="specs-list">
+                            <span><i class="fa-solid fa-bed"></i> 3</span>
+                            <span><i class="fa-solid fa-bath"></i> 2</span>
+                            <span><i class="fa-solid fa-maximize"></i> 2100 sqft</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="prop-card-list">
+                    <div class="card-img-list">
+                        <span class="new-tag">Nuevos!</span>
+                        <img src="https://images.unsplash.com/photo-1574362848537-0ac622830f60?auto=format&fit=crop&w=400" alt="Apartamento Pequeño">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-list">
+                        <div class="price-red">$525.000</div>
+                        <h3>33 Rue Berri #201</h3>
+                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
+                        <div class="specs-list">
+                            <span><i class="fa-solid fa-bed"></i> 2</span>
+                            <span><i class="fa-solid fa-bath"></i> 1</span>
+                            <span><i class="fa-solid fa-maximize"></i> 1100 sqft</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="prop-card-list">
+                    <div class="card-img-list">
+                        <span class="new-tag">Nuevos!</span>
+                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3825e?auto=format&fit=crop&w=400" alt="Casa Grande">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-list">
+                        <div class="price-red">$998.000</div>
+                        <h3>1277 Rue St-Mathieu #310N</h3>
+                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
+                        <div class="specs-list">
+                            <span><i class="fa-solid fa-bed"></i> 3</span>
+                            <span><i class="fa-solid fa-bath"></i> 2</span>
+                            <span><i class="fa-solid fa-maximize"></i> 1850 sqft</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="prop-card-list">
+                    <div class="card-img-list">
+                        <span class="new-tag">Nuevos!</span>
+                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400" alt="Casa Pequeña">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-list">
+                        <div class="price-red">$499.000</div>
+                        <h3>987 Rue du Domicile #315</h3>
+                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
+                        <div class="specs-list">
+                            <span><i class="fa-solid fa-bed"></i> 1</span>
+                            <span><i class="fa-solid fa-bath"></i> 1</span>
+                            <span><i class="fa-solid fa-maximize"></i> 850 sqft</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="prop-card-list">
+                    <div class="card-img-list">
+                        <span class="new-tag">Nuevos!</span>
+                        <img src="https://images.unsplash.com/photo-1627504383377-5114cc18e69d?auto=format&fit=crop&w=400" alt="Casa Moderna">
+                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="card-info-list">
+                        <div class="price-red">$599.000</div>
+                        <h3>426 Côte St-Xavier</h3>
+                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
+                        <div class="specs-list">
+                            <span><i class="fa-solid fa-bed"></i> 2</span>
+                            <span><i class="fa-solid fa-bath"></i> 2</span>
+                            <span><i class="fa-solid fa-maximize"></i> 1400 sqft</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div> 
+    
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>
