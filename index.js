@@ -59,23 +59,133 @@ app.get("/usuarios", async (_req, res) => {
 // POST usuario
 app.post("/usuarios", async (req, res) => {
   try {
-    const { nombre, correo, telefono } = req.body;
+    const {
+      nombreCompleto,
+      correo,
+      telefono,
+      rol,              // 'ARRENDATARIO' o 'PROPIETARIO'
+      aceptaTerminos     // true / false
+    } = req.body;
 
     const query = `
-      INSERT INTO usuarios (nombre, correo, telefono)
-      VALUES ($1, $2, $3)
+      INSERT INTO usuarios (nombre_completo, correo, telefono, rol, acepta_terminos)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
-    const values = [nombre, correo, telefono];
-    const result = await dbQuery(query, values);
+    const values = [
+      nombreCompleto,
+      correo,
+      telefono,
+      rol,
+      !!aceptaTerminos
+    ];
 
+    const result = await dbQuery(query, values);
     res.status(201).json(result.rows[0]);
   } catch (e) {
     console.error("❌ Error POST /usuarios:", e);
     res.status(500).json({ error: "Error creando usuario" });
   }
 });
+
+app.post("/passport/init", async (req, res) => {
+  try {
+    const { usuarioId } = req.body;
+
+    // Crea el pasaporte solo si no existe
+    const query = `
+      INSERT INTO pasaportes_arrendatario (usuario_id)
+      VALUES ($1)
+      ON CONFLICT (usuario_id) DO UPDATE
+      SET actualizado_en = NOW()
+      RETURNING *;
+    `;
+
+    const result = await dbQuery(query, [usuarioId]);
+    res.status(201).json(result.rows[0]);
+  } catch (e) {
+    console.error("❌ Error POST /passport/init:", e);
+    res.status(500).json({ error: "Error inicializando pasaporte" });
+  }
+});
+
+app.post("/passport/document", async (req, res) => {
+  try {
+    const {
+      usuarioId,
+      tipoDocumento,   // 'IDENTIDAD' | 'SOLVENCIA' | 'INGRESOS' | 'OTROS'
+      nombreArchivo,
+      rutaArchivo,
+      mimeType,
+      tamanoBytes
+    } = req.body;
+
+    // 1) Guardar registro del documento
+    const insertDocQuery = `
+      INSERT INTO documentos_arrendatario (
+        usuario_id, tipo_documento, nombre_archivo, ruta_archivo, mime_type, tamano_bytes
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+
+    const docResult = await dbQuery(insertDocQuery, [
+      usuarioId,
+      tipoDocumento,
+      nombreArchivo,
+      rutaArchivo,
+      mimeType,
+      tamanoBytes
+    ]);
+
+    // 2) Actualizar flags del pasaporte según tipoDocumento
+    let column;
+    if (tipoDocumento === "IDENTIDAD") column = "tiene_doc_identidad";
+    if (tipoDocumento === "SOLVENCIA") column = "tiene_solvencia";
+    if (tipoDocumento === "INGRESOS") column = "tiene_ingresos";
+    if (tipoDocumento === "OTROS") column = "tiene_otros";
+
+    const updateFlagsQuery = `
+      UPDATE pasaportes_arrendatario
+      SET ${column} = TRUE,
+          actualizado_en = NOW()
+      WHERE usuario_id = $1
+      RETURNING tiene_doc_identidad, tiene_solvencia, tiene_ingresos, tiene_otros;
+    `;
+    const passportFlags = await dbQuery(updateFlagsQuery, [usuarioId]);
+    const flags = passportFlags.rows[0];
+
+    // 3) Recalcular progreso (25% por documento)
+    const countTrue = [
+      flags.tiene_doc_identidad,
+      flags.tiene_solvencia,
+      flags.tiene_ingresos,
+      flags.tiene_otros
+    ].filter(Boolean).length;
+
+    const progreso = countTrue * 25;
+
+    const updateProgressQuery = `
+      UPDATE pasaportes_arrendatario
+      SET progreso_porcentaje = $1,
+          completado = ($1 = 100),
+          actualizado_en = NOW()
+      WHERE usuario_id = $2
+      RETURNING *;
+    `;
+    const passportUpdated = await dbQuery(updateProgressQuery, [progreso, usuarioId]);
+
+    res.status(201).json({
+      documento: docResult.rows[0],
+      pasaporte: passportUpdated.rows[0]
+    });
+  } catch (e) {
+    console.error("❌ Error POST /passport/document:", e);
+    res.status(500).json({ error: "Error registrando documento" });
+  }
+});
+
 
 // ------------------------------------------------------------
 // SERVER

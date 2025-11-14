@@ -3,6 +3,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Frontend cargado y listo 🚀');
 
+    // --- ESTADO GLOBAL ---
+    let selectedRole = null;     // 'ARRENDATARIO' o 'PROPIETARIO'
+    let currentUserId = null;    // id devuelto por /usuarios
+
     // --- REFERENCIAS A ELEMENTOS ---
     const loginModal = document.getElementById('login-modal');
     const registerSelectionModal = document.getElementById('register-modal');
@@ -11,17 +15,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- UTILIDADES MODALES ---
     function openModal(modal) {
-        if(modal) modal.classList.remove('hidden');
+        if (modal) modal.classList.remove('hidden');
     }
     function closeModal(modal) {
-        if(modal) modal.classList.add('hidden');
+        if (modal) modal.classList.add('hidden');
     }
     function closeAllModals() {
-        [loginModal, registerSelectionModal, registerFormModal, passportModal].forEach(m => closeModal(m));
+        [loginModal, registerSelectionModal, registerFormModal, passportModal]
+            .forEach(m => m && closeModal(m));
     }
 
-    // --- 1. GESTIÓN DE APERTURA DE MODALES ---
-    
+    // ======================================================
+    // 1. GESTIÓN DE APERTURA DE MODALES
+    // ======================================================
+
     // Login
     document.querySelectorAll('.open-login-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -31,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     const closeLoginBtn = document.getElementById('close-modal');
-    if(closeLoginBtn) closeLoginBtn.addEventListener('click', () => closeModal(loginModal));
+    if (closeLoginBtn) closeLoginBtn.addEventListener('click', () => closeModal(loginModal));
 
-    // Registro Selección
+    // Registro Selección (abrir modal de opciones)
     document.querySelectorAll('.open-register-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -42,35 +49,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     const closeRegSelBtn = document.getElementById('close-register');
-    if(closeRegSelBtn) closeRegSelBtn.addEventListener('click', () => closeModal(registerSelectionModal));
+    if (closeRegSelBtn) closeRegSelBtn.addEventListener('click', () => closeModal(registerSelectionModal));
 
+    // ======================================================
+    // 2. FLUJO DE NAVEGACIÓN ENTRE MODALES
+    // ======================================================
 
-    // --- 2. FLUJO DE NAVEGACIÓN ---
+    // Selección de rol en el modal de registro (Arrendar / Publicar)
+    const optionCards = document.querySelectorAll('#register-modal .option-card');
+    optionCards.forEach(card => {
+        const btn = card.querySelector('.btn-blue-select');
+        const titleEl = card.querySelector('h3');
+        if (!btn || !titleEl) return;
 
-    // De Selección a Formulario (Opción Arrendar)
-    const selectRentBtn = document.querySelector('#register-modal .btn-blue-select'); 
-    if (selectRentBtn) {
-        selectRentBtn.addEventListener('click', (e) => {
+        const titleText = (titleEl.textContent || '').toUpperCase();
+
+        // Deducción del rol según el texto de la tarjeta
+        let role = 'ARRENDATARIO';
+        if (titleText.includes('PUBLICAR')) {
+            role = 'PROPIETARIO';
+        }
+
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
+            selectedRole = role;
+            console.log('Rol seleccionado:', selectedRole);
             closeModal(registerSelectionModal);
             openModal(registerFormModal);
         });
-    }
+    });
 
     // De Formulario (Atrás) a Selección
     const backToSelectionBtn = document.getElementById('back-to-selection');
-    if(backToSelectionBtn) {
+    if (backToSelectionBtn) {
         backToSelectionBtn.addEventListener('click', () => {
             closeModal(registerFormModal);
             openModal(registerSelectionModal);
         });
     }
     const closeRegFormBtn = document.getElementById('close-register-form');
-    if(closeRegFormBtn) closeRegFormBtn.addEventListener('click', () => closeModal(registerFormModal));
+    if (closeRegFormBtn) closeRegFormBtn.addEventListener('click', () => closeModal(registerFormModal));
 
-    // Link "Inicia sesión aquí"
+    // Link "Inicia sesión aquí" (en el modal de registro)
     const openLoginLink = document.querySelector('.open-login-link');
-    if(openLoginLink) {
+    if (openLoginLink) {
         openLoginLink.addEventListener('click', (e) => {
             e.preventDefault();
             closeAllModals();
@@ -78,42 +100,112 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. SUBMITS Y REDIRECCIONES ---
+    // ======================================================
+    // 3. SUBMITS: LOGIN Y REGISTRO (GUARDAR EN BD)
+    // ======================================================
 
-    // Submit LOGIN -> Ir al Dashboard
+    // LOGIN → por ahora solo redirige (login real se hará después)
     const loginForm = document.querySelector('#login-modal form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            // Aquí en el futuro se llamará a /login
             window.location.href = '/dashboard';
         });
     }
 
-    // Submit REGISTRO -> Ir a PASAPORTE
+    // REGISTRO → llamar a /usuarios y /passport/init
     const registerForm = document.querySelector('#register-form-modal form');
     if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            closeModal(registerFormModal);
-            openModal(passportModal);
+
+            try {
+                // TOMAR DATOS DEL FORMULARIO SEGÚN PLACEHOLDERS
+                const nombreInput = registerForm.querySelector('input[placeholder="Juan Pérez"]');
+                const correoInput = registerForm.querySelector('input[placeholder="tucorreo@ejemplo.com"]');
+                const telInput = registerForm.querySelector('input[placeholder="+57 300 123 4567"]');
+                const termsCheckbox = registerForm.querySelector('#terms');
+
+                const nombreCompleto = nombreInput?.value.trim() || '';
+                const correo = correoInput?.value.trim() || '';
+                const telefono = telInput?.value.trim() || '';
+                const aceptaTerminos = !!(termsCheckbox && termsCheckbox.checked);
+
+                const rol = selectedRole || 'ARRENDATARIO';
+
+                if (!nombreCompleto || !correo) {
+                    alert('Por favor completa al menos nombre y correo.');
+                    return;
+                }
+
+                if (!aceptaTerminos) {
+                    alert('Debes aceptar los términos y condiciones.');
+                    return;
+                }
+
+                console.log('Enviando registro a /usuarios ...');
+
+                const res = await fetch('/usuarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nombreCompleto,
+                        correo,
+                        telefono,
+                        rol,
+                        aceptaTerminos
+                    })
+                });
+
+                if (!res.ok) {
+                    console.error('Error en /usuarios', res.status);
+                    alert('No se pudo registrar el usuario. Inténtalo más tarde.');
+                    return;
+                }
+
+                const user = await res.json();
+                console.log('Usuario creado:', user);
+                currentUserId = user.id;
+
+                // Si es arrendatario, inicializar pasaporte
+                if (rol === 'ARRENDATARIO' && currentUserId) {
+                    console.log('Inicializando pasaporte para usuario:', currentUserId);
+                    await fetch('/passport/init', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ usuarioId: currentUserId })
+                    });
+                }
+
+                closeModal(registerFormModal);
+                openModal(passportModal);
+
+            } catch (err) {
+                console.error('Error en submit de registro:', err);
+                alert('Error inesperado al registrar. Revisa la consola.');
+            }
         });
     }
 
-    // --- 4. LÓGICA DE UPLOAD Y BARRA DE PROGRESO ---
-    
-    const docItems = document.querySelectorAll('#passport-modal .doc-item');
+    // ======================================================
+    // 4. LÓGICA DE UPLOAD Y BARRA DE PROGRESO + GUARDAR EN BD
+    // ======================================================
+
     const progressBar = document.getElementById('progress-bar-fill');
     const progressText = document.getElementById('progress-text');
     const btnFinishPassport = document.getElementById('btn-finish-passport');
-    const fileInputs = document.querySelectorAll('#passport-modal .file-input'); // Seleccionamos todos los inputs
+    const fileInputs = document.querySelectorAll('#passport-modal .file-input'); // inputs de archivo
 
-    let uploadedCount = 0;
     const totalDocs = fileInputs.length; // 4
 
-    // Función para recalcular el progreso
-    function updateProgress() {
-        // Contamos cuántos inputs tienen al menos 1 archivo
-        uploadedCount = 0;
+    // Recalcular el progreso visual en el modal
+    function updateProgressVisual() {
+        let uploadedCount = 0;
         fileInputs.forEach(input => {
             if (input.files.length > 0) {
                 uploadedCount++;
@@ -121,12 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const percentage = Math.round((uploadedCount / totalDocs) * 100);
-        
-        // Actualizar Barra y Texto
-        if(progressBar) progressBar.style.width = `${percentage}%`;
-        if(progressText) progressText.textContent = `${percentage}%`;
 
-        // Activar botón "Continuar" si se ha subido al menos 1 documento
+        if (progressBar) progressBar.style.width = `${percentage}%`;
+        if (progressText) progressText.textContent = `${percentage}%`;
+
         if (percentage > 0 && btnFinishPassport) {
             btnFinishPassport.classList.remove('btn-gray-disabled');
             btnFinishPassport.classList.add('btn-finish-active');
@@ -134,50 +224,100 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Asignar el listener a CADA input de archivo
+    // Determinar tipoDocumento según el id del input
+    function getTipoDocumentoFromInputId(inputId) {
+        if (inputId === 'file-id') return 'IDENTIDAD';
+        if (inputId === 'file-solvency') return 'SOLVENCIA';
+        if (inputId === 'file-income') return 'INGRESOS';
+        if (inputId === 'file-others') return 'OTROS';
+        return 'OTROS';
+    }
+
+    // Listener de cambio en cada input de archivo
     fileInputs.forEach(input => {
-        input.addEventListener('change', () => {
+        input.addEventListener('change', async () => {
             const item = input.closest('.doc-item');
             if (!item) return;
-            
+
             const btn = item.querySelector('.btn-upload');
             const icon = item.querySelector('.doc-icon');
 
             if (input.files.length > 0) {
-                // Archivo seleccionado
+                const file = input.files[0];
+
+                // UI local
                 icon.innerHTML = '<i class="fa-solid fa-check"></i>';
                 icon.classList.add('success');
                 btn.textContent = "Cambiado";
                 btn.classList.add('uploaded');
+
+                updateProgressVisual();
+
+                // GUARDAR METADATOS EN LA BD
+                if (!currentUserId) {
+                    console.warn('No hay usuario actual, no se puede registrar documento en BD.');
+                    return;
+                }
+
+                const tipoDocumento = getTipoDocumentoFromInputId(input.id);
+                const nombreArchivo = file.name;
+                const rutaArchivo = `/uploads/${file.name}`; // por ahora simbólica
+                const mimeType = file.type;
+                const tamanoBytes = file.size;
+
+                try {
+                    console.log(`Registrando documento ${tipoDocumento} en /passport/document ...`);
+                    const res = await fetch('/passport/document', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            usuarioId: currentUserId,
+                            tipoDocumento,
+                            nombreArchivo,
+                            rutaArchivo,
+                            mimeType,
+                            tamanoBytes
+                        })
+                    });
+
+                    if (!res.ok) {
+                        console.error('Error al registrar documento', res.status);
+                        // opcional: revertir icono o mostrar alerta
+                    } else {
+                        const data = await res.json();
+                        console.log('Documento registrado y pasaporte actualizado:', data);
+                    }
+                } catch (err) {
+                    console.error('Error en fetch /passport/document:', err);
+                }
+
             } else {
-                // Esto es si el usuario abre y cancela (opcional)
-                icon.innerHTML = '<i class="fa-regular fa-address-card"></i>'; // O el icono original
+                // Si el usuario abrió y canceló, opcionalmente restauramos estado visual
                 icon.classList.remove('success');
                 btn.textContent = "Subir";
                 btn.classList.remove('uploaded');
+                updateProgressVisual();
             }
-            
-            // Recalcular el progreso CADA VEZ que un input cambie
-            updateProgress();
         });
     });
 
-    // Acción Final: Continuar -> Ir al Dashboard
+    // Acción Final: Continuar / Finalizar → ir al Dashboard
     if (btnFinishPassport) {
         btnFinishPassport.addEventListener('click', () => {
-            // Solo redirige si el botón está activo (ha subido al menos 1)
             if (btnFinishPassport.classList.contains('btn-finish-active')) {
-                console.log("Pasaporte completado. Redirigiendo al Dashboard...");
-                window.location.href = '/dashboard';
+                console.log("Pasaporte completado o en progreso. Redirigiendo al Dashboard...");
             } else {
-                // Opcional: puedes hacer que siempre redirija, incluso si no subió nada
-                console.log("Saltando pasaporte. Redirigiendo al Dashboard...");
-                window.location.href = '/dashboard';
+                console.log("Sin documentos, pero redirigiendo al Dashboard...");
             }
+            window.location.href = '/dashboard';
         });
     }
 
-    // Cierre Global
+    // ======================================================
+    // 5. CIERRE GLOBAL DE MODALES AL CLIC FUERA
+    // ======================================================
     window.addEventListener('click', (e) => {
         if (e.target === loginModal) closeModal(loginModal);
         if (e.target === registerSelectionModal) closeModal(registerSelectionModal);
