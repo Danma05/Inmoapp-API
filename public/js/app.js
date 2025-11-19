@@ -184,4 +184,146 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === registerFormModal) closeModal(registerFormModal);
         if (e.target === passportModal) closeModal(passportModal);
     });
+
+    // ======================================================
+    // 6. LÓGICA DE FAVORITOS Y COMPARACIÓN
+    // ======================================================
+    
+    const checkboxes = document.querySelectorAll('.select-check');
+    const compareBar = document.getElementById('compare-bar');
+    const selectedCountSpan = document.getElementById('selected-count');
+    const btnCompareAction = document.getElementById('btn-compare-action');
+
+    if (checkboxes.length > 0 && compareBar) {
+        checkboxes.forEach(chk => {
+            chk.addEventListener('change', () => {
+                // 1. Contar cuántos hay seleccionados
+                const checkedBoxes = document.querySelectorAll('.select-check:checked');
+                const count = checkedBoxes.length;
+
+                // 2. Validar máximo 4
+                if (count > 4) {
+                    alert('Solo puedes comparar hasta 4 propiedades.');
+                    chk.checked = false; // Desmarcar el último
+                    return;
+                }
+
+                // 3. Actualizar texto
+                if (selectedCountSpan) selectedCountSpan.textContent = count;
+
+                // 4. Mostrar/Ocultar barra
+                if (count >= 2) {
+                    compareBar.classList.add('active');
+                } else {
+                    compareBar.classList.remove('active');
+                }
+            });
+        });
+
+       // ... (dentro de la lógica de favoritos que agregamos antes)
+
+        if(btnCompareAction) {
+            btnCompareAction.addEventListener('click', () => {
+                // 1. Referencia al nuevo modal
+                const compareModal = document.getElementById('compare-modal');
+                
+                // 2. Abrirlo
+                if (compareModal) {
+                    compareModal.classList.remove('hidden');
+                }
+            });
+        }
+
+        // 3. Lógica para cerrar el modal de comparación
+        const closeCompareBtn = document.getElementById('close-compare');
+        const compareModal = document.getElementById('compare-modal');
+
+        if (closeCompareBtn && compareModal) {
+            // Cerrar con la X
+            closeCompareBtn.addEventListener('click', () => {
+                compareModal.classList.add('hidden');
+            });
+
+            // Cerrar haciendo clic fuera (overlay)
+            window.addEventListener('click', (e) => {
+                if (e.target === compareModal) {
+                    compareModal.classList.add('hidden');
+                }
+            });
+        }
+    
+        // ======================================================
+    // 7. SISTEMA DE MENSAJERÍA (UI)
+    // ======================================================
+    
+    // Referencias globales para que las funciones las vean
+    const emptyState = document.getElementById('empty-state');
+    const chatInterface = document.getElementById('chat-interface');
+    
+    // Función global para cargar chat (llamada desde el HTML onclick)
+    window.loadChat = function(element) {
+        // 1. Gestión de clases visuales (activo/inactivo)
+        document.querySelectorAll('.msg-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        element.classList.remove('unread'); // Marcar como leído
+
+        // 2. Obtener datos del elemento clicado
+        const name = element.getAttribute('data-name');
+        const prop = element.getAttribute('data-prop');
+        const initials = element.getAttribute('data-initials');
+
+        // 3. Actualizar la cabecera del chat
+        document.getElementById('chat-header-name').textContent = name;
+        document.getElementById('chat-header-prop').textContent = prop;
+        document.getElementById('chat-header-avatar').textContent = initials;
+
+        // 4. Cambiar vistas
+        if(emptyState) emptyState.classList.add('hidden');
+        if(chatInterface) chatInterface.classList.remove('hidden');
+
+        // 5. Scroll al final
+        const chatBody = document.getElementById('chat-body-scroll');
+        chatBody.scrollTop = chatBody.scrollHeight;
+    };
+
+    // Lógica de envío de mensaje
+    const btnSend = document.getElementById('btn-send-message');
+    const inputMsg = document.getElementById('message-input');
+    const chatBody = document.getElementById('chat-body-scroll');
+
+    if (btnSend && inputMsg && chatBody) {
+        
+        // Función interna para agregar burbuja
+        const sendMessage = () => {
+            const text = inputMsg.value.trim();
+            if (text === "") return;
+
+            // Crear HTML de la burbuja
+            const now = new Date();
+            const timeString = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            const bubbleHTML = `
+                <div class="message-bubble sent">
+                    ${text}
+                    <span class="msg-time-stamp">${timeString}</span>
+                </div>
+            `;
+
+            // Insertar y limpiar
+            chatBody.insertAdjacentHTML('beforeend', bubbleHTML);
+            inputMsg.value = "";
+            
+            // Scroll automático al fondo
+            chatBody.scrollTop = chatBody.scrollHeight;
+        };
+
+        // Evento Click Botón
+        btnSend.addEventListener('click', sendMessage);
+
+        // Evento Enter en Input
+        inputMsg.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+    }
 });

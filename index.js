@@ -1,21 +1,25 @@
-// index.js – API completa con frontend + pg + reintentos + healthcheck
+// index.js - MODO MOCK (SIN BASE DE DATOS) + RUTA NUEVA
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import pool from "./db.js";        // usa tu versión avanzada
-import { dbQuery } from "./dbQuery.js"; // usa tu versión avanzada
+
+// --- BASE DE DATOS DESHABILITADA ---
+// import pool from "./db.js";
+// import { dbQuery } from "./dbQuery.js";
 
 const app = express();
 app.use(express.json());
 
 // ------------------------------------------------------------
-// STATIC / FRONTEND
+// CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y RUTAS DE PÁGINAS
 // ------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Servir carpeta public (CSS, JS, Imágenes)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Rutas de Pantallas
 app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -24,86 +28,112 @@ app.get("/dashboard", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
+// --- NUEVA RUTA PARA EL MENÚ DE EXPLORACIÓN ---
+app.get("/explorar-menu", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "explorar-menu.html"));
+});
+
+// RUTA FAVORITOS
+app.get("/favoritos", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "favoritos.html"));
+});
+
+//ruta visitas
+app.get("/visitas", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "visitas.html"));
+});
+
+// ruta postulaciones
+app.get("/postulaciones", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "postulaciones.html"));
+});
+
+//  ruta mensajes
+app.get("/mensajes", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "mensajes.html"));
+});
+
 // ------------------------------------------------------------
-// HEALTHCHECKS
+// API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------
+
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "InmoApp API", mode: "full" });
+  res.json({ ok: true, mode: "mock" });
 });
 
-app.get("/health/db", async (_req, res) => {
-  try {
-    const result = await pool.query("SELECT NOW() now");
-    res.json({ ok: true, db: "connected", now: result.rows[0].now });
-  } catch (e) {
-    console.error("❌ Error en health/db:", e);
-    res.status(500).json({ ok: false, error: e.message });
-  }
+app.get("/health/db", (_req, res) => {
+  res.json({ ok: true, db: "mocked_connected", now: new Date().toISOString() });
+});
+
+// GET /usuarios (Simulado)
+app.get("/usuarios", (_req, res) => {
+  res.json([
+    { id: 1, nombre_completo: "Usuario Mock", correo: "test@mock.com" }
+  ]);
+});
+
+// POST /usuarios (Simulado)
+app.post("/usuarios", (req, res) => {
+  const { nombreCompleto, correo, rol } = req.body;
+  console.log("📝 [MOCK] Creando usuario:", { nombreCompleto, correo });
+
+  setTimeout(() => {
+    res.status(201).json({
+      id: Date.now(),
+      nombre_completo: nombreCompleto,
+      correo: correo,
+      rol: rol || 'ARRENDATARIO',
+      creado_en: new Date()
+    });
+  }, 300);
+});
+
+// POST /passport/init (Simulado)
+app.post("/passport/init", (req, res) => {
+  const { usuarioId } = req.body;
+  console.log(`🛂 [MOCK] Inicializando pasaporte para usuario ${usuarioId}`);
+  
+  res.status(201).json({
+    id: 100,
+    usuario_id: usuarioId,
+    progreso_porcentaje: 0,
+    completado: false
+  });
+});
+
+// POST /passport/document (Simulado)
+app.post("/passport/document", (req, res) => {
+  const { usuarioId, tipoDocumento } = req.body;
+  console.log(`📄 [MOCK] Documento subido: ${tipoDocumento} (Usuario: ${usuarioId})`);
+
+  res.status(201).json({
+    documento: {
+      id: Math.floor(Math.random() * 1000),
+      nombre_archivo: "archivo_mock.pdf",
+      tipo_documento: tipoDocumento
+    },
+    pasaporte: {
+      usuario_id: usuarioId,
+      tiene_doc_identidad: tipoDocumento === 'IDENTIDAD',
+      tiene_solvencia: tipoDocumento === 'SOLVENCIA',
+      tiene_ingresos: tipoDocumento === 'INGRESOS',
+      tiene_otros: tipoDocumento === 'OTROS',
+      progreso_porcentaje: 25,
+      actualizado_en: new Date()
+    }
+  });
 });
 
 // ------------------------------------------------------------
-// API: USUARIOS
-// ------------------------------------------------------------
-
-// GET usuarios
-app.get("/usuarios", async (_req, res) => {
-  try {
-    const result = await dbQuery("SELECT * FROM usuarios ORDER BY id DESC");
-    res.json(result.rows);
-  } catch (e) {
-    console.error("❌ Error GET /usuarios:", e);
-    res.status(500).json({ error: "Error obteniendo usuarios" });
-  }
-});
-
-// POST usuario
-app.post("/usuarios", async (req, res) => {
-  try {
-    const { nombre, correo, telefono } = req.body;
-
-    const query = `
-      INSERT INTO usuarios (nombre, correo, telefono)
-      VALUES ($1, $2, $3)
-      RETURNING *;
-    `;
-
-    const values = [nombre, correo, telefono];
-    const result = await dbQuery(query, values);
-
-    res.status(201).json(result.rows[0]);
-  } catch (e) {
-    console.error("❌ Error POST /usuarios:", e);
-    res.status(500).json({ error: "Error creando usuario" });
-  }
-});
-
-// ------------------------------------------------------------
-// SERVER
+// SERVIDOR
 // ------------------------------------------------------------
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-  console.log(`⚡ InmoApp API corriendo en puerto ${PORT}`);
+  console.log(`\n🚀 Servidor MOCK corriendo en http://localhost:${PORT}`);
+  console.log("⚠️  NO hay conexión a base de datos real. Todo es simulado.\n");
 });
 
-// ------------------------------------------------------------
-// SHUTDOWN ELEGANTE
-// ------------------------------------------------------------
-async function shutdown(signal) {
-  console.log(`\n⛔ ${signal} recibido. Cerrando servidor...`);
-
-  server.close(async () => {
-    try {
-      console.log("⏳ Cerrando pool PostgreSQL...");
-      await pool.end();
-      console.log("✅ Pool cerrado.");
-      process.exit(0);
-    } catch (err) {
-      console.error("❌ Error cerrando pool:", err);
-      process.exit(1);
-    }
-  });
-}
-
-["SIGINT", "SIGTERM"].forEach(sig =>
-  process.on(sig, () => shutdown(sig))
-);
+process.on("SIGINT", () => {
+  console.log("\n👋 Cerrando servidor...");
+  server.close(() => process.exit(0));
+});

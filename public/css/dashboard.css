@@ -599,3 +599,662 @@
         align-self: flex-end;
     }
 }
+
+/* --- ESTILOS PÁGINA FAVORITOS --- */
+
+/* Checkbox personalizado en la tarjeta */
+.card-img .select-check {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--brand-red); /* Color del check cuando está activo */
+    transform: scale(1.2);
+    background: white;
+    border-radius: 4px;
+}
+
+/* Barra flotante de Comparar */
+.compare-bar {
+    position: fixed;
+    bottom: -100px; /* Oculto por defecto */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--brand-dark);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 1000;
+    transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.compare-bar.active {
+    bottom: 30px; /* Aparece */
+}
+
+.compare-info {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.btn-compare {
+    background-color: var(--brand-red);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-compare:hover {
+    background-color: #B71C1C;
+}
+
+.btn-compare:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+/* --- ESTILOS MODAL COMPARAR --- */
+
+/* Hacemos el modal más ancho que el de login */
+.modal-compare {
+    max-width: 900px;
+    width: 95%;
+    padding: 30px;
+    text-align: left; /* Reseteamos alineación */
+}
+
+.compare-header-title h2 {
+    font-size: 1.3rem;
+    color: #111827;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.compare-table-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto; /* Por si es muy pequeño el dispositivo */
+    margin-bottom: 30px;
+}
+
+/* Columna de Etiquetas (Izquierda) */
+.compare-labels-col {
+    flex: 0 0 140px;
+    padding-top: 160px; /* Espacio para bajar etiquetas y alinearlas con filas */
+    font-weight: 600;
+    color: #6B7280;
+    font-size: 0.9rem;
+}
+
+/* Columnas de Propiedades */
+.compare-prop-col {
+    flex: 1;
+    min-width: 220px;
+    text-align: center;
+    background: #F9FAFB;
+    border-radius: 12px;
+    padding-bottom: 15px;
+}
+
+/* Cabecera de cada columna (Imagen + Precio) */
+.row-header {
+    padding: 10px;
+    height: 160px; /* Altura fija para alinear */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+.row-header img {
+    width: 100px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.row-header h3 {
+    font-size: 1rem;
+    color: #111827;
+    margin: 0;
+}
+.price-tag {
+    color: var(--brand-red);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+.empty-header { height: 0; padding: 0; margin-bottom: 0; display: none; } /* Oculto en col izq */
+
+/* Filas de datos */
+.row-item {
+    height: 50px; /* Altura fija para alinear filas */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrado en columnas de propiedad */
+    border-bottom: 1px solid #E5E7EB;
+    color: #374151;
+    font-size: 0.95rem;
+}
+/* Alinear a la izquierda solo la columna de etiquetas */
+.compare-labels-col .row-item {
+    justify-content: flex-start;
+    border-bottom: 1px solid transparent; /* Menos visible en etiquetas */
+}
+
+/* Estilos específicos */
+.badge-pill {
+    background: white;
+    border: 1px solid #E5E7EB;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #4B5563;
+}
+
+/* Amenidades (Lista con checks verdes) */
+.row-amenities {
+    height: auto; /* Altura variable */
+    min-height: 120px;
+    align-items: flex-start;
+    padding-top: 15px;
+    border-bottom: none;
+}
+.amenity-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    font-size: 0.85rem;
+}
+.amenity-list li {
+    margin-bottom: 6px;
+    color: #4B5563;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.amenity-list li i {
+    color: #10B981; /* Verde éxito */
+    font-size: 0.8rem;
+}
+
+/* Botón final rojo */
+.compare-footer-action {
+    text-align: right;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 20px;
+}
+.btn-compare-final {
+    background-color: #B91C1C; /* Rojo oscuro */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-compare-final:hover { background-color: #991B1B; }
+
+/* --- ESTILOS SECCIÓN VISITAS --- */
+
+/* Tabs de filtros (Todos/Pendientes/Confirmadas) */
+.visit-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #E5E7EB;
+    padding-bottom: 10px;
+}
+.visit-tab-btn {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #6B7280;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.visit-tab-btn.active {
+    background-color: #F3F4F6;
+    color: #111827;
+    font-weight: 700;
+}
+
+/* Tarjeta Horizontal de Visita */
+.visit-card {
+    display: flex;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    transition: box-shadow 0.2s;
+}
+.visit-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* Imagen izquierda */
+.visit-img {
+    width: 280px;
+    min-width: 280px;
+    object-fit: cover;
+}
+
+/* Contenido derecha */
+.visit-content {
+    flex: 1;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Encabezado de la tarjeta (Estado y Botones) */
+.visit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+/* Badges de Estado */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.status-badge.confirmed {
+    background-color: #DCFCE7; /* Fondo Verde claro */
+    color: #16A34A;            /* Texto Verde oscuro */
+    border: 1px solid #16A34A;
+}
+.status-badge.pending {
+    background-color: #FFEDD5; /* Fondo Naranja claro */
+    color: #EA580C;            /* Texto Naranja oscuro */
+    border: 1px solid #EA580C;
+}
+
+/* Título y detalles */
+.visit-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+.visit-details-list {
+    list-style: none;
+    margin-bottom: 20px;
+}
+.visit-details-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4B5563;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+.visit-details-list i {
+    color: #9CA3AF;
+    width: 20px;
+    text-align: center;
+}
+
+/* Caja del Agente */
+.agent-box {
+    background-color: #F9FAFB;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #F3F4F6;
+    margin-bottom: 15px;
+}
+.agent-label {
+    font-size: 0.8rem;
+    color: #6B7280;
+    margin-bottom: 8px;
+    display: block;
+}
+.agent-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #374151;
+}
+.agent-info i {
+    color: #9CA3AF;
+    margin-right: 8px;
+}
+.text-red { color: var(--brand-red); }
+
+/* Botones de Acción */
+.visit-actions {
+    display: flex;
+    gap: 10px;
+}
+.btn-cancel-outline {
+    border: 1px solid #EF4444;
+    color: #EF4444;
+    background: white;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+.btn-cancel-outline:hover {
+    background: #FEF2F2;
+}
+.btn-confirm-solid {
+    background: #22C55E; /* Verde */
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.btn-confirm-solid:hover { background: #16A34A; }
+
+/* Enlace azul inferior */
+.visit-link-action {
+    color: #2563EB;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 500;
+    background: #EFF6FF;
+    padding: 10px;
+    border-radius: 6px;
+    display: inline-block;
+    text-align: center;
+}
+.visit-link-action:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .visit-card { flex-direction: column; }
+    .visit-img { width: 100%; height: 200px; }
+}
+
+/* --- ESTILOS SECCIÓN POSTULACIONES --- */
+
+/* Reutilizamos .visit-card y .visit-tabs del paso anterior, 
+   pero agregamos cosas específicas para Postulaciones */
+
+.postulation-card {
+    display: flex;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    transition: box-shadow 0.2s;
+    position: relative;
+}
+.postulation-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* Layout interno más complejo */
+.post-content-grid {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Fila Superior: Info Principal y Datos Financieros */
+.post-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.post-main-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 5px 0;
+}
+.post-main-info .address {
+    color: #6B7280;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    display: block;
+}
+.post-main-info .date {
+    color: #9CA3AF;
+    font-size: 0.85rem;
+    display: flex; align-items: center; gap: 5px;
+}
+
+.post-financial-info {
+    text-align: right;
+    min-width: 180px;
+}
+.financial-item { margin-bottom: 8px; }
+.financial-label { font-size: 0.75rem; color: #9CA3AF; display: block; }
+.financial-value { font-weight: 600; color: #374151; font-size: 0.95rem; }
+.text-red { color: var(--brand-red); }
+
+/* Badges de Estado (Variaciones) */
+.status-badge.approved { background: #DCFCE7; color: #16A34A; border: 1px solid #16A34A; }
+.status-badge.review   { background: #DBEAFE; color: #2563EB; border: 1px solid #2563EB; }
+.status-badge.pending  { background: #FEF3C7; color: #D97706; border: 1px solid #D97706; }
+.status-badge.rejected { background: #FEE2E2; color: #DC2626; border: 1px solid #DC2626; }
+
+/* Barra de Progreso Documental */
+.progress-row { margin: 5px 0; }
+.progress-label-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem; color: #4B5563; margin-bottom: 5px;
+}
+.progress-track-sm {
+    height: 6px; background: #F3F4F6; border-radius: 3px; overflow: hidden;
+}
+.progress-fill-sm {
+    height: 100%; background: #111827; border-radius: 3px;
+}
+
+/* Grid de Documentos (Checklist) */
+.docs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: #F9FAFB;
+    padding: 12px;
+    border-radius: 8px;
+}
+.doc-check-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: #4B5563;
+}
+.doc-check-item i { color: #D1D5DB; } /* Gris por defecto */
+.doc-check-item.done i { color: #10B981; } /* Verde check */
+.doc-check-item.missing i { color: #F59E0B; } /* Naranja pendiente */
+
+/* Cajas de Mensaje (Footer de la tarjeta) */
+.feedback-box {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+.feedback-box.success { background: #F0FDF4; color: #166534; border-left: 4px solid #16A34A; }
+.feedback-box.info    { background: #EFF6FF; color: #1E40AF; border-left: 4px solid #2563EB; }
+.feedback-box.warning { background: #FFFBEB; color: #92400E; border-left: 4px solid #D97706; }
+.feedback-box.error   { background: #FEF2F2; color: #991B1B; border-left: 4px solid #DC2626; }
+
+/* Botón de Acción Superior Derecha */
+.action-btn-top {
+    margin-bottom: 10px;
+    display: inline-block;
+}
+.btn-view-details {
+    border: 1px solid #E5E7EB; background: white; color: #374151;
+    padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-view-details:hover { border-color: #9CA3AF; }
+
+.btn-complete-action {
+    background: var(--brand-red); color: white; border: none;
+    padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; width: 100%; justify-content: center;
+}
+.btn-complete-action:hover { background: #B91C1C; }
+
+/* --- ESTILOS DE LA VENTANA DE CHAT ACTIVA --- */
+
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    height: 100%;
+}
+
+/* 1. Cabecera del Chat */
+.chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+.chat-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.chat-avatar-sm {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--brand-red);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 0.9rem;
+}
+.chat-details h3 {
+    font-size: 1rem; margin: 0; color: #1F2937;
+}
+.chat-details span {
+    font-size: 0.8rem; color: #6B7280;
+}
+.chat-actions {
+    color: #9CA3AF;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* 2. Cuerpo de Mensajes (Scroll) */
+.chat-body {
+    flex: 1;
+    padding: 20px;
+    background-color: #F3F4F6; /* Fondo gris suave */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Burbujas de Mensaje */
+.message-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Mensaje Recibido (Blanco, alineado a la izquierda) */
+.message-bubble.received {
+    align-self: flex-start;
+    background: white;
+    color: #1F2937;
+    border-bottom-left-radius: 2px;
+}
+
+/* Mensaje Enviado (Rojo marca, alineado a la derecha) */
+.message-bubble.sent {
+    align-self: flex-end;
+    background: var(--brand-red);
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+.msg-time-stamp {
+    display: block;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    text-align: right;
+    opacity: 0.7;
+}
+
+/* 3. Barra de Escritura (Footer) */
+.chat-input-area {
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-attach {
+    background: none; border: none;
+    color: #9CA3AF; font-size: 1.3rem;
+    cursor: pointer; transition: color 0.2s;
+}
+.btn-attach:hover { color: #4B5563; }
+
+.chat-input-field {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #E5E7EB;
+    border-radius: 25px;
+    outline: none;
+    background: #F9FAFB;
+    font-size: 0.95rem;
+}
+.chat-input-field:focus {
+    background: white;
+    border-color: #D1D5DB;
+}
+
+.btn-send-msg {
+    width: 45px; height: 45px;
+    background: var(--brand-red);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+.btn-send-msg:hover { background: #B91C1C; }
+
+/* Utilidad para ocultar */
+.hidden { display: none !important; }
