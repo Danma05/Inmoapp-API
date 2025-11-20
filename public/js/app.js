@@ -1,5 +1,3 @@
-// public/js/app.js
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Frontend cargado y listo 🚀');
 
@@ -17,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(modal) modal.classList.add('hidden');
     }
     function closeAllModals() {
-        [loginModal, registerSelectionModal, registerFormModal, passportModal].forEach(m => closeModal(m));
+        [loginModal, registerSelectionModal, registerFormModal, passportModal].forEach(m => {
+            if(m) closeModal(m);
+        });
     }
 
     // --- 1. GESTIÓN DE APERTURA DE MODALES ---
@@ -101,32 +101,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. LÓGICA DE UPLOAD Y BARRA DE PROGRESO ---
     
-    const docItems = document.querySelectorAll('#passport-modal .doc-item');
     const progressBar = document.getElementById('progress-bar-fill');
     const progressText = document.getElementById('progress-text');
     const btnFinishPassport = document.getElementById('btn-finish-passport');
-    const fileInputs = document.querySelectorAll('#passport-modal .file-input'); // Seleccionamos todos los inputs
+    const fileInputs = document.querySelectorAll('#passport-modal .file-input');
 
     let uploadedCount = 0;
     const totalDocs = fileInputs.length; // 4
 
-    // Función para recalcular el progreso
     function updateProgress() {
-        // Contamos cuántos inputs tienen al menos 1 archivo
         uploadedCount = 0;
         fileInputs.forEach(input => {
-            if (input.files.length > 0) {
-                uploadedCount++;
-            }
+            if (input.files.length > 0) uploadedCount++;
         });
-
         const percentage = Math.round((uploadedCount / totalDocs) * 100);
-        
-        // Actualizar Barra y Texto
         if(progressBar) progressBar.style.width = `${percentage}%`;
         if(progressText) progressText.textContent = `${percentage}%`;
 
-        // Activar botón "Continuar" si se ha subido al menos 1 documento
         if (percentage > 0 && btnFinishPassport) {
             btnFinishPassport.classList.remove('btn-gray-disabled');
             btnFinishPassport.classList.add('btn-finish-active');
@@ -134,50 +125,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Asignar el listener a CADA input de archivo
     fileInputs.forEach(input => {
         input.addEventListener('change', () => {
             const item = input.closest('.doc-item');
             if (!item) return;
-            
             const btn = item.querySelector('.btn-upload');
             const icon = item.querySelector('.doc-icon');
 
             if (input.files.length > 0) {
-                // Archivo seleccionado
                 icon.innerHTML = '<i class="fa-solid fa-check"></i>';
                 icon.classList.add('success');
                 btn.textContent = "Cambiado";
                 btn.classList.add('uploaded');
             } else {
-                // Esto es si el usuario abre y cancela (opcional)
-                icon.innerHTML = '<i class="fa-regular fa-address-card"></i>'; // O el icono original
+                icon.innerHTML = '<i class="fa-regular fa-address-card"></i>';
                 icon.classList.remove('success');
                 btn.textContent = "Subir";
                 btn.classList.remove('uploaded');
             }
-            
-            // Recalcular el progreso CADA VEZ que un input cambie
             updateProgress();
         });
     });
 
-    // Acción Final: Continuar -> Ir al Dashboard
     if (btnFinishPassport) {
         btnFinishPassport.addEventListener('click', () => {
-            // Solo redirige si el botón está activo (ha subido al menos 1)
             if (btnFinishPassport.classList.contains('btn-finish-active')) {
-                console.log("Pasaporte completado. Redirigiendo al Dashboard...");
                 window.location.href = '/dashboard';
             } else {
-                // Opcional: puedes hacer que siempre redirija, incluso si no subió nada
-                console.log("Saltando pasaporte. Redirigiendo al Dashboard...");
                 window.location.href = '/dashboard';
             }
         });
     }
 
-    // Cierre Global
+    // Cierre Global Modales
     window.addEventListener('click', (e) => {
         if (e.target === loginModal) closeModal(loginModal);
         if (e.target === registerSelectionModal) closeModal(registerSelectionModal);
@@ -197,21 +177,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (checkboxes.length > 0 && compareBar) {
         checkboxes.forEach(chk => {
             chk.addEventListener('change', () => {
-                // 1. Contar cuántos hay seleccionados
                 const checkedBoxes = document.querySelectorAll('.select-check:checked');
                 const count = checkedBoxes.length;
-
-                // 2. Validar máximo 4
                 if (count > 4) {
                     alert('Solo puedes comparar hasta 4 propiedades.');
-                    chk.checked = false; // Desmarcar el último
+                    chk.checked = false;
                     return;
                 }
-
-                // 3. Actualizar texto
                 if (selectedCountSpan) selectedCountSpan.textContent = count;
-
-                // 4. Mostrar/Ocultar barra
                 if (count >= 2) {
                     compareBar.classList.add('active');
                 } else {
@@ -220,88 +193,123 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-       // ... (dentro de la lógica de favoritos que agregamos antes)
-
         if(btnCompareAction) {
             btnCompareAction.addEventListener('click', () => {
-                // 1. Referencia al nuevo modal
                 const compareModal = document.getElementById('compare-modal');
-                
-                // 2. Abrirlo
-                if (compareModal) {
-                    compareModal.classList.remove('hidden');
-                }
+                if (compareModal) compareModal.classList.remove('hidden');
             });
         }
 
-        // 3. Lógica para cerrar el modal de comparación
         const closeCompareBtn = document.getElementById('close-compare');
         const compareModal = document.getElementById('compare-modal');
-
         if (closeCompareBtn && compareModal) {
-            // Cerrar con la X
             closeCompareBtn.addEventListener('click', () => {
                 compareModal.classList.add('hidden');
             });
-
-            // Cerrar haciendo clic fuera (overlay)
             window.addEventListener('click', (e) => {
-                if (e.target === compareModal) {
-                    compareModal.classList.add('hidden');
-                }
+                if (e.target === compareModal) compareModal.classList.add('hidden');
             });
         }
-    
-        // ======================================================
-    // 7. SISTEMA DE MENSAJERÍA (UI)
+    }
+
+    // ======================================================
+    // 7. SISTEMA DE MENSAJERÍA (SIMULACIÓN BASE DE DATOS)
     // ======================================================
     
-    // Referencias globales para que las funciones las vean
-    const emptyState = document.getElementById('empty-state');
-    const chatInterface = document.getElementById('chat-interface');
-    
-    // Función global para cargar chat (llamada desde el HTML onclick)
-    window.loadChat = function(element) {
-        // 1. Gestión de clases visuales (activo/inactivo)
-        document.querySelectorAll('.msg-item').forEach(item => item.classList.remove('active'));
-        element.classList.add('active');
-        element.classList.remove('unread'); // Marcar como leído
-
-        // 2. Obtener datos del elemento clicado
-        const name = element.getAttribute('data-name');
-        const prop = element.getAttribute('data-prop');
-        const initials = element.getAttribute('data-initials');
-
-        // 3. Actualizar la cabecera del chat
-        document.getElementById('chat-header-name').textContent = name;
-        document.getElementById('chat-header-prop').textContent = prop;
-        document.getElementById('chat-header-avatar').textContent = initials;
-
-        // 4. Cambiar vistas
-        if(emptyState) emptyState.classList.add('hidden');
-        if(chatInterface) chatInterface.classList.remove('hidden');
-
-        // 5. Scroll al final
-        const chatBody = document.getElementById('chat-body-scroll');
-        chatBody.scrollTop = chatBody.scrollHeight;
+    // 1. Definimos una "Base de Datos" falsa de mensajes
+    const MOCK_DB_MESSAGES = {
+        "CM": [ // Carlos Mendoza
+            { type: 'received', text: 'Hola, ¿sigue disponible el apartamento?', time: '10:30 AM' },
+            { type: 'sent', text: 'Hola Carlos, sí, todavía está disponible.', time: '10:35 AM' },
+            { type: 'received', text: '¡Genial! ¿Podríamos agendar una visita?', time: '10:36 AM' },
+            { type: 'sent', text: 'Claro, ¿te parece bien mañana a las 10:00 AM?', time: '10:40 AM' },
+            { type: 'received', text: 'Perfecto, nos vemos mañana a las 10:00 AM', time: '10:42 AM' }
+        ],
+        "MG": [ // María González
+            { type: 'received', text: 'Buenas tardes, vi su anuncio en Ñuñoa.', time: 'Ayer' },
+            { type: 'sent', text: 'Hola María, gusto en saludarte.', time: 'Ayer' },
+            { type: 'received', text: 'Gracias por tu interés. Te enviaré más fotos en un momento.', time: 'Ayer' }
+        ],
+        "RS": [ // Roberto Silva
+            { type: 'received', text: '¿El precio del Penthouse es conversable?', time: '2 días' },
+            { type: 'sent', text: 'Hola Roberto, depende del tiempo de contrato.', time: '2 días' },
+            { type: 'received', text: 'El precio es negociable para arriendo largo plazo', time: '2 días' }
+        ],
+        "JT": [ // Juan Torres
+            { type: 'received', text: 'Hola, necesito oficina para 5 personas.', time: '5 días' },
+            { type: 'sent', text: 'Tenemos varias opciones en el centro.', time: '5 días' },
+            { type: 'received', text: '¿Sigue disponible para visitar el lunes?', time: '5 días' }
+        ]
     };
 
-    // Lógica de envío de mensaje
-    const btnSend = document.getElementById('btn-send-message');
-    const inputMsg = document.getElementById('message-input');
+    const emptyState = document.getElementById('empty-state');
+    const chatInterface = document.getElementById('chat-interface');
     const chatBody = document.getElementById('chat-body-scroll');
 
+    // Función global para cargar chat
+    window.loadChat = function(element) {
+        // 1. UI: Activar item seleccionado
+        document.querySelectorAll('.msg-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        element.classList.remove('unread');
+
+        // 2. DATA: Obtener info del usuario
+        const name = element.getAttribute('data-name');
+        const prop = element.getAttribute('data-prop');
+        const initials = element.getAttribute('data-initials'); // Usamos esto como ID (CM, MG...)
+
+        // 3. Header: Actualizar info
+        const headerName = document.getElementById('chat-header-name');
+        const headerProp = document.getElementById('chat-header-prop');
+        const headerAvatar = document.getElementById('chat-header-avatar');
+
+        if(headerName) headerName.textContent = name;
+        if(headerProp) headerProp.textContent = prop;
+        if(headerAvatar) headerAvatar.textContent = initials;
+
+        // 4. Body: Cargar mensajes de la "Base de Datos"
+        if (chatBody) {
+            // Limpiamos el chat anterior
+            chatBody.innerHTML = '';
+
+            // Buscamos los mensajes de este usuario
+            const messages = MOCK_DB_MESSAGES[initials] || [];
+
+            // Los pintamos en pantalla
+            messages.forEach(msg => {
+                const bubbleHTML = `
+                    <div class="message-bubble ${msg.type}">
+                        ${msg.text}
+                        <span class="msg-time-stamp">${msg.time}</span>
+                    </div>
+                `;
+                chatBody.insertAdjacentHTML('beforeend', bubbleHTML);
+            });
+
+            // Scroll al final
+            setTimeout(() => {
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 50);
+        }
+
+        // 5. Mostrar interfaz
+        if(emptyState) emptyState.classList.add('hidden');
+        if(chatInterface) chatInterface.classList.remove('hidden');
+    };
+
+    // Lógica de envío de mensaje (Input)
+    const btnSend = document.getElementById('btn-send-message');
+    const inputMsg = document.getElementById('message-input');
+
     if (btnSend && inputMsg && chatBody) {
-        
-        // Función interna para agregar burbuja
         const sendMessage = () => {
             const text = inputMsg.value.trim();
             if (text === "") return;
 
-            // Crear HTML de la burbuja
             const now = new Date();
             const timeString = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
 
+            // Inyectar burbuja visualmente
             const bubbleHTML = `
                 <div class="message-bubble sent">
                     ${text}
@@ -309,21 +317,146 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Insertar y limpiar
             chatBody.insertAdjacentHTML('beforeend', bubbleHTML);
             inputMsg.value = "";
-            
-            // Scroll automático al fondo
             chatBody.scrollTop = chatBody.scrollHeight;
+
+            // NOTA PARA IMPLEMENTACIÓN REAL:
+            // Aquí harías: fetch('/api/mensajes/enviar', { method: 'POST', body: ... })
         };
 
-        // Evento Click Botón
         btnSend.addEventListener('click', sendMessage);
-
-        // Evento Enter en Input
         inputMsg.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
+
+        // ======================================================
+    // 8. LÓGICA DE MI CUENTA (TABS)
+    // ======================================================
+    
+    const accountTabs = document.querySelectorAll('.account-nav-item');
+    const accountPanels = document.querySelectorAll('.account-panel');
+
+    if(accountTabs.length > 0) {
+        accountTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Si es "Cerrar sesión", no hacemos tab switch (aquí iría logout real)
+                if(tab.textContent.includes('Cerrar Sesión')) {
+                    window.location.href = '/'; // Volver al inicio
+                    return;
+                }
+
+                // 1. Quitar activo de todos
+                accountTabs.forEach(t => t.classList.remove('active'));
+                accountPanels.forEach(p => p.classList.remove('active'));
+
+                // 2. Activar el clickeado
+                tab.classList.add('active');
+                const targetId = tab.getAttribute('data-target');
+                const targetPanel = document.getElementById(targetId);
+                if(targetPanel) targetPanel.classList.add('active');
+            });
+        });
     }
+
+    // Hacer que el icono de PERFIL en el header lleve a esta página
+    const profileBtns = document.querySelectorAll('.icon-action.profile');
+    profileBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            window.location.href = '/cuenta';
+        });
+    });
+    
+    // Hacer que el icono de NOTIFICACIONES lleve a esta página (Tab Notificaciones)
+    const notifBtns = document.querySelectorAll('.icon-action.notification');
+    notifBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            window.location.href = '/cuenta'; // Por defecto abre en notificaciones
+        });
+        
+    });
     }
 });
+
+// ======================================================
+    // 9. LÓGICA DE CONTRATOS (MODAL)
+    // ======================================================
+
+    // Base de datos simulada de contratos
+    const MOCK_CONTRACTS = {
+        "CNT-2025-001": {
+            id: "CNT-2025-001",
+            prop: "Av. Providencia 1234, Santiago",
+            status: "Vigente",
+            statusClass: "approved",
+            price: "$850.000",
+            start: "01 Marzo 2025",
+            end: "28 Febrero 2026",
+            landlord: "Patricia Rojas",
+            landlordInitials: "PR"
+        },
+        "CNT-2024-890": {
+            id: "CNT-2024-890",
+            prop: "Calle Los Leones 45, Providencia",
+            status: "Finalizado",
+            statusClass: "rejected", // Usamos estilo rejected para gris/rojo
+            price: "$780.000",
+            start: "01 Marzo 2024",
+            end: "28 Febrero 2025",
+            landlord: "Roberto Fernández",
+            landlordInitials: "RF"
+        }
+    };
+
+    const contractModal = document.getElementById('contract-modal');
+    const closeContractBtns = [
+        document.getElementById('close-contract-modal'),
+        document.getElementById('btn-close-c-modal')
+    ];
+
+    // Función para abrir modal de contrato
+    window.openContractModal = function(contractId) {
+        const data = MOCK_CONTRACTS[contractId];
+        if(!data) return;
+
+        // Llenar datos en el modal
+        document.getElementById('modal-c-title').textContent = `Contrato #${data.id}`;
+        document.getElementById('modal-c-prop').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.prop}`;
+        
+        const statusBadge = document.getElementById('modal-c-status');
+        statusBadge.textContent = data.status;
+        statusBadge.className = `status-badge ${data.statusClass}`;
+
+        document.getElementById('modal-c-price').textContent = data.price;
+        document.getElementById('modal-c-start').textContent = data.start;
+        document.getElementById('modal-c-end').textContent = data.end;
+        
+        document.getElementById('modal-c-landlord').textContent = data.landlord;
+        
+        // Avatar del dueño
+        const avatar = document.querySelector('.party-box .p-avatar:not(.me)');
+        if(avatar) {
+            avatar.textContent = data.landlordInitials;
+        }
+
+        // Mostrar
+        if(contractModal) contractModal.classList.remove('hidden');
+    };
+
+    // Event Listeners para botones "Ver contrato"
+    const viewContractBtns = document.querySelectorAll('.btn-view-contract');
+    viewContractBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openContractModal(id);
+        });
+    });
+
+    // Cerrar Modal
+    closeContractBtns.forEach(btn => {
+        if(btn) {
+            btn.addEventListener('click', () => {
+                if(contractModal) contractModal.classList.add('hidden');
+            });
+        }
+    });

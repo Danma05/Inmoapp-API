@@ -53,6 +53,11 @@ app.get("/mensajes", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "mensajes.html"));
 });
 
+// --- RUTA MI CUENTA ---
+app.get("/cuenta", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "cuenta.html"));
+});
+
 // ------------------------------------------------------------
 // API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------
