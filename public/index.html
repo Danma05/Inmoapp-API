@@ -299,7 +299,15 @@
                     <div class="form-group">
                         <label>Número de teléfono (opcional)</label>
                         <div class="input-wrapper gray-style">
-                            <input type="text" id="reg-telefono" name="telefono" placeholder="3001234567">
+                            <input 
+                                type="text" 
+                                id="reg-telefono" 
+                                name="telefono" 
+                                placeholder="3001234567"
+                                inputmode="numeric" 
+                                pattern="[0-9]*" 
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            />
                         </div>
                     </div>
 
