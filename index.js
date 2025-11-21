@@ -90,27 +90,74 @@ app.get("/usuarios", async (_req, res) => {
 // POST /usuarios (Simulado)
 app.post("/usuarios", async (req, res) => {
   try {
-    const { nombreCompleto, correo, rol } = req.body;
+    const {
+      nombre,          // string
+      apellido,        // string
+      correo,          // string
+      telefono,        // string (opcional)
+      password,        // string
+      aceptaTerminos,  // boolean
+      rol              // 'ARRENDATARIO' | 'PROPIETARIO' ...
+    } = req.body;
+
+    // ---------- Validaciones de backend ----------
+    if (!nombre || !apellido || !correo || !password) {
+      return res.status(400).json({ error: "Todos los campos obligatorios deben estar completos." });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+      return res.status(400).json({ error: "El correo electrónico no es válido." });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ error: "La contraseña debe tener mínimo 8 caracteres." });
+    }
+
+    if (!aceptaTerminos) {
+      return res.status(400).json({ error: "Debes aceptar los términos y condiciones." });
+    }
+
+    const nombreCompleto = `${nombre.trim()} ${apellido.trim()}`.trim();
+    const rolFinal = rol || "ARRENDATARIO";
+
+    // ⚠ En producción deberías encriptar esta contraseña y guardar el hash en password_hash
+    const passwordHash = password;
 
     const insertQuery = `
-      INSERT INTO usuarios (nombre_completo, correo, rol)
-      VALUES ($1, $2, $3)
-      RETURNING *;
+      INSERT INTO public.usuarios (
+        nombre_completo,
+        correo,
+        telefono,
+        rol,
+        password_hash,
+        acepta_terminos,
+        activo
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, TRUE)
+      RETURNING id, nombre_completo, correo, telefono, rol, acepta_terminos, activo, creado_en;
     `;
 
     const result = await dbQuery(insertQuery, [
       nombreCompleto,
       correo,
-      rol || "ARRENDATARIO"
+      telefono || null,
+      rolFinal,
+      passwordHash,
+      true // acepta_terminos
     ]);
 
-    res.status(201).json(result.rows[0]);
+    return res.status(201).json({
+      message: "Usuario registrado correctamente.",
+      usuario: result.rows[0]
+    });
 
   } catch (e) {
     console.error("❌ Error POST /usuarios:", e);
-    res.status(500).json({ error: "Error registrando usuario" });
+    return res.status(500).json({ error: "Error registrando usuario." });
   }
 });
+
 
 // POST /passport/init (Simulado)
 app.post("/passport/init", (req, res) => {

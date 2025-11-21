@@ -276,18 +276,18 @@
                     <p>Únete a InmoApp gratis</p>
                 </div>
 
-                <form class="login-form">
+                <form class="login-form" id="register-form">
                     <div class="form-row-split">
                         <div class="form-group">
                             <label>Nombre</label>
                             <div class="input-wrapper gray-style">
-                                <input type="text" placeholder="Nombre" required>
+                                <input type="text" id="reg-nombre" name="nombre" placeholder="Nombre" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Apellido</label>
                             <div class="input-wrapper gray-style">
-                                <input type="text" placeholder="Apellido" required>
+                                <input type="text" id="reg-apellido" name="apellido" placeholder="Apellido" required>
                             </div>
                         </div>
                     </div>
@@ -295,21 +295,28 @@
                     <div class="form-group">
                         <label>Correo electrónico</label>
                         <div class="input-wrapper gray-style">
-                            <input type="email" placeholder="tucorreo@ejemplo.com" required>
+                            <input type="email" id="reg-email" name="correo" placeholder="tucorreo@ejemplo.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de teléfono (opcional)</label>
+                        <div class="input-wrapper gray-style">
+                            <input type="text" id="reg-telefono" name="telefono" placeholder="3001234567">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Contraseña</label>
                         <div class="input-wrapper gray-style">
-                            <input type="password" placeholder="********" required>
+                            <input type="password" id="reg-password" name="password" placeholder="********" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Confirmar Contraseña</label>
                         <div class="input-wrapper gray-style">
-                            <input type="password" placeholder="********" required>
+                            <input type="password" id="reg-password-confirm" placeholder="********" required>
                         </div>
                     </div>
 
@@ -317,6 +324,8 @@
                         <input type="checkbox" id="terms-split" required>
                         <label for="terms-split">Acepto los <a href="#">términos y condiciones</a></label>
                     </div>
+
+                    <div id="register-error" style="color:#c0392b; font-size:0.9rem; display:none; margin-top:6px;"></div>
 
                     <button type="submit" class="btn btn-full btn-red">Crear Cuenta</button>
 

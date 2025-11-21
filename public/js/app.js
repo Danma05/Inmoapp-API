@@ -118,20 +118,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Registro -> Abrir Pasaporte (Arrendatario) o Verificación (Propietario)
-    const registerForm = document.querySelector('#register-form-modal form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            closeModal(registerFormModal);
-            
-            if (selectedRole === 'publisher') {
-                openModal(publisherModal); // Nuevo modal
-            } else {
-                openModal(passportModal);  // Modal clásico
-            }
-        });
+    // ===============================
+// REGISTRO REAL DE USUARIO
+// ===============================
+const registerForm = document.querySelector('#register-form');
+if (registerForm) {
+
+    const nombreInput = document.getElementById('reg-nombre');
+    const apellidoInput = document.getElementById('reg-apellido');
+    const emailInput = document.getElementById('reg-email');
+    const telInput = document.getElementById('reg-telefono');
+    const passInput = document.getElementById('reg-password');
+    const passConfInput = document.getElementById('reg-password-confirm');
+    const termsInput = document.getElementById('terms-split');
+    const errorBox = document.getElementById('register-error');
+
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
     }
+    function clearError() {
+        errorBox.textContent = '';
+        errorBox.style.display = 'none';
+    }
+
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearError();
+
+        const nombre = nombreInput.value.trim();
+        const apellido = apellidoInput.value.trim();
+        const correo = emailInput.value.trim();
+        const telefono = telInput.value.trim();
+        const password = passInput.value;
+        const passwordConfirm = passConfInput.value;
+
+        // -------------------------
+        // VALIDACIONES FRONT
+        // -------------------------
+        if (!nombre || !apellido || !correo || !password || !passwordConfirm) {
+            return showError("Todos los campos obligatorios deben estar completos.");
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(correo)) {
+            return showError("El correo electrónico no es válido.");
+        }
+
+        if (password.length < 8) {
+            return showError("La contraseña debe tener mínimo 8 caracteres.");
+        }
+
+        if (password !== passwordConfirm) {
+            return showError("Las contraseñas no coinciden.");
+        }
+
+        if (!termsInput.checked) {
+            return showError("Debes aceptar los términos y condiciones.");
+        }
+
+        // -------------------------
+        // ENVÍO REAL AL BACKEND
+        // -------------------------
+        try {
+            const response = await fetch('/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre,
+                    apellido,
+                    correo,
+                    telefono,
+                    password,
+                    aceptaTerminos: true,
+                    rol: selectedRole // ARRENDATARIO o PROPIETARIO
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data);
+                return showError(data.error || "Error registrando usuario.");
+            }
+
+            // -------------------------
+            // ÉXITO → ABRIR SIGUIENTE MODAL
+            // -------------------------
+            closeModal(registerFormModal);
+            registerForm.reset();
+            termsInput.checked = false;
+
+            if (selectedRole === 'PROPIETARIO') {
+                openModal(publisherModal);
+            } else {
+                openModal(passportModal);
+            }
+
+        } catch (err) {
+            console.error(err);
+            showError("No se pudo conectar con el servidor. Inténtalo nuevamente.");
+        }
+    });
+}
+
 
     // ======================================================
     // 5. LÓGICA DE CARGA DE ARCHIVOS (UPLOAD)
