@@ -63,6 +63,14 @@ app.get("/dashboard-propietario", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard-propietario.html"));
 });
 
+// --- Rutas Admin ---
+app.get('/admin-login', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-login.html');
+});
+app.get('/admin-dashboard', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-dashboard.html');
+});
+
 // ------------------------------------------------------------
 // API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------

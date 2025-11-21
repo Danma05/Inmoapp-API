@@ -3,335 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InmoApp - Mi Cuenta</title>
+    <title>InmoApp - Tu Cuenta</title>
     
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/home.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { background-color: #F3F4F6; }
+
+        /* Contenedor principal centrado */
+        .auth-wrapper {
+            min-height: calc(100vh - 140px); /* Resta aprox header/footer */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Tarjeta Blanca Limpia */
+        .auth-card-clean {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #E5E7EB;
+        }
+
+        .auth-title { text-align: center; margin-bottom: 25px; }
+        .auth-title h1 { font-size: 1.8rem; color: #111827; margin: 0 0 5px; font-weight: 700; }
+        .auth-title p { color: #6B7280; font-size: 0.95rem; margin: 0; }
+
+        /* Pestañas (Tabs) */
+        .auth-nav { display: flex; border-bottom: 1px solid #E5E7EB; margin-bottom: 30px; }
+        .nav-tab-btn {
+            flex: 1; padding: 15px; border: none; background: none;
+            font-size: 1rem; font-weight: 600; color: #6B7280; cursor: pointer;
+            border-bottom: 3px solid transparent; transition: all 0.2s;
+        }
+        .nav-tab-btn.active { color: var(--brand-red); border-bottom-color: var(--brand-red); }
+
+        /* --- CLASE NUEVA PARA CORREGIR EL ESPACIADO --- */
+        /* Usamos esto en lugar de .form-group para evitar el '1px !important' */
+        .auth-input-group {
+            margin-bottom: 20px; /* Espacio vital que faltaba */
+            text-align: left;
+        }
+        
+        .auth-label {
+            display: block; font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 8px;
+        }
+        
+        .auth-input {
+            width: 100%; padding: 12px 15px;
+            border: 1px solid #D1D5DB; border-radius: 8px;
+            font-size: 1rem; outline: none; transition: border 0.2s;
+            background-color: #F9FAFB;
+            box-sizing: border-box; 
+        }
+        .auth-input:focus { border-color: var(--brand-red); background: white; }
+
+        /* Botón de acción */
+        .btn-auth-action {
+            width: 100%; padding: 14px; background: var(--brand-red);
+            color: white; border: none; border-radius: 8px;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            transition: background 0.2s; margin-top: 10px;
+        }
+        .btn-auth-action:hover { background: #B91C1C; }
+
+        /* Links y Opciones */
+        .auth-links { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.85rem; }
+        .auth-links a { color: var(--brand-red); text-decoration: none; font-weight: 600; }
+
+        /* Selector de Rol (Inquilino/Propietario) */
+        .role-selector { display: flex; gap: 15px; margin-bottom: 20px; }
+        .role-btn {
+            flex: 1; border: 1px solid #D1D5DB; border-radius: 8px; padding: 10px;
+            text-align: center; cursor: pointer; font-size: 0.9rem; color: #4B5563;
+            transition: all 0.2s;
+        }
+        .role-btn:hover { background: #F3F4F6; }
+        .role-btn.selected {
+            background: #FEF2F2; border-color: var(--brand-red); color: var(--brand-red); font-weight: 700;
+        }
+
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
 
-    <header class="explorer-header">
-        <div class="container header-content">
-            <a href="/dashboard" class="brand">
+    <nav class="main-header" style="position: relative;">
+        <div class="container nav-container">
+            <a href="/" class="brand-logo">
                 <div class="logo-box">IA</div>
                 <span class="logo-text">InmoApp</span>
             </a>
-            <nav class="top-nav">
-                <a href="/explorar-menu">Explorar</a>
-                <a href="/favoritos">Favoritos</a>
-                <a href="/visitas">Visitas</a>
-                <a href="/postulaciones">Postulaciones</a>
-                <a href="/mensajes">Mensajes</a>
-            </nav>
-            <div class="user-controls">
-                <button class="icon-action"><i class="fa-regular fa-heart"></i></button>
-                <button class="icon-action notification">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge">2</span>
-                </button>
-                <div class="icon-action profile active">
-                    <i class="fa-regular fa-user"></i>
-                </div>
-            </div>
+            <a href="/" class="nav-link-white"><i class="fa-solid fa-arrow-left"></i> Inicio</a>
         </div>
-    </header>
+    </nav>
 
-    <div class="container dashboard-body">
-        
-        <div class="account-grid">
-            <aside class="account-sidebar">
-                <div class="user-mini-profile">
-                    <div class="user-avatar-lg">JD</div>
-                    <div class="user-name">Juan David</div>
-                    <div class="user-email">juan.david@email.com</div>
+    <div class="auth-wrapper">
+        <div class="auth-card-clean">
+            
+            <div class="auth-title">
+                <h1>Bienvenido</h1>
+                <p>Accede a tu panel de control</p>
+            </div>
+
+            <div class="auth-nav">
+                <button class="nav-tab-btn active" onclick="switchTab('login')">Ingresar</button>
+                <button class="nav-tab-btn" onclick="switchTab('registro')">Registrarse</button>
+            </div>
+
+            <form id="form-login">
+                <div class="auth-input-group">
+                    <label class="auth-label">Correo Electrónico</label>
+                    <input type="email" class="auth-input" placeholder="tu@correo.com" required>
+                </div>
+                <div class="auth-input-group">
+                    <label class="auth-label">Contraseña</label>
+                    <input type="password" class="auth-input" placeholder="••••••••" required>
                 </div>
                 
-                <ul class="account-nav-list">
-                    <li class="account-nav-item active" data-target="panel-notificaciones">
-                        <i class="fa-regular fa-bell"></i> Notificaciones <span class="badge" style="position:static; margin-left:auto;">2</span>
-                    </li>
-                    <li class="account-nav-item" data-target="panel-contratos">
-                        <i class="fa-solid fa-file-signature"></i> Mis Contratos
-                    </li>
-                    <li class="account-nav-item" data-target="panel-pagos">
-                        <i class="fa-solid fa-credit-card"></i> Pagos
-                    </li>
-                    <li class="account-nav-item" data-target="panel-seguridad">
-                        <i class="fa-solid fa-shield-halved"></i> Seguridad
-                    </li>
-                    <li class="account-nav-item" style="color: #EF4444; margin-top: 20px;">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-                    </li>
-                </ul>
-            </aside>
+                <div class="auth-links">
+                    <label><input type="checkbox"> Recordarme</label>
+                    <a href="#">Recuperar contraseña</a>
+                </div>
 
-            <main class="account-content">
+                <button type="submit" class="btn-auth-action">Iniciar Sesión</button>
+            </form>
+
+            <form id="form-registro" class="hidden">
                 
-                <section id="panel-notificaciones" class="account-panel active">
-                    <h2 class="panel-title">Notificaciones Recientes</h2>
-                    <div class="notif-list">
-                        <div class="notif-item unread">
-                            <div class="notif-icon"><i class="fa-solid fa-check"></i></div>
-                            <div class="notif-content">
-                                <h4>Postulación Aprobada</h4>
-                                <p>Tu solicitud para "Apartamento Moderno en Providencia" ha sido aprobada por el propietario.</p>
-                                <span class="notif-time">Hace 2 horas</span>
-                            </div>
-                        </div>
-                        <div class="notif-item unread">
-                            <div class="notif-icon"><i class="fa-regular fa-message"></i></div>
-                            <div class="notif-content">
-                                <h4>Nuevo Mensaje</h4>
-                                <p>Carlos Mendoza te ha enviado un mensaje sobre tu visita programada.</p>
-                                <span class="notif-time">Hace 5 horas</span>
-                            </div>
-                        </div>
-                        <div class="notif-item">
-                            <div class="notif-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                            <div class="notif-content">
-                                <h4>Pago Confirmado</h4>
-                                <p>Hemos recibido correctamente tu pago de arriendo correspondiente a Octubre.</p>
-                                <span class="notif-time">Ayer</span>
-                            </div>
-                        </div>
+                <div class="auth-input-group">
+                    <label class="auth-label">Selecciona tu perfil</label>
+                    <div class="role-selector">
+                        <div class="role-btn selected" onclick="selectRole(this, 'inquilino')">Busco Inmueble</div>
+                        <div class="role-btn" onclick="selectRole(this, 'propietario')">Tengo Inmuebles</div>
                     </div>
-                </section>
+                    <input type="hidden" id="role-input" value="inquilino">
+                </div>
 
-                <section id="panel-contratos" class="account-panel">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 class="panel-title" style="border:none; margin:0; padding:0;">Mis Contratos</h2>
-                        <button class="btn-download" style="font-size: 0.8rem;"><i class="fa-solid fa-filter"></i> Filtrar</button>
-                    </div>
+                <div class="auth-input-group">
+                    <label class="auth-label">Nombre Completo</label>
+                    <input type="text" class="auth-input" placeholder="Tu Nombre" required>
+                </div>
+                <div class="auth-input-group">
+                    <label class="auth-label">Correo Electrónico</label>
+                    <input type="email" class="auth-input" placeholder="tu@correo.com" required>
+                </div>
+                <div class="auth-input-group">
+                    <label class="auth-label">Crear Contraseña</label>
+                    <input type="password" class="auth-input" placeholder="••••••••" required>
+                </div>
 
-                    <div class="contracts-grid">
-                        <div class="contract-card-detailed">
-                            <div class="contract-header-card">
-                                <div class="contract-icon-box active">
-                                    <i class="fa-solid fa-file-contract"></i>
-                                </div>
-                                <div class="contract-id-info">
-                                    <h3>Contrato #CNT-2025-001</h3>
-                                    <span class="contract-prop-name">Av. Providencia 1234, Santiago</span>
-                                </div>
-                                <span class="status-badge approved">Vigente</span>
-                            </div>
-                            <div class="contract-body-card">
-                                <div class="c-row">
-                                    <span class="c-label">Inicio:</span>
-                                    <span class="c-val">01 Mar 2025</span>
-                                </div>
-                                <div class="c-row">
-                                    <span class="c-label">Fin:</span>
-                                    <span class="c-val">28 Feb 2026</span>
-                                </div>
-                                <div class="c-row">
-                                    <span class="c-label">Monto:</span>
-                                    <span class="c-val text-dark">$850.000 / mes</span>
-                                </div>
-                            </div>
-                            <div class="contract-footer-card">
-                                <button class="btn-view-contract" data-id="CNT-2025-001">Ver contrato</button>
-                            </div>
-                        </div>
+                <button type="submit" class="btn-auth-action">Crear Cuenta</button>
+            </form>
 
-                        <div class="contract-card-detailed finished">
-                            <div class="contract-header-card">
-                                <div class="contract-icon-box">
-                                    <i class="fa-solid fa-file-signature"></i>
-                                </div>
-                                <div class="contract-id-info">
-                                    <h3>Contrato #CNT-2024-890</h3>
-                                    <span class="contract-prop-name">Calle Los Leones 45, Providencia</span>
-                                </div>
-                                <span class="status-badge rejected" style="background:#F3F4F6; color:#6B7280; border:1px solid #E5E7EB;">Finalizado</span>
-                            </div>
-                            <div class="contract-body-card">
-                                <div class="c-row">
-                                    <span class="c-label">Inicio:</span>
-                                    <span class="c-val">01 Mar 2024</span>
-                                </div>
-                                <div class="c-row">
-                                    <span class="c-label">Fin:</span>
-                                    <span class="c-val">28 Feb 2025</span>
-                                </div>
-                                <div class="c-row">
-                                    <span class="c-label">Monto:</span>
-                                    <span class="c-val text-dark">$780.000 / mes</span>
-                                </div>
-                            </div>
-                            <div class="contract-footer-card">
-                                <button class="btn-view-contract" data-id="CNT-2024-890">Ver historial</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="panel-pagos" class="account-panel">
-                    <h2 class="panel-title">Historial de Pagos</h2>
-                    <div class="payments-table-box">
-                        <div class="payment-row">
-                            <div class="pay-info-left">
-                                <span class="pay-concept">Arriendo Noviembre 2025</span>
-                                <span class="pay-date">Vence: 05/11/2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center;">
-                                <span class="pay-amount">$850.000</span>
-                                <span class="pay-status pay-pending">Pendiente</span>
-                            </div>
-                        </div>
-                        
-                        <div class="payment-row">
-                            <div class="pay-info-left">
-                                <span class="pay-concept">Arriendo Octubre 2025</span>
-                                <span class="pay-date">Pagado el: 03/10/2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center;">
-                                <span class="pay-amount">$850.000</span>
-                                <span class="pay-status pay-paid">Pagado</span>
-                            </div>
-                        </div>
-
-                        <div class="payment-row">
-                            <div class="pay-info-left">
-                                <span class="pay-concept">Garantía + Mes 1</span>
-                                <span class="pay-date">Pagado el: 01/09/2025</span>
-                            </div>
-                            <div style="display: flex; align-items: center;">
-                                <span class="pay-amount">$1.700.000</span>
-                                <span class="pay-status pay-paid">Pagado</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="panel-seguridad" class="account-panel">
-                    <h2 class="panel-title">Seguridad y Contraseña</h2>
-                    <p style="color: #6B7280;">Aquí podrás cambiar tu contraseña y gestionar la autenticación en dos pasos.</p>
-                </section>
-
-            </main>
         </div>
     </div>
 
-    <footer class="main-footer-dark">
-        <div class="container">
-            <div class="footer-grid-dark">
-                <div class="footer-col">
-                    <h3 class="footer-heading">Contacto</h3>
-                    <ul class="contact-list">
-                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
-                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
-                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
-                    </ul>
-                </div>
-                <div class="footer-col center-col">
-                    <h3 class="footer-heading">Síguenos</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col right-col">
-                    <h3 class="footer-heading">Enlaces</h3>
-                    <ul class="links-list">
-                        <li><a href="#">Política de Privacidad</a></li>
-                        <li><a href="#">Términos y Condiciones</a></li>
-                        <li><a href="#">Políticas de Cookies</a></li>
-                        <li><a href="#">Ayuda</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom-dark">
-                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
-            </div>
+    <footer class="main-footer-dark" style="margin-top: 0;">
+        <div class="container footer-bottom-dark">
+            <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-    <div id="contract-modal" class="modal-overlay hidden">
-        <div class="modal-content modal-lg-contract">
-            <div class="modal-header-clean">
-                <h2>Detalle del Contrato</h2>
-                <button id="close-contract-modal" class="close-btn">&times;</button>
-            </div>
-            
-            <div class="contract-modal-body">
-                <div class="contract-hero-info">
-                    <div class="c-hero-left">
-                        <h3 id="modal-c-title">Contrato de Arrendamiento</h3>
-                        <p id="modal-c-prop"><i class="fa-solid fa-location-dot"></i> Cargando dirección...</p>
-                        <span id="modal-c-status" class="status-badge approved">Vigente</span>
-                    </div>
-                    <div class="c-hero-right">
-                        <span class="price-big" id="modal-c-price">$0</span>
-                        <span class="price-period">pesos / mes</span>
-                    </div>
-                </div>
+    <script>
+        function switchTab(tab) {
+            const fLogin = document.getElementById('form-login');
+            const fReg = document.getElementById('form-registro');
+            const btns = document.querySelectorAll('.nav-tab-btn');
 
-                <div class="contract-data-grid">
-                    <div class="c-data-group">
-                        <label>Fecha de Inicio</label>
-                        <strong id="modal-c-start">-</strong>
-                    </div>
-                    <div class="c-data-group">
-                        <label>Fecha de Término</label>
-                        <strong id="modal-c-end">-</strong>
-                    </div>
-                    <div class="c-data-group">
-                        <label>Día de Pago</label>
-                        <strong>Los días 5 de cada mes</strong>
-                    </div>
-                    <div class="c-data-group">
-                        <label>Garantía</label>
-                        <strong>1 mes de arriendo</strong>
-                    </div>
-                </div>
+            if(tab === 'login') {
+                fLogin.classList.remove('hidden');
+                fReg.classList.add('hidden');
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                fLogin.classList.add('hidden');
+                fReg.classList.remove('hidden');
+                btns[0].classList.remove('active');
+                btns[1].classList.add('active');
+            }
+        }
 
-                <div class="contract-parties">
-                    <div class="party-box">
-                        <span class="p-role">Arrendador (Propietario)</span>
-                        <div class="p-info">
-                            <div class="p-avatar">PR</div>
-                            <div class="p-text">
-                                <strong id="modal-c-landlord">Nombre Propietario</strong>
-                                <span>Propietario verificado</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="party-box">
-                        <span class="p-role">Arrendatario (Tú)</span>
-                        <div class="p-info">
-                            <div class="p-avatar me">JD</div>
-                            <div class="p-text">
-                                <strong>Juan David</strong>
-                                <span>Identidad verificada</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        function selectRole(el, role) {
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('role-input').value = role;
+        }
 
-                <div class="contract-clauses-box">
-                    <h4>Cláusulas Principales</h4>
-                    <ul class="clauses-list">
-                        <li><i class="fa-solid fa-check"></i> El contrato tiene una vigencia de 12 meses renovables.</li>
-                        <li><i class="fa-solid fa-check"></i> El pago debe realizarse vía transferencia bancaria a la cuenta registrada.</li>
-                        <li><i class="fa-solid fa-check"></i> No se permiten modificaciones estructurales sin permiso escrito.</li>
-                        <li><i class="fa-solid fa-check"></i> Se permiten mascotas pequeñas (hasta 10kg).</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="modal-footer-actions">
-                <button class="btn-secondary" id="btn-close-c-modal">Cerrar</button>
-                <button class="btn-primary-download"><i class="fa-solid fa-file-pdf"></i> Descargar PDF Firmado</button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="/js/app.js"></script>
+        // Simulación de Redirección Inteligente
+        document.getElementById('form-login').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = e.target.querySelector('input[type="email"]').value;
+            // Si el correo tiene 'prop', asume que es propietario
+            if(email.includes('prop')) {
+                window.location.href = '/dashboard-propietario.html';
+            } else {
+                window.location.href = '/dashboard.html';
+            }
+        });
+    </script>
 </body>
 </html>

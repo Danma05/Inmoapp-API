@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - InmoApp</title>
+    
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/admin-dashboard" class="brand">
+                <div class="logo-box">IA</div>
+                <span class="logo-text">InmoApp Admin</span>
+            </a>
+            
+            <nav class="top-nav">
+                <a href="/admin-dashboard" class="active">Dashboard</a>
+                <a href="#">Usuarios</a>
+                <a href="#">Propiedades</a>
+                <a href="#">Solicitudes</a>
+                <a href="#">Pagos</a>
+            </nav>
+            
+            <div class="user-controls">
+                <button class="icon-action notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">5</span>
+                </button>
+                <div class="icon-action profile" style="background-color: rgba(255,255,255,0.2);">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <a href="/" style="color: white; text-decoration: none; font-size: 0.9rem; margin-left: 10px;">Salir</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body" style="padding-top: 40px; min-height: 80vh;">
+        
+        <div class="section-header-row">
+            <h2 class="dash-title">Resumen General</h2>
+            <span style="color: #6B7280; font-size: 0.9rem;">Última actualización: Hoy, 10:30 AM</span>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Usuarios Totales</span>
+                    <span class="metric-value">1,245</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon green">
+                    <i class="fa-solid fa-house-chimney"></i>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Propiedades Activas</span>
+                    <span class="metric-value">856</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon orange">
+                    <i class="fa-solid fa-file-contract"></i>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Solicitudes Pendientes</span>
+                    <span class="metric-value">12</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #FEE2E2; color: #DC2626;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="metric-info">
+                    <span class="metric-label">Reportes</span>
+                    <span class="metric-value">3</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="dashboard-section" style="margin-top: 40px;">
+            <div class="section-header-row">
+                <h2 class="dash-title">Solicitudes Recientes</h2>
+                <a href="#" class="btn-outline-red-sm">Ver todas</a>
+            </div>
+
+            <div class="content-card" style="padding: 0; overflow: hidden;">
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Tipo</th>
+                            <th>Propiedad</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#1024</td>
+                            <td><strong>Juan Pérez</strong></td>
+                            <td>Publicación</td>
+                            <td>Apto. Centro Histórico</td>
+                            <td>Hoy, 09:15 AM</td>
+                            <td><span class="status-badge review">Revisión</span></td>
+                            <td><button class="btn-icon"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>#1023</td>
+                            <td><strong>María Rodríguez</strong></td>
+                            <td>Verificación</td>
+                            <td>Documentos Identidad</td>
+                            <td>Ayer, 04:30 PM</td>
+                            <td><span class="status-badge published">Aprobado</span></td>
+                            <td><button class="btn-icon"><i class="fa-solid fa-check"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>#1022</td>
+                            <td><strong>Carlos Ruiz</strong></td>
+                            <td>Visita</td>
+                            <td>Casa Campestre Buga</td>
+                            <td>Ayer, 02:00 PM</td>
+                            <td><span class="status-text orange">Pendiente</span></td>
+                            <td><button class="btn-icon"><i class="fa-solid fa-ellipsis"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>#1021</td>
+                            <td><strong>Laura Gómez</strong></td>
+                            <td>Contrato</td>
+                            <td>Local Comercial #405</td>
+                            <td>20 Nov, 2025</td>
+                            <td><span class="status-text green">Firmado</span></td>
+                            <td><button class="btn-icon"><i class="fa-solid fa-download"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div> 
+    
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>
