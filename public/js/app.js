@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectPublishBtn) {
         selectPublishBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            selectedRole = 'publisher'; // Guardamos rol
+            selectedRole = 'PROPIETARIO'; // ✅ este es el valor correcto
             closeModal(registerSelectionModal);
             openModal(registerFormModal);
         });
