@@ -76,11 +76,16 @@ app.get("/health/db", (_req, res) => {
 });
 
 // GET /usuarios (Simulado)
-app.get("/usuarios", (_req, res) => {
-  res.json([
-    { id: 1, nombre_completo: "Usuario Mock", correo: "test@mock.com" }
-  ]);
+app.get("/usuarios", async (_req, res) => {
+  try {
+    const result = await dbQuery("SELECT * FROM usuarios ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (e) {
+    console.error("❌ Error GET /usuarios:", e);
+    res.status(500).json({ error: "Error consultando usuarios" });
+  }
 });
+
 
 // POST /usuarios (Simulado)
 app.post("/usuarios", async (req, res) => {
