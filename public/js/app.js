@@ -217,83 +217,89 @@ if (telInput && telError) {
             errorBox.style.display = 'none';
         }
 
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            clearError();
+            registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearError();
 
-            const nombre = nombreInput.value.trim();
-            const apellido = apellidoInput.value.trim();
-            const correo = emailInput.value.trim();
-            const telefono = telInput.value.trim();
-            
-            const password = passInput.value;
-            const passwordConfirm = passConfInput.value;
+        const nombre = nombreInput.value.trim();
+        const apellido = apellidoInput.value.trim();
+        const correo = emailInput.value.trim();
+        const telefono = telInput.value.trim();
+        const password = passInput.value;
+        const passwordConfirm = passConfInput.value;
 
-            // -------------------------
-            // VALIDACIONES FRONT
-            // -------------------------
-            if (!nombre || !apellido || !correo || !password || !passwordConfirm) {
-                return showError("Todos los campos obligatorios deben estar completos.");
+        // -------------------------
+        // VALIDACIONES FRONT
+        // -------------------------
+        if (!nombre || !apellido || !correo || !password || !passwordConfirm) {
+            return showError("Todos los campos obligatorios deben estar completos.");
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(correo)) {
+            return showError("El correo electrónico no es válido.");
+        }
+
+        if (password.length < 8) {
+            return showError("La contraseña debe tener mínimo 8 caracteres.");
+        }
+
+        if (password !== passwordConfirm) {
+            return showError("Las contraseñas no coinciden.");
+        }
+
+        // 📞 Teléfono: OPCIONAL, pero si lo escribe:
+        // debe tener EXACTAMENTE 10 dígitos y SOLO números
+        if (telefono !== "" && !/^[0-9]{10}$/.test(telefono)) {
+            return showError("El número de teléfono debe tener exactamente 10 dígitos numéricos.");
+        }
+
+        if (!termsInput.checked) {
+            return showError("Debes aceptar los términos y condiciones.");
+        }
+
+        // -------------------------
+        // ENVÍO REAL AL BACKEND
+        // -------------------------
+        try {
+            const response = await fetch('/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre,
+                    apellido,
+                    correo,
+                    telefono,
+                    password,
+                    aceptaTerminos: true,
+                    rol: selectedRole // ARRENDATARIO o PROPIETARIO
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data);
+                return showError(data.error || "Error registrando usuario.");
             }
 
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(correo)) {
-                return showError("El correo electrónico no es válido.");
+            // ÉXITO → Cerrar modal y abrir siguiente paso
+            registerForm.reset();
+            termsInput.checked = false;
+            closeModal(registerFormModal);
+
+            if (selectedRole === 'PROPIETARIO') {
+                openModal(publisherModal);
+            } else {
+                openModal(passportModal);
             }
 
-            if (password.length < 8) {
-                return showError("La contraseña debe tener mínimo 8 caracteres.");
-            }
+        } catch (err) {
+            console.error("❌ Error en registro:", err);
+            showError("No se pudo conectar con el servidor. Inténtalo nuevamente.");
+        }
+    });
 
-            if (password !== passwordConfirm) {
-                return showError("Las contraseñas no coinciden.");
-            }
-
-            if (!termsInput.checked) {
-                return showError("Debes aceptar los términos y condiciones.");
-            }
-
-            // -------------------------
-            // ENVÍO REAL AL BACKEND
-            // -------------------------
-            try {
-                const response = await fetch('/usuarios', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre,
-                        apellido,
-                        correo,
-                        telefono,
-                        password,
-                        aceptaTerminos: true,
-                        rol: selectedRole // ARRENDATARIO o PROPIETARIO
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    console.error(data);
-                    return showError(data.error || "Error registrando usuario.");
-                }
-
-                // ÉXITO → Cerrar modal y abrir siguiente paso
-                registerForm.reset();
-                termsInput.checked = false;
-                closeModal(registerFormModal);
-
-                if (selectedRole === 'PROPIETARIO') {
-                    openModal(publisherModal);
-                } else {
-                    openModal(passportModal);
-                }
-
-            } catch (err) {
-                console.error("❌ Error en registro:", err);
-                showError("No se pudo conectar con el servidor. Inténtalo nuevamente.");
-            }
-        });
     }
 
         function validarTelefono() {
