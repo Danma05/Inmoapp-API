@@ -101,6 +101,34 @@ app.get('/admin-chat', (req, res) => {
     res.sendFile(__dirname + '/public/admin-chat.html');
 });
 
+// --- RUTAS DE NAVEGACIÓN DE USUARIO (Asegurar que existan y apunten bien) ---
+
+app.get('/dashboard', (req, res) => {
+    res.sendFile(__dirname + '/public/dashboard.html');
+});
+app.get('/explorar-menu', (req, res) => {
+    res.sendFile(__dirname + '/public/explorar-menu.html');
+});
+app.get('/favoritos', (req, res) => {
+    res.sendFile(__dirname + '/public/favoritos.html');
+});
+app.get('/visitas', (req, res) => {
+    res.sendFile(__dirname + '/public/visitas.html');
+});
+app.get('/postulaciones', (req, res) => {
+    res.sendFile(__dirname + '/public/postulaciones.html');
+});
+app.get('/mensajes', (req, res) => {
+    res.sendFile(__dirname + '/public/mensajes.html');
+});
+
+// --- RUTAS DE ADMINISTRADOR (Creadas anteriormente) ---
+
+app.get('/admin-login', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-login.html');
+});
+// ... (y todas las demás rutas admin: /admin-agentes, /admin-propiedades, etc.)  
+
 // ------------------------------------------------------------
 // API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------

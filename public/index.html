@@ -12,6 +12,24 @@
     <link rel="stylesheet" href="/css/home.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS necesario para la retroalimentación visual de carga (Asume que usas estas clases) */
+        .doc-item.completed {
+            border: 1px solid #10B981; /* Borde verde para indicar éxito */
+            background-color: #F0FDF4;
+        }
+        .doc-item.completed .doc-icon {
+            color: #10B981;
+        }
+        .btn-uploaded {
+            background-color: #10B981; /* Color verde */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            pointer-events: none; /* Deshabilitar clics una vez subido */
+        }
+    </style>
 </head>
 <body>
 
@@ -276,7 +294,7 @@
                     <p>Únete a InmoApp gratis</p>
                 </div>
 
-                <form class="login-form">
+                <form id="register-form" class="login-form">
                     <div class="form-row-split">
                         <div class="form-group">
                             <label>Nombre</label>
@@ -317,6 +335,8 @@
                         <input type="checkbox" id="terms-split" required>
                         <label for="terms-split">Acepto los <a href="#">términos y condiciones</a></label>
                     </div>
+                    
+                    <input type="hidden" id="selected-role" value="inquilino">
 
                     <button type="submit" class="btn btn-full btn-red">Crear Cuenta</button>
 
@@ -374,7 +394,7 @@
                         <h4>Documento de Identidad</h4>
                         <p>Cédula, DNI o Pasaporte</p>
                     </div>
-                    <input type="file" class="file-input" id="file-id" hidden>
+                    <input type="file" class="file-input passport-file" id="file-id" hidden>
                     <button class="btn-upload" onclick="document.getElementById('file-id').click()">Subir</button>
                 </div>
 
@@ -384,7 +404,7 @@
                         <h4>Certificado de Solvencia</h4>
                         <p>Bancario o score crediticio</p>
                     </div>
-                    <input type="file" class="file-input" id="file-solvency" hidden>
+                    <input type="file" class="file-input passport-file" id="file-solvency" hidden>
                     <button class="btn-upload" onclick="document.getElementById('file-solvency').click()">Subir</button>
                 </div>
 
@@ -394,7 +414,7 @@
                         <h4>Comprobante de Ingresos</h4>
                         <p>Últimos 3 extractos o nómina</p>
                     </div>
-                    <input type="file" class="file-input" id="file-income" hidden>
+                    <input type="file" class="file-input passport-file" id="file-income" hidden>
                     <button class="btn-upload" onclick="document.getElementById('file-income').click()">Subir</button>
                 </div>
 
@@ -404,13 +424,13 @@
                         <h4>Otros Documentos</h4>
                         <p>Referencias o codeudor</p>
                     </div>
-                    <input type="file" class="file-input" id="file-others" hidden>
+                    <input type="file" class="file-input passport-file" id="file-others" hidden>
                     <button class="btn-upload" onclick="document.getElementById('file-others').click()">Subir</button>
                 </div>
             </div>
 
             <div class="passport-footer">
-                <button id="btn-finish-passport" class="btn-gray-disabled">Continuar</button>
+                <button id="btn-finish-passport" class="btn-gray-disabled" disabled>Continuar</button>
             </div>
         </div>
     </div>
@@ -472,11 +492,274 @@
             </div>
 
             <div class="passport-footer">
-                <button id="btn-finish-publisher" class="btn-gray-disabled">Finalizar Registro</button>
+                <button id="btn-finish-publisher" class="btn-gray-disabled" disabled>Finalizar Registro</button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="/js/app.js"></script>
+    <script>
+        // --- Referencias a los modales y botones ---
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const registerFormModal = document.getElementById('register-form-modal');
+        const publisherModal = document.getElementById('publisher-modal');
+        const passportModal = document.getElementById('passport-modal');
+        
+        // Botones de acción general
+        const openLoginBtns = document.querySelectorAll('.open-login-btn');
+        const openRegisterBtns = document.querySelectorAll('.open-register-btn');
+        const closeLogin = document.getElementById('close-modal');
+        const closeRegister = document.getElementById('close-register');
+        const closeRegisterForm = document.getElementById('close-register-form');
+        const closePublisher = document.getElementById('close-publisher');
+        const closePassport = document.getElementById('close-passport');
+        const backToSelection = document.getElementById('back-to-selection');
+
+        // Botones de selección de rol
+        const rentSelectBtn = document.querySelector('.btn-rent-select');
+        const publishSelectBtn = document.querySelector('.btn-publish-select');
+        const selectedRoleInput = document.getElementById('selected-role');
+
+        // Botones de finalización
+        const registerForm = document.getElementById('register-form');
+        const btnFinishPublisher = document.getElementById('btn-finish-publisher'); // Propietario
+        const btnFinishPassport = document.getElementById('btn-finish-passport');     // Arrendatario
+
+
+        // --- Elementos de Progreso del PROPIETARIO ---
+        const pubFileInputs = document.querySelectorAll('.pub-file'); // 3 documentos
+        const pubProgressBarFill = document.getElementById('pub-progress-bar-fill');
+        const pubProgressText = document.getElementById('pub-progress-text');
+
+        // --- Elementos de Progreso del ARRENDATARIO ---
+        const passportFileInputs = document.querySelectorAll('.passport-file'); // 4 documentos
+        const passportProgressBarFill = document.getElementById('progress-bar-fill');
+        const passportProgressText = document.getElementById('progress-text');
+        
+
+        // --- Funciones de control de modales ---
+        function openModal(modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modal) {
+            if (modal && !modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // --- LÓGICA DE PROGRESO DE DOCUMENTOS PROPIETARIO ---
+        function updatePublisherProgress() {
+            let completedCount = 0;
+            const totalDocs = pubFileInputs.length;
+
+            pubFileInputs.forEach(input => {
+                const docItem = input.closest('.doc-item');
+                const uploadBtn = docItem.querySelector('.btn-upload');
+                
+                if (input.files.length > 0) {
+                    completedCount++;
+                    
+                    // Retroalimentación visual
+                    docItem.classList.add('completed');
+                    if (uploadBtn) {
+                         uploadBtn.textContent = 'Subido';
+                         uploadBtn.classList.remove('btn-upload');
+                         uploadBtn.classList.add('btn-uploaded');
+                    }
+                } else {
+                    docItem.classList.remove('completed');
+                    if (uploadBtn) {
+                         uploadBtn.textContent = 'Subir';
+                         uploadBtn.classList.add('btn-upload');
+                         uploadBtn.classList.remove('btn-uploaded');
+                    }
+                }
+            });
+
+            const progressPercentage = (completedCount / totalDocs) * 100;
+            
+            if (pubProgressBarFill) {
+                pubProgressBarFill.style.width = `${progressPercentage}%`;
+            }
+            if (pubProgressText) {
+                pubProgressText.textContent = `${Math.round(progressPercentage)}%`;
+            }
+
+            // Habilitar botón de finalización solo cuando 100% completo
+            if (progressPercentage === 100) {
+                btnFinishPublisher.classList.remove('btn-gray-disabled');
+                btnFinishPublisher.classList.add('btn-red');
+                btnFinishPublisher.disabled = false;
+            } else {
+                btnFinishPublisher.classList.add('btn-gray-disabled');
+                btnFinishPublisher.classList.remove('btn-red');
+                btnFinishPublisher.disabled = true;
+            }
+        }
+
+        // --- LÓGICA DE PROGRESO DE DOCUMENTOS ARRENDATARIO ---
+        function updatePassportProgress() {
+            let completedCount = 0;
+            const totalDocs = passportFileInputs.length;
+
+            passportFileInputs.forEach(input => {
+                const docItem = input.closest('.doc-item');
+                const uploadBtn = docItem.querySelector('.btn-upload');
+                
+                if (input.files.length > 0) {
+                    completedCount++;
+                    // Retroalimentación visual (misma lógica que propietario)
+                    docItem.classList.add('completed');
+                    if (uploadBtn) {
+                         uploadBtn.textContent = 'Subido';
+                         uploadBtn.classList.remove('btn-upload');
+                         uploadBtn.classList.add('btn-uploaded');
+                    }
+                } else {
+                    docItem.classList.remove('completed');
+                    if (uploadBtn) {
+                         uploadBtn.textContent = 'Subir';
+                         uploadBtn.classList.add('btn-upload');
+                         uploadBtn.classList.remove('btn-uploaded');
+                    }
+                }
+            });
+
+            const progressPercentage = (completedCount / totalDocs) * 100;
+            
+            if (passportProgressBarFill) {
+                passportProgressBarFill.style.width = `${progressPercentage}%`;
+            }
+            if (passportProgressText) {
+                passportProgressText.textContent = `${Math.round(progressPercentage)}%`;
+            }
+
+            // Habilitar botón de Continuar al alcanzar el 50% (ejemplo)
+            if (progressPercentage >= 50) {
+                btnFinishPassport.classList.remove('btn-gray-disabled');
+                btnFinishPassport.classList.add('btn-red');
+                btnFinishPassport.disabled = false;
+            } else {
+                btnFinishPassport.classList.add('btn-gray-disabled');
+                btnFinishPassport.classList.remove('btn-red');
+                btnFinishPassport.disabled = true;
+            }
+        }
+
+
+        // --- MANEJADORES DE EVENTOS GLOBALES ---
+
+        // Abrir/Cerrar modales (Lógica existente)
+        // ... (Tu código de apertura/cierre de modales sigue aquí) ...
+        [...openLoginBtns, document.querySelector('.open-login-link')].forEach(btn => btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(registerFormModal);
+            closeModal(registerModal);
+            closeModal(publisherModal);
+            closeModal(passportModal);
+            openModal(loginModal);
+        }));
+        closeLogin.addEventListener('click', () => closeModal(loginModal));
+        
+        openRegisterBtns.forEach(btn => btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(registerModal);
+        }));
+        closeRegister.addEventListener('click', () => closeModal(registerModal));
+
+        backToSelection.addEventListener('click', () => {
+            closeModal(registerFormModal);
+            openModal(registerModal);
+        });
+        closeRegisterForm.addEventListener('click', () => closeModal(registerFormModal));
+        closePublisher.addEventListener('click', () => closeModal(publisherModal));
+        closePassport.addEventListener('click', () => closeModal(passportModal));
+
+        document.querySelector('.register-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(registerModal);
+        });
+
+
+        // --- ASIGNACIÓN DE ROL Y FLUJO DE REGISTRO ---
+
+        rentSelectBtn.addEventListener('click', () => {
+            selectedRoleInput.value = 'inquilino';
+            closeModal(registerModal);
+            openModal(registerFormModal);
+        });
+
+        publishSelectBtn.addEventListener('click', () => {
+            selectedRoleInput.value = 'propietario';
+            closeModal(registerModal);
+            openModal(registerFormModal);
+        });
+
+
+        // MANEJO DE ENVÍO DE FORMULARIO DE REGISTRO (SIMULACIÓN)
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const role = selectedRoleInput.value;
+            
+            closeModal(registerFormModal);
+
+            if (role === 'propietario') {
+                openModal(publisherModal); 
+                updatePublisherProgress(); // Inicializa el progreso
+            } else {
+                openModal(passportModal);
+                updatePassportProgress(); // Inicializa el progreso
+            }
+        });
+
+        // 🚨 EVENT LISTENERS PARA LA CARGA DE DOCUMENTOS 🚨
+        
+        // Propietario
+        pubFileInputs.forEach(input => {
+            input.addEventListener('change', updatePublisherProgress);
+        });
+
+        // Arrendatario
+        passportFileInputs.forEach(input => {
+            input.addEventListener('change', updatePassportProgress);
+        });
+
+
+        // --- REDIRECCIONES FINALES ---
+
+        // Redirección Propietario
+        if (btnFinishPublisher) {
+            btnFinishPublisher.addEventListener('click', () => {
+                closeModal(publisherModal);
+                window.location.href = '/dashboard-propietario'; 
+            });
+        }
+        
+        // Redirección Arrendatario
+        if (btnFinishPassport) {
+            btnFinishPassport.addEventListener('click', () => {
+                closeModal(passportModal);
+                window.location.href = '/dashboard';
+            });
+        }
+
+
+        // Otras interacciones de modal (cerrar al hacer clic en overlay)
+        [loginModal, registerModal, registerFormModal, passportModal, publisherModal].forEach(modal => {
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal(modal);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
