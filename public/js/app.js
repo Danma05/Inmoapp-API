@@ -40,9 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     const closeLoginBtn = document.getElementById('close-modal');
-    if(closeLoginBtn) closeLoginBtn.addEventListener('click', () => closeModal(loginModal));
+    if (closeLoginBtn) closeLoginBtn.addEventListener('click', () => closeModal(loginModal));
 
     // Botones "Registrarse"
+    // Registro Selección (abrir modal de opciones)
     document.querySelectorAll('.open-register-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -51,32 +52,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     const closeRegSelBtn = document.getElementById('close-register');
-    if(closeRegSelBtn) closeRegSelBtn.addEventListener('click', () => closeModal(registerSelectionModal));
-
-    // Link interno "¿Ya tienes cuenta?"
-    const openLoginLink = document.querySelector('.open-login-link');
-    if(openLoginLink) {
-        openLoginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeAllModals();
-            openModal(loginModal);
-        });
-    }
+    if (closeRegSelBtn) closeRegSelBtn.addEventListener('click', () => closeModal(registerSelectionModal));
 
     // ======================================================
-    // 3. NAVEGACIÓN DE REGISTRO (ARRENDAR VS PUBLICAR)
+    // 2. FLUJO DE NAVEGACIÓN ENTRE MODALES
     // ======================================================
 
-    // Opción A: "Quiero Arrendar"
-    const selectRentBtn = document.querySelector('.btn-rent-select') || document.querySelector('#register-modal .btn-blue-select'); 
-    if (selectRentBtn) {
-        selectRentBtn.addEventListener('click', (e) => {
+    // Selección de rol en el modal de registro (Arrendar / Publicar)
+    const optionCards = document.querySelectorAll('#register-modal .option-card');
+    optionCards.forEach(card => {
+        const btn = card.querySelector('.btn-blue-select');
+        const titleEl = card.querySelector('h3');
+        if (!btn || !titleEl) return;
+
+        const titleText = (titleEl.textContent || '').toUpperCase();
+
+        // Deducción del rol según el texto de la tarjeta
+        let role = 'ARRENDATARIO';
+        if (titleText.includes('PUBLICAR')) {
+            role = 'PROPIETARIO';
+        }
+
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            selectedRole = 'renter'; // Guardamos rol
+            selectedRole = role;
+            console.log('Rol seleccionado:', selectedRole);
             closeModal(registerSelectionModal);
             openModal(registerFormModal);
         });
-    }
+    });
 
     // Opción B: "Quiero Publicar"
     const selectPublishBtn = document.querySelector('.btn-publish-select'); 
@@ -91,14 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botón Atrás en el formulario
     const backToSelectionBtn = document.getElementById('back-to-selection');
-    if(backToSelectionBtn) {
+    if (backToSelectionBtn) {
         backToSelectionBtn.addEventListener('click', () => {
             closeModal(registerFormModal);
             openModal(registerSelectionModal);
         });
     }
     const closeRegFormBtn = document.getElementById('close-register-form');
-    if(closeRegFormBtn) closeRegFormBtn.addEventListener('click', () => closeModal(registerFormModal));
+    if (closeRegFormBtn) closeRegFormBtn.addEventListener('click', () => closeModal(registerFormModal));
 
     // ======================================================
     // 4. ENVÍO DE FORMULARIOS (SUBMITS)
@@ -109,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            // Aquí en el futuro se llamará a /login
             window.location.href = '/dashboard';
         });
     }
@@ -116,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Registro -> Abrir Pasaporte (Arrendatario) o Verificación (Propietario)
     const registerForm = document.querySelector('#register-form-modal form');
     if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             closeModal(registerFormModal);
             

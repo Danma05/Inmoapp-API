@@ -118,7 +118,7 @@ body {
 .modal-overlay.hidden { opacity: 0; pointer-events: none; }
 
 .modal-content {
-    background: white; padding: 40px 35px; width: 100%; max-width: 420px;
+    background: white; padding: 20px 18px !important; width: 100%; max-width: 420px; max-height: 650px;
     border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     position: relative; text-align: center;
     transform: scale(1); animation: modalEntry 0.3s ease-out;
@@ -130,12 +130,12 @@ body {
     background: none; border: none; cursor: pointer; color: #94A3B8;
 }
 
-.login-header h2 { color: #1E293B; font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; }
-.login-header p { font-size: 1rem; color: #64748B; margin-bottom: 30px; }
+.login-header h2 { color: #1E293B; font-size: 1.6rem; font-weight: 700; margin-bottom: 1xp; }
+.login-header p { font-size: 1rem; color: #64748B; margin-bottom: 5px; }
 
-.form-group { text-align: left; margin-bottom: 20px; }
-.form-group label { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: #0F172A; }
-.input-wrapper.gray-style { position: relative; }
+.form-group { text-align: left; margin-bottom: 1px !important; }
+.form-group label { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 1px; color: #0F172A; }
+.input-wrapper.gray-style { position: relative;}
 .input-wrapper.gray-style input {
     width: 100%; background-color: #F1F5F9; border: 1px solid #E2E8F0;
     padding: 12px 40px; border-radius: 10px; outline: none;
@@ -159,9 +159,9 @@ body {
 
 .forgot-row { display: flex; justify-content: flex-end; margin-top: 8px; }
 .forgot-link { color: #DC2626; font-size: 0.9rem; text-decoration: none; font-weight: 500; }
-.modal-divider { display: flex; align-items: center; justify-content: center; margin: 25px 0; gap: 10px; }
-.modal-divider .line { height: 1px; background-color: #E2E8F0; flex: 1; }
-.modal-divider .circle-text { color: #94A3B8; font-size: 0.9rem; }
+.modal-divider { display: flex; align-items: center; justify-content: center; margin: 5px 0; gap: 10px; }
+.modal-divider .line { height: 1px; margin-bottom: 1xp; background-color: #E2E8F0; flex: 1; }
+.modal-divider .circle-text { color: #94A3B8; margin-bottom: 1xp; font-size: 0.9rem; }
 .login-footer { font-size: 0.95rem; color: #64748B; }
 .register-link, .open-login-link { color: #DC2626; font-weight: 700; text-decoration: none; cursor: pointer;}
 
@@ -211,7 +211,7 @@ body {
 /* =========================================
    6. MODAL FORMULARIO REGISTRO
    ========================================= */
-.modal-top-nav { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.modal-top-nav { display: flex; justify-content: space-between; margin-bottom: 1    px; }
 .nav-icon-btn { background: none; border: none; font-size: 1.2rem; color: #64748B; cursor: pointer; }
 .nav-icon-btn:hover { color: #1E293B; }
 
@@ -219,7 +219,7 @@ body {
 
 .terms-check {
     display: flex; align-items: flex-start; gap: 10px;
-    font-size: 0.85rem; color: #64748B; margin-bottom: 20px; text-align: left;
+    font-size: 0.85rem; color: #64748B; margin-bottom: 1px; text-align: left;
 }
 .terms-check input { margin-top: 3px; }
 .terms-check a { color: #DC2626; text-decoration: none; }
