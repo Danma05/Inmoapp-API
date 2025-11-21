@@ -225,26 +225,7 @@ if (telInput && telError) {
             const apellido = apellidoInput.value.trim();
             const correo = emailInput.value.trim();
             const telefono = telInput.value.trim();
-// VALIDACIONES FRONT
-// -------------------------
-if (!nombre || !apellido || !correo || !password || !passwordConfirm) {
-    return showError("Todos los campos obligatorios deben estar completos.");
-}
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!emailRegex.test(correo)) {
-    return showError("El correo electrónico no es válido.");
-}
-
-// ⚠ Teléfono: opcional, pero si viene, solo números
-if (telefono && !/^[0-9]+$/.test(telefono)) {
-    if (telError) telError.style.display = "block";
-    return showError("El teléfono solo puede contener números.");
-}
-
-if (password.length < 8) {
-    return showError("La contraseña debe tener mínimo 8 caracteres.");
-}
+            
             const password = passInput.value;
             const passwordConfirm = passConfInput.value;
 
