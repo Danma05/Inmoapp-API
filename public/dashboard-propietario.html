@@ -196,23 +196,59 @@
                     <div class="form-section">
                         <h3><i class="fa-solid fa-map-location-dot"></i> Ubicación y Tipo</h3>
                         <div class="form-grid-2">
-                            <div class="form-group"><label>Tipo de Inmueble</label><select class="input-style"><option>Apartamento</option><option>Casa</option></select></div>
-                            <div class="form-group"><label>Operación</label><select class="input-style"><option>Arriendo</option><option>Venta</option></select></div>
+                            <div class="form-group">
+                                <label>Tipo de Inmueble</label>
+                                <select class="input-style" id="prop-tipo">
+                                    <option value="APARTAMENTO">Apartamento</option>
+                                    <option value="CASA">Casa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Operación</label>
+                                <select class="input-style" id="prop-operacion">
+                                    <option value="ARRIENDO">Arriendo</option>
+                                    <option value="VENTA">Venta</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group"><label>Dirección Exacta</label><input type="text" class="input-style" placeholder="Ej: Calle 5 # 10-23, Buga"></div>
+                        <div class="form-group">
+                            <label>Dirección Exacta</label>
+                            <input type="text" class="input-style" id="prop-direccion" placeholder="Ej: Calle 5 # 10-23, Buga">
+                        </div>
                     </div>
+
                     <div class="form-section">
                         <h3><i class="fa-solid fa-list-check"></i> Características</h3>
                         <div class="form-grid-3">
-                            <div class="form-group"><label>Habitaciones</label><input type="number" class="input-style" placeholder="0"></div>
-                            <div class="form-group"><label>Baños</label><input type="number" class="input-style" placeholder="0"></div>
-                            <div class="form-group"><label>Área (m²)</label><input type="number" class="input-style" placeholder="Ej: 80"></div>
+                            <div class="form-group">
+                                <label>Habitaciones</label>
+                                <input type="number" class="input-style" id="prop-habitaciones" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Baños</label>
+                                <input type="number" class="input-style" id="prop-banos" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Área (m²)</label>
+                                <input type="number" class="input-style" id="prop-area" placeholder="Ej: 80">
+                            </div>
                         </div>
                     </div>
+
                     <div class="form-section">
                         <h3><i class="fa-regular fa-file-lines"></i> Detalles</h3>
-                        <div class="form-group"><label>Descripción</label><textarea class="input-style" rows="3"></textarea></div>
-                        <div class="form-group"><label>Precio / Canon</label><input type="text" class="input-style" placeholder="$ 0"></div>
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea class="input-style" id="prop-descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio / Canon</label>
+                            <input type="text" class="input-style" id="prop-precio" placeholder="$ 0">
+                        </div>
+                        <div class="form-group">
+                            <label>Imagen principal (URL)</label>
+                            <input type="url" class="input-style" id="prop-imagen-url" placeholder="https://...">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -224,8 +260,26 @@
     </div>
 
     <script type="module" src="/js/app.js"></script>
-    <script>
+        <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // ===============================
+            // 0. USUARIO LOGUEADO DESDE LOCALSTORAGE
+            // ===============================
+            let currentUser = null;
+            try {
+                const stored = localStorage.getItem('inmoapp_user');
+                if (stored) currentUser = JSON.parse(stored);
+            } catch (e) {
+                console.error('Error leyendo usuario de localStorage', e);
+            }
+
+            if (!currentUser || !currentUser.correo) {
+                // Si no hay usuario válido, lo sacamos
+                window.location.href = '/';
+                return;
+            }
+
             // -- LOGICA TABS --
             const links = document.querySelectorAll('.nav-link');
             const views = document.querySelectorAll('.dashboard-view');
@@ -241,12 +295,10 @@
                     views.forEach(v => v.classList.add('hidden'));
                     document.getElementById('view-' + target).classList.remove('hidden');
                     
-                    // Titulo
                     const temp = link.cloneNode(true);
                     if(temp.querySelector('.nav-badge-sm')) temp.querySelector('.nav-badge-sm').remove();
                     pageTitle.textContent = temp.textContent.trim();
 
-                    // Ocultar btn publicar
                     if(target === 'mensajes' || target === 'contratos') {
                         if(btnNew) btnNew.style.display = 'none';
                     } else {
@@ -257,9 +309,77 @@
 
             // -- LOGICA MODAL PUBLICAR --
             const modal = document.getElementById('new-property-modal');
-            const closeBtns = [document.getElementById('close-new-prop'), document.getElementById('cancel-new-prop')];
+            const closeBtns = [
+                document.getElementById('close-new-prop'),
+                document.getElementById('cancel-new-prop')
+            ];
+            const formNewProp = document.getElementById('form-new-property');
+            const submitNewPropBtn = document.getElementById('submit-new-prop');
+
             if(btnNew) btnNew.addEventListener('click', () => modal.classList.remove('hidden'));
             closeBtns.forEach(btn => { if(btn) btn.addEventListener('click', () => modal.classList.add('hidden')); });
+
+            // Inputs del formulario
+            const tipoInput        = document.getElementById('prop-tipo');
+            const operacionInput   = document.getElementById('prop-operacion');
+            const dirInput         = document.getElementById('prop-direccion');
+            const habInput         = document.getElementById('prop-habitaciones');
+            const banosInput       = document.getElementById('prop-banos');
+            const areaInput        = document.getElementById('prop-area');
+            const descInput        = document.getElementById('prop-descripcion');
+            const precioInput      = document.getElementById('prop-precio');
+            const imgUrlInput      = document.getElementById('prop-imagen-url');
+
+            if (submitNewPropBtn && formNewProp) {
+                submitNewPropBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+
+                    const payload = {
+                        correoPropietario: currentUser.correo,
+                        tipoInmueble:   tipoInput.value,
+                        operacion:      operacionInput.value,
+                        direccion:      dirInput.value.trim(),
+                        habitaciones:   Number(habInput.value || 0),
+                        banos:          Number(banosInput.value || 0),
+                        areaM2:         Number(areaInput.value || 0),
+                        descripcion:    descInput.value.trim(),
+                        precioCanon:    precioInput.value.trim(),
+                        imagenUrl:      imgUrlInput.value.trim()
+                    };
+
+                    if (!payload.direccion || !payload.precioCanon) {
+                        alert('La dirección y el precio son obligatorios.');
+                        return;
+                    }
+
+                    submitNewPropBtn.disabled = true;
+                    submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
+
+                    try {
+                        const resp = await fetch('/propiedades', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await resp.json();
+
+                        if (!resp.ok) {
+                            console.error('Error al crear propiedad:', data);
+                            alert(data.error || 'Error registrando la propiedad.');
+                        } else {
+                            alert('Inmueble enviado a revisión correctamente.');
+                            modal.classList.add('hidden');
+                            formNewProp.reset();
+                        }
+                    } catch (err) {
+                        console.error('Error de red creando propiedad:', err);
+                        alert('No se pudo conectar con el servidor.');
+                    } finally {
+                        submitNewPropBtn.disabled = false;
+                        submitNewPropBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar';
+                    }
+                });
+            }
 
             // -- LOGICA DROPDOWNS --
             const btnBell = document.getElementById('btn-bell');
@@ -281,8 +401,12 @@
             });
 
             const btnLogout = document.getElementById('btn-logout');
-            if(btnLogout) btnLogout.addEventListener('click', () => window.location.href = '/');
+            if(btnLogout) btnLogout.addEventListener('click', () => {
+                localStorage.removeItem('inmoapp_user');
+                window.location.href = '/';
+            });
         });
-    </script>
+        </script>
+
 </body>
 </html>

@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ======================================================
 
     // =======================================
-    // LOGIN REAL CONTRA LA BASE DE DATOS
+    // LOGIN REAL CONTRA LA BASE DE DATOS (+ GUARDAR SESIÓN)
     // =======================================
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
@@ -118,10 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const loginError = document.getElementById('login-error');
 
         function showLoginError(msg) {
-            if (!loginError) {
-                alert(msg);
-                return;
-            }
+            if (!loginError) return alert(msg);
             loginError.textContent = msg;
             loginError.style.display = 'block';
         }
@@ -152,13 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await resp.json();
 
                 if (!resp.ok || !data.ok) {
-                    console.error("❌ Error login:", data);
                     return showLoginError(data.error || "Correo o contraseña incorrectos.");
                 }
 
-                // Redirección según rol
-                const rol = (data.usuario?.rol || '').toUpperCase();
+                // 🔥 GUARDAR USUARIO EN SESIÓN
+                localStorage.setItem('inmoapp_user', JSON.stringify(data.usuario));
 
+                const rol = (data.usuario?.rol || '').toUpperCase();
                 if (rol === 'PROPIETARIO') {
                     window.location.href = '/dashboard-propietario';
                 } else {
@@ -166,112 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
             } catch (err) {
-                console.error("❌ Error de red en login:", err);
-                showLoginError("No se pudo conectar con el servidor. Inténtalo nuevamente.");
-            }
-        });
-    }
-
-    // ===============================
-    // REGISTRO REAL DE USUARIO
-    // ===============================
-    const registerForm = document.querySelector('#register-form');
-    if (registerForm) {
-
-        const nombreInput = document.getElementById('reg-nombre');
-        const apellidoInput = document.getElementById('reg-apellido');
-        const emailInput = document.getElementById('reg-email');
-        const telInput = document.getElementById('reg-telefono');
-        const passInput = document.getElementById('reg-password');
-        const passConfInput = document.getElementById('reg-password-confirm');
-        const termsInput = document.getElementById('terms-split');
-        const errorBox = document.getElementById('register-error');
-
-        function showError(msg) {
-            errorBox.textContent = msg;
-            errorBox.style.display = 'block';
-        }
-        function clearError() {
-            errorBox.textContent = '';
-            errorBox.style.display = 'none';
-        }
-
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            clearError();
-
-            const nombre = nombreInput.value.trim();
-            const apellido = apellidoInput.value.trim();
-            const correo = emailInput.value.trim();
-            const telefono = telInput.value.trim();
-            const password = passInput.value;
-            const passwordConfirm = passConfInput.value;
-
-            // -------------------------
-            // VALIDACIONES FRONT
-            // -------------------------
-            if (!nombre || !apellido || !correo || !password || !passwordConfirm) {
-                return showError("Todos los campos obligatorios deben estar completos.");
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(correo)) {
-                return showError("El correo electrónico no es válido.");
-            }
-
-            if (password.length < 8) {
-                return showError("La contraseña debe tener mínimo 8 caracteres.");
-            }
-
-            if (password !== passwordConfirm) {
-                return showError("Las contraseñas no coinciden.");
-            }
-
-            if (!termsInput.checked) {
-                return showError("Debes aceptar los términos y condiciones.");
-            }
-
-            // -------------------------
-            // ENVÍO REAL AL BACKEND
-            // -------------------------
-            try {
-                const response = await fetch('/usuarios', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre,
-                        apellido,
-                        correo,
-                        telefono,
-                        password,
-                        aceptaTerminos: true,
-                        rol: selectedRole // ARRENDATARIO o PROPIETARIO
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    console.error(data);
-                    return showError(data.error || "Error registrando usuario.");
-                }
-
-                // -------------------------
-                // ÉXITO → ABRIR SIGUIENTE MODAL
-                // -------------------------
-                closeModal(registerFormModal);
-                registerForm.reset();
-                termsInput.checked = false;
-
-                if (selectedRole === 'PROPIETARIO') {
-                    openModal(publisherModal);
-                } else {
-                    openModal(passportModal);
-                }
-
-            } catch (err) {
-                console.error(err);
-                showError("No se pudo conectar con el servidor. Inténtalo nuevamente.");
+                console.error("❌ Error en login:", err);
+                showLoginError("No se pudo conectar con el servidor.");
             }
         });
     }
@@ -622,27 +515,68 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Simular Envío de Propiedad a Revisión
-    if(submitNewPropBtn) {
-        submitNewPropBtn.addEventListener('click', (e) => {
+    // =======================================
+    // ENVÍO REAL DE PUBLICACIÓN A LA BASE DE DATOS
+    // =======================================
+    if (submitNewPropBtn && formNewProp) {
+        submitNewPropBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            // Aquí iría la lógica real de guardar en BD
-            // Simulamos éxito:
-            submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
-            
-            setTimeout(() => {
-                alert('¡Solicitud Enviada! La inmobiliaria revisará tu inmueble en las próximas 24 horas.');
-                modalNewProp.classList.add('hidden');
-                submitNewPropBtn.textContent = 'Enviar a Revisión';
-                if(formNewProp) formNewProp.reset();
-                
-                // Opcional: Recargar para ver cambios (en producción no recargamos, actualizamos DOM)
-                // window.location.reload(); 
-            }, 1500);
+
+            // 1️⃣ Obtener usuario logueado
+            const storedUser = localStorage.getItem('inmoapp_user');
+            if (!storedUser) return alert("Debes iniciar sesión.");
+            const user = JSON.parse(storedUser);
+
+            // 2️⃣ Capturar datos del formulario
+            const payload = {
+                correoPropietario: user.correo,
+                tipoInmueble: document.getElementById('prop-tipo')?.value,
+                operacion: document.getElementById('prop-operacion')?.value,
+                direccion: document.getElementById('prop-direccion')?.value.trim(),
+                habitaciones: Number(document.getElementById('prop-habitaciones')?.value || 0),
+                banos: Number(document.getElementById('prop-banos')?.value || 0),
+                areaM2: Number(document.getElementById('prop-area')?.value || 0),
+                descripcion: document.getElementById('prop-descripcion')?.value.trim(),
+                precioCanon: document.getElementById('prop-precio')?.value.trim(),
+                imagenUrl: document.getElementById('prop-imagen-url')?.value.trim()
+            };
+
+            if (!payload.direccion || !payload.precioCanon) {
+                return alert("La dirección y el precio son obligatorios.");
+            }
+
+            submitNewPropBtn.disabled = true;
+            submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
+
+            try {
+                const resp = await fetch('/propiedades', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    alert(data.error || "Error registrando propiedad.");
+                } else {
+                    alert("Inmueble enviado a revisión.");
+                    modalNewProp.classList.add('hidden');
+                    formNewProp.reset();
+                }
+
+            } catch (err) {
+                console.error("❌ Error publicando propiedad:", err);
+                alert("No se pudo conectar con el servidor.");
+            } finally {
+                submitNewPropBtn.disabled = false;
+                submitNewPropBtn.innerHTML = 'Enviar a Revisión';
+            }
         });
     }
 
-        // ======================================================
+
+    // ======================================================
     // 11. LOGICA DE NOTIFICACIONES (TOGGLE)
     // ======================================================
     

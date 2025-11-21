@@ -336,6 +336,83 @@ app.post("/passport/document", async (req, res) => {
   }
 });
 
+// =======================================
+// CREAR PROPIEDAD (PROPIETARIO)
+// =======================================
+app.post("/propiedades", async (req, res) => {
+  try {
+    const {
+      correoPropietario,
+      tipoInmueble,
+      operacion,
+      direccion,
+      habitaciones,
+      banos,
+      areaM2,
+      descripcion,
+      precioCanon,
+      imagenUrl
+    } = req.body;
+
+    if (!correoPropietario || !direccion || !precioCanon) {
+      return res.status(400).json({ error: "Correo, dirección y precio son obligatorios." });
+    }
+
+    // Buscar propietario por correo
+    const uRes = await dbQuery(
+      `SELECT id FROM public.usuarios 
+       WHERE correo = $1 AND rol = 'PROPIETARIO' AND activo = TRUE
+       LIMIT 1`,
+      [correoPropietario]
+    );
+
+    if (uRes.rows.length === 0) {
+      return res.status(400).json({ error: "Propietario no válido o inactivo." });
+    }
+
+    const propietarioId = uRes.rows[0].id;
+
+    const insertQuery = `
+      INSERT INTO public.propiedades (
+        propietario_id,
+        tipo_inmueble,
+        operacion,
+        direccion,
+        habitaciones,
+        banos,
+        area_m2,
+        descripcion,
+        precio_canon,
+        imagen_url
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      RETURNING *;
+    `;
+
+    const result = await dbQuery(insertQuery, [
+      propietarioId,
+      tipoInmueble || 'APARTAMENTO',
+      operacion || 'ARRIENDO',
+      direccion,
+      Number(habitaciones || 0),
+      Number(banos || 0),
+      Number(areaM2 || 0),
+      descripcion || null,
+      precioCanon,
+      imagenUrl || null
+    ]);
+
+    return res.status(201).json({
+      message: "Propiedad registrada correctamente.",
+      propiedad: result.rows[0]
+    });
+
+  } catch (e) {
+    console.error("❌ Error POST /propiedades:", e);
+    return res.status(500).json({ error: "Error registrando propiedad." });
+  }
+});
+
 
 // ------------------------------------------------------------
 // SERVIDOR
