@@ -25,23 +25,80 @@
                 <a href="#" class="nav-link" data-tab="propiedades">Mis Propiedades</a>
                 <a href="#" class="nav-link" data-tab="solicitudes">Solicitudes</a>
                 <a href="#" class="nav-link" data-tab="contratos">Contratos</a>
+                <a href="#" class="nav-link" data-tab="mensajes">Mensajes <span class="nav-badge-sm"></span></a>
             </nav>
 
             <div class="header-user-actions">
-                <button class="icon-btn-white notification-btn">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge-dot-white"></span>
-                </button>
-                <div class="user-pill-white">
-                    <div class="avatar-circle">CA</div>
-                    <span>Carlos</span>
-                    <i class="fa-solid fa-chevron-down"></i>
+                
+                <div class="notification-wrapper" style="position: relative;">
+                    <button id="btn-bell" class="icon-btn-white notification-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge-dot-white"></span>
+                    </button>
+
+                    <div id="notif-menu" class="notif-dropdown hidden">
+                        <div class="notif-header">
+                            <h3>Notificaciones</h3>
+                            <span class="mark-read">Marcar leídas</span>
+                        </div>
+                        <div class="notif-list">
+                            <div class="notif-item unread">
+                                <div class="notif-icon green"><i class="fa-solid fa-check"></i></div>
+                                <div class="notif-text">
+                                    <strong>Inmueble Aprobado</strong>
+                                    <p>Tu "Apartamento Santa Mónica" ya es público.</p>
+                                    <span class="time">Hace 2 horas</span>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <div class="notif-icon blue"><i class="fa-solid fa-file-contract"></i></div>
+                                <div class="notif-text">
+                                    <strong>Contrato Listo</strong>
+                                    <p>Borrador disponible para "Casa Campestre".</p>
+                                    <span class="time">Ayer</span>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon gray"><i class="fa-regular fa-comment"></i></div>
+                                <div class="notif-text">
+                                    <strong>Nuevo Mensaje</strong>
+                                    <p>Juan preguntó por el precio.</p>
+                                    <span class="time">Hace 1 día</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <a href="#">Ver todas</a>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="user-profile-wrapper" style="position: relative;">
+                    <div class="user-pill-white" id="user-profile-btn">
+                        <div class="avatar-circle">CA</div>
+                        <span>Carlos</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+
+                    <div id="user-dropdown" class="user-dropdown hidden">
+                        <a href="#" class="dropdown-item">
+                            <i class="fa-regular fa-user"></i> Mi Perfil
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i> Configuración
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/" class="dropdown-item logout-item" id="btn-logout">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </header>
 
-    <main class="owner-main-container container">
+    <main class="owner-main-container">
         
         <div class="page-header-row">
             <h1 id="page-title">Panel de Control</h1>
@@ -169,6 +226,12 @@
                             <td>Casa Campestre</td>
                             <td><span class="status-text orange">Pendiente</span></td>
                         </tr>
+                        <tr>
+                            <td>#REQ-092</td>
+                            <td>Cambio de Precio</td>
+                            <td>Apto Santa Mónica</td>
+                            <td><span class="status-text green">Aprobado</span></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -182,9 +245,73 @@
             </div>
         </section>
 
+        <section id="view-mensajes" class="dashboard-view hidden">
+            <div class="messages-container" style="height: 500px;"> 
+                <div class="msg-sidebar">
+                    <div class="msg-search-box">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Buscar chat...">
+                        </div>
+                    </div>
+                    <div class="msg-list">
+                        <div class="msg-item unread active">
+                            <div class="msg-avatar">JD</div>
+                            <div class="msg-info">
+                                <div class="msg-header">
+                                    <span class="msg-name">Juan David</span>
+                                    <span class="msg-time">10:30 AM</span>
+                                </div>
+                                <div class="msg-property">Interesado en: Apto Santa Mónica</div>
+                                <div class="msg-preview">Hola, ¿sigue disponible el apartamento?</div>
+                            </div>
+                        </div>
+                        <div class="msg-item">
+                            <div class="msg-avatar" style="background:#6B7280;">MG</div>
+                            <div class="msg-info">
+                                <div class="msg-header">
+                                    <span class="msg-name">María García</span>
+                                    <span class="msg-time">Ayer</span>
+                                </div>
+                                <div class="msg-property">Interesado en: Casa Campestre</div>
+                                <div class="msg-preview">Gracias por la información.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-window">
+                    <div class="chat-header">
+                        <div class="chat-user-info">
+                            <div class="chat-avatar-sm">JD</div>
+                            <div class="chat-details">
+                                <h3>Juan David</h3>
+                                <span>Arrendatario Verificado</span>
+                            </div>
+                        </div>
+                        <div class="chat-actions"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                    </div>
+                    <div class="chat-body">
+                        <div class="message-bubble received">
+                            Hola, ¿sigue disponible el apartamento?
+                            <span class="msg-time-stamp">10:30 AM</span>
+                        </div>
+                        <div class="message-bubble sent">
+                            Hola Juan, sí, todavía está disponible para visitas.
+                            <span class="msg-time-stamp">10:35 AM</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <button class="btn-attach"><i class="fa-solid fa-paperclip"></i></button>
+                        <input type="text" class="chat-input-field" placeholder="Escribe un mensaje...">
+                        <button class="btn-send-msg"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <footer class="main-footer-dark" style="margin-top: 60px;">
+    <footer class="main-footer-dark">
         <div class="container">
             <div class="footer-grid-dark">
                 <div class="footer-col">
@@ -206,7 +333,7 @@
                     <h3 class="footer-heading">Enlaces</h3>
                     <ul class="links-list">
                         <li><a href="#">Ayuda</a></li>
-                        <li><a href="#">Términos</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
                     </ul>
                 </div>
             </div>
@@ -246,36 +373,99 @@
     </div>
 
     <script type="module" src="/js/app.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- A. NAVEGACIÓN TABS ---
             const links = document.querySelectorAll('.nav-link');
             const views = document.querySelectorAll('.dashboard-view');
             const pageTitle = document.getElementById('page-title');
+            const btnNew = document.getElementById('btn-new-property-main');
 
             links.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Activar menú
+                    
                     links.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
 
-                    // Mostrar vista
                     const target = link.getAttribute('data-tab');
                     views.forEach(v => v.classList.add('hidden'));
-                    document.getElementById('view-' + target).classList.remove('hidden');
+                    const targetView = document.getElementById('view-' + target);
+                    if(targetView) targetView.classList.remove('hidden');
 
-                    // Actualizar título
-                    pageTitle.textContent = link.textContent;
+                    const tempLink = link.cloneNode(true);
+                    const badge = tempLink.querySelector('.nav-badge-sm');
+                    if(badge) badge.remove();
+                    pageTitle.textContent = tempLink.textContent.trim();
+                    
+                    if(target === 'mensajes' || target === 'contratos') {
+                        if(btnNew) btnNew.style.display = 'none';
+                    } else {
+                        if(btnNew) btnNew.style.display = 'flex';
+                    }
                 });
             });
 
-            // Modal lógica simple
-            const btnOpen = document.getElementById('btn-new-property-main');
+            // --- B. NOTIFICACIONES (Campana) ---
+            const btnBell = document.getElementById('btn-bell');
+            const notifMenu = document.getElementById('notif-menu');
+
+            if(btnBell && notifMenu) {
+                btnBell.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    notifMenu.classList.toggle('hidden');
+                    // Si abro notificaciones, cierro usuario
+                    if(userMenu) userMenu.classList.add('hidden');
+                });
+            }
+
+            // --- C. MENÚ DE USUARIO (Cerrar Sesión) ---
+            const userBtn = document.getElementById('user-profile-btn');
+            const userMenu = document.getElementById('user-dropdown');
+            const btnLogout = document.getElementById('btn-logout');
+
+            if(userBtn && userMenu) {
+                userBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userMenu.classList.toggle('hidden');
+                    // Si abro usuario, cierro notificaciones
+                    if(notifMenu) notifMenu.classList.add('hidden');
+                });
+            }
+
+            // Lógica Global de Cierre al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                // Cerrar Notificaciones
+                if (notifMenu && !notifMenu.contains(e.target) && e.target !== btnBell) {
+                    notifMenu.classList.add('hidden');
+                }
+                // Cerrar Usuario
+                if (userMenu && !userMenu.contains(e.target) && !userBtn.contains(e.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+
+            // Evitar cierre al hacer clic dentro
+            if(notifMenu) notifMenu.addEventListener('click', e => e.stopPropagation());
+            if(userMenu) userMenu.addEventListener('click', e => e.stopPropagation());
+
+            // LOGOUT (Simulado)
+            if(btnLogout) {
+                btnLogout.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Simular salida
+                    alert('Cerrando sesión...');
+                    window.location.href = '/';
+                });
+            }
+
+            // --- D. MODAL NUEVA PROPIEDAD ---
             const modal = document.getElementById('new-property-modal');
             const btnsClose = [document.getElementById('close-new-prop'), document.getElementById('cancel-new-prop')];
             
-            if(btnOpen) btnOpen.addEventListener('click', () => modal.classList.remove('hidden'));
+            if(btnNew) btnNew.addEventListener('click', () => modal.classList.remove('hidden'));
             btnsClose.forEach(b => b.addEventListener('click', () => modal.classList.add('hidden')));
         });
     </script>

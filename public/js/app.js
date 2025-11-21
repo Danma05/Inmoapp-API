@@ -497,3 +497,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1500);
         });
     }
+
+        // ======================================================
+    // 11. LOGICA DE NOTIFICACIONES (TOGGLE)
+    // ======================================================
+    
+    const btnBell = document.getElementById('btn-bell');
+    const notifWindow = document.getElementById('notif-window');
+
+    if (btnBell && notifWindow) {
+        // 1. Al hacer clic en la campana
+        btnBell.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evita que el clic cierre la ventana inmediatamente
+            notifWindow.classList.toggle('hidden');
+        });
+
+        // 2. Al hacer clic en cualquier otro lado de la pantalla -> CERRAR
+        document.addEventListener('click', (e) => {
+            if (!notifWindow.contains(e.target) && e.target !== btnBell) {
+                notifWindow.classList.add('hidden');
+            }
+        });
+
+        // 3. Al hacer clic dentro de la ventana -> NO CERRAR
+        notifWindow.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+    }
