@@ -273,29 +273,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     // ======================================================
     // 5. LÓGICA DE CARGA DE ARCHIVOS (UPLOAD)
     // ======================================================
-    
+
     // Función reutilizable para ambos modales
-    function setupUploadLogic(inputSelector, barId, textId, btnId) {
+    function setupUploadLogic(inputSelector, barId, textId, btnId, onFinish) {
         const inputs = document.querySelectorAll(inputSelector);
         const bar = document.getElementById(barId);
         const text = document.getElementById(textId);
         const btn = document.getElementById(btnId);
 
-        if(inputs.length === 0) return;
+        if (inputs.length === 0) return;
 
         function update() {
             let count = 0;
-            inputs.forEach(inp => { if(inp.files.length > 0) count++; });
+            inputs.forEach(inp => { if (inp.files.length > 0) count++; });
             
             const pct = Math.round((count / inputs.length) * 100);
-            if(bar) bar.style.width = `${pct}%`;
-            if(text) text.textContent = `${pct}%`;
+            if (bar) bar.style.width = `${pct}%`;
+            if (text) text.textContent = `${pct}%`;
 
-            if(pct > 0 && btn) {
+            if (pct > 0 && btn) {
                 btn.classList.remove('btn-gray-disabled');
                 btn.classList.add('btn-finish-active');
                 btn.textContent = pct === 100 ? "Finalizar" : "Continuar";
@@ -315,8 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     btnUp.textContent = "Listo";
                     btnUp.classList.add('uploaded');
                 } else {
-                    // Icono por defecto simple si se borra
-                    icon.innerHTML = '<i class="fa-regular fa-file"></i>'; 
+                    icon.innerHTML = '<i class="fa-regular fa-file"></i>';
                     icon.classList.remove('success');
                     btnUp.textContent = "Subir";
                     btnUp.classList.remove('uploaded');
@@ -325,19 +323,38 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        if(btn) {
-            btn.addEventListener('click', () => {
-                // Al finalizar, ir al dashboard
-                window.location.href = '/dashboard';
+        if (btn && typeof onFinish === 'function') {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                onFinish();
             });
         }
     }
 
-    // Configurar Arrendatario
-    setupUploadLogic('#passport-modal .file-input', 'progress-bar-fill', 'progress-text', 'btn-finish-passport');
-    
-    // Configurar Propietario
-    setupUploadLogic('#publisher-modal .file-input', 'pub-progress-bar-fill', 'pub-progress-text', 'btn-finish-publisher');
+    // Configurar Arrendatario: cerrar pasaporte y abrir login
+    setupUploadLogic(
+        '#passport-modal .file-input',
+        'progress-bar-fill',
+        'progress-text',
+        'btn-finish-passport',
+        () => {
+            closeModal(passportModal);
+            openModal(loginModal);
+        }
+    );
+
+    // Configurar Propietario: cerrar verificación y abrir login
+    setupUploadLogic(
+        '#publisher-modal .file-input',
+        'pub-progress-bar-fill',
+        'pub-progress-text',
+        'btn-finish-publisher',
+        () => {
+            closeModal(publisherModal);
+            openModal(loginModal);
+        }
+    );
+
 
     const closePassportBtn = document.getElementById('close-passport');
     if(closePassportBtn) closePassportBtn.addEventListener('click', () => closeModal(passportModal));
