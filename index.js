@@ -1,21 +1,25 @@
-// index.js – API completa con frontend + pg + reintentos + healthcheck.
+// index.js - MODO MOCK (SIN BASE DE DATOS) + RUTA NUEVA
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import pool from "./db.js";        // usa tu versión avanzada
-import { dbQuery } from "./dbQuery.js"; // usa tu versión avanzada
+
+// --- BASE DE DATOS DESHABILITADA ---
+// import pool from "./db.js";
+// import { dbQuery } from "./dbQuery.js";
 
 const app = express();
 app.use(express.json());
 
 // ------------------------------------------------------------
-// STATIC / FRONTEND
+// CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y RUTAS DE PÁGINAS
 // ------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Servir carpeta public (CSS, JS, Imágenes)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Rutas de Pantallas
 app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -24,100 +28,110 @@ app.get("/dashboard", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
+// --- NUEVA RUTA PARA EL MENÚ DE EXPLORACIÓN ---
+app.get("/explorar-menu", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "explorar-menu.html"));
+});
+
+// RUTA FAVORITOS
+app.get("/favoritos", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "favoritos.html"));
+});
+
+//ruta visitas
+app.get("/visitas", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "visitas.html"));
+});
+
+// ruta postulaciones
+app.get("/postulaciones", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "postulaciones.html"));
+});
+
+//  ruta mensajes
+app.get("/mensajes", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "mensajes.html"));
+});
+
+// --- RUTA MI CUENTA ---
+app.get("/cuenta", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "cuenta.html"));
+});
+
+// --- Dashboard PropietarioX---
+app.get("/dashboard-propietario", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dashboard-propietario.html"));
+});
+
 // ------------------------------------------------------------
-// HEALTHCHECKS
+// API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------
+
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "InmoApp API", mode: "full" });
+  res.json({ ok: true, mode: "mock" });
 });
 
-app.get("/health/db", async (_req, res) => {
-  try {
-    const result = await pool.query("SELECT NOW() now");
-    res.json({ ok: true, db: "connected", now: result.rows[0].now });
-  } catch (e) {
-    console.error("❌ Error en health/db:", e);
-    res.status(500).json({ ok: false, error: e.message });
-  }
+app.get("/health/db", (_req, res) => {
+  res.json({ ok: true, db: "mocked_connected", now: new Date().toISOString() });
 });
 
-// ------------------------------------------------------------
-// API: USUARIOS
-// ------------------------------------------------------------
-
-// GET usuarios
-app.get("/usuarios", async (_req, res) => {
-  try {
-    const result = await dbQuery("SELECT * FROM usuarios ORDER BY id DESC");
-    res.json(result.rows);
-  } catch (e) {
-    console.error("❌ Error GET /usuarios:", e);
-    res.status(500).json({ error: "Error obteniendo usuarios" });
-  }
+// GET /usuarios (Simulado)
+app.get("/usuarios", (_req, res) => {
+  res.json([
+    { id: 1, nombre_completo: "Usuario Mock", correo: "test@mock.com" }
+  ]);
 });
 
-// POST usuario
-app.post("/usuarios", async (req, res) => {
-  try {
-    const {
-      nombreCompleto,
-      correo,
-      telefono,
-      rol,              // 'ARRENDATARIO' o 'PROPIETARIO'
-      aceptaTerminos,   // true / false
-      password          // viene del frontend
-    } = req.body;
+// POST /usuarios (Simulado)
+app.post("/usuarios", (req, res) => {
+  const { nombreCompleto, correo, rol } = req.body;
+  console.log("📝 [MOCK] Creando usuario:", { nombreCompleto, correo });
 
-    const query = `
-      INSERT INTO usuarios (
-        nombre_completo,
-        correo,
-        telefono,
-        rol,
-        acepta_terminos,
-        password_hash
-      )
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *;
-    `;
-
-    const values = [
-      nombreCompleto,
-      correo,
-      telefono,
-      rol,
-      !!aceptaTerminos,
-      password         // por ahora en plano; luego lo pasamos a hash
-    ];
-
-    const result = await dbQuery(query, values);
-    res.status(201).json(result.rows[0]);
-  } catch (e) {
-    console.error("❌ Error POST /usuarios:", e);
-    res.status(500).json({ error: e.message });
-  }
+  setTimeout(() => {
+    res.status(201).json({
+      id: Date.now(),
+      nombre_completo: nombreCompleto,
+      correo: correo,
+      rol: rol || 'ARRENDATARIO',
+      creado_en: new Date()
+    });
+  }, 300);
 });
 
+// POST /passport/init (Simulado)
+app.post("/passport/init", (req, res) => {
+  const { usuarioId } = req.body;
+  console.log(`🛂 [MOCK] Inicializando pasaporte para usuario ${usuarioId}`);
+  
+  res.status(201).json({
+    id: 100,
+    usuario_id: usuarioId,
+    progreso_porcentaje: 0,
+    completado: false
+  });
+});
 
-app.post("/passport/init", async (req, res) => {
-  try {
-    const { usuarioId } = req.body;
+// POST /passport/document (Simulado)
+app.post("/passport/document", (req, res) => {
+  const { usuarioId, tipoDocumento } = req.body;
+  console.log(`📄 [MOCK] Documento subido: ${tipoDocumento} (Usuario: ${usuarioId})`);
 
-    // Crea el pasaporte solo si no existe
-    const query = `
-      INSERT INTO pasaportes_arrendatario (usuario_id)
-      VALUES ($1)
-      ON CONFLICT (usuario_id) DO UPDATE
-      SET actualizado_en = NOW()
-      RETURNING *;
-    `;
-
-    const result = await dbQuery(query, [usuarioId]);
-    res.status(201).json(result.rows[0]);
-  } catch (e) {
-    console.error("❌ Error POST /passport/init:", e);
-    res.status(500).json({ error: "Error inicializando pasaporte" });
-  }
+  res.status(201).json({
+    documento: {
+      id: Math.floor(Math.random() * 1000),
+      nombre_archivo: "archivo_mock.pdf",
+      tipo_documento: tipoDocumento
+    },
+    pasaporte: {
+      usuario_id: usuarioId,
+      tiene_doc_identidad: tipoDocumento === 'IDENTIDAD',
+      tiene_solvencia: tipoDocumento === 'SOLVENCIA',
+      tiene_ingresos: tipoDocumento === 'INGRESOS',
+      tiene_otros: tipoDocumento === 'OTROS',
+      progreso_porcentaje: 25,
+      actualizado_en: new Date()
+    }
+  });
 });
 
 app.post("/passport/document", async (req, res) => {
@@ -198,32 +212,15 @@ app.post("/passport/document", async (req, res) => {
 
 
 // ------------------------------------------------------------
-// SERVER
+// SERVIDOR
 // ------------------------------------------------------------
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-  console.log(`⚡ InmoApp API corriendo en puerto ${PORT}`);
+  console.log(`\n🚀 Servidor MOCK corriendo en http://localhost:${PORT}`);
+  console.log("⚠️  NO hay conexión a base de datos real. Todo es simulado.\n");
 });
 
-// ------------------------------------------------------------
-// SHUTDOWN ELEGANTE
-// ------------------------------------------------------------
-async function shutdown(signal) {
-  console.log(`\n⛔ ${signal} recibido. Cerrando servidor...`);
-
-  server.close(async () => {
-    try {
-      console.log("⏳ Cerrando pool PostgreSQL...");
-      await pool.end();
-      console.log("✅ Pool cerrado.");
-      process.exit(0);
-    } catch (err) {
-      console.error("❌ Error cerrando pool:", err);
-      process.exit(1);
-    }
-  });
-}
-
-["SIGINT", "SIGTERM"].forEach(sig =>
-  process.on(sig, () => shutdown(sig))
-);
+process.on("SIGINT", () => {
+  console.log("\n👋 Cerrando servidor...");
+  server.close(() => process.exit(0));
+});

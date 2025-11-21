@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InmoApp - Mi Cuenta</title>
+    
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/dashboard" class="brand">
+                <div class="logo-box">IA</div>
+                <span class="logo-text">InmoApp</span>
+            </a>
+            <nav class="top-nav">
+                <a href="/explorar-menu">Explorar</a>
+                <a href="/favoritos">Favoritos</a>
+                <a href="/visitas">Visitas</a>
+                <a href="/postulaciones">Postulaciones</a>
+                <a href="/mensajes">Mensajes</a>
+            </nav>
+            <div class="user-controls">
+                <button class="icon-action"><i class="fa-regular fa-heart"></i></button>
+                <button class="icon-action notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">2</span>
+                </button>
+                <div class="icon-action profile active">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body">
+        
+        <div class="account-grid">
+            <aside class="account-sidebar">
+                <div class="user-mini-profile">
+                    <div class="user-avatar-lg">JD</div>
+                    <div class="user-name">Juan David</div>
+                    <div class="user-email">juan.david@email.com</div>
+                </div>
+                
+                <ul class="account-nav-list">
+                    <li class="account-nav-item active" data-target="panel-notificaciones">
+                        <i class="fa-regular fa-bell"></i> Notificaciones <span class="badge" style="position:static; margin-left:auto;">2</span>
+                    </li>
+                    <li class="account-nav-item" data-target="panel-contratos">
+                        <i class="fa-solid fa-file-signature"></i> Mis Contratos
+                    </li>
+                    <li class="account-nav-item" data-target="panel-pagos">
+                        <i class="fa-solid fa-credit-card"></i> Pagos
+                    </li>
+                    <li class="account-nav-item" data-target="panel-seguridad">
+                        <i class="fa-solid fa-shield-halved"></i> Seguridad
+                    </li>
+                    <li class="account-nav-item" style="color: #EF4444; margin-top: 20px;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+                    </li>
+                </ul>
+            </aside>
+
+            <main class="account-content">
+                
+                <section id="panel-notificaciones" class="account-panel active">
+                    <h2 class="panel-title">Notificaciones Recientes</h2>
+                    <div class="notif-list">
+                        <div class="notif-item unread">
+                            <div class="notif-icon"><i class="fa-solid fa-check"></i></div>
+                            <div class="notif-content">
+                                <h4>Postulación Aprobada</h4>
+                                <p>Tu solicitud para "Apartamento Moderno en Providencia" ha sido aprobada por el propietario.</p>
+                                <span class="notif-time">Hace 2 horas</span>
+                            </div>
+                        </div>
+                        <div class="notif-item unread">
+                            <div class="notif-icon"><i class="fa-regular fa-message"></i></div>
+                            <div class="notif-content">
+                                <h4>Nuevo Mensaje</h4>
+                                <p>Carlos Mendoza te ha enviado un mensaje sobre tu visita programada.</p>
+                                <span class="notif-time">Hace 5 horas</span>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div class="notif-content">
+                                <h4>Pago Confirmado</h4>
+                                <p>Hemos recibido correctamente tu pago de arriendo correspondiente a Octubre.</p>
+                                <span class="notif-time">Ayer</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="panel-contratos" class="account-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 class="panel-title" style="border:none; margin:0; padding:0;">Mis Contratos</h2>
+                        <button class="btn-download" style="font-size: 0.8rem;"><i class="fa-solid fa-filter"></i> Filtrar</button>
+                    </div>
+
+                    <div class="contracts-grid">
+                        <div class="contract-card-detailed">
+                            <div class="contract-header-card">
+                                <div class="contract-icon-box active">
+                                    <i class="fa-solid fa-file-contract"></i>
+                                </div>
+                                <div class="contract-id-info">
+                                    <h3>Contrato #CNT-2025-001</h3>
+                                    <span class="contract-prop-name">Av. Providencia 1234, Santiago</span>
+                                </div>
+                                <span class="status-badge approved">Vigente</span>
+                            </div>
+                            <div class="contract-body-card">
+                                <div class="c-row">
+                                    <span class="c-label">Inicio:</span>
+                                    <span class="c-val">01 Mar 2025</span>
+                                </div>
+                                <div class="c-row">
+                                    <span class="c-label">Fin:</span>
+                                    <span class="c-val">28 Feb 2026</span>
+                                </div>
+                                <div class="c-row">
+                                    <span class="c-label">Monto:</span>
+                                    <span class="c-val text-dark">$850.000 / mes</span>
+                                </div>
+                            </div>
+                            <div class="contract-footer-card">
+                                <button class="btn-view-contract" data-id="CNT-2025-001">Ver contrato</button>
+                            </div>
+                        </div>
+
+                        <div class="contract-card-detailed finished">
+                            <div class="contract-header-card">
+                                <div class="contract-icon-box">
+                                    <i class="fa-solid fa-file-signature"></i>
+                                </div>
+                                <div class="contract-id-info">
+                                    <h3>Contrato #CNT-2024-890</h3>
+                                    <span class="contract-prop-name">Calle Los Leones 45, Providencia</span>
+                                </div>
+                                <span class="status-badge rejected" style="background:#F3F4F6; color:#6B7280; border:1px solid #E5E7EB;">Finalizado</span>
+                            </div>
+                            <div class="contract-body-card">
+                                <div class="c-row">
+                                    <span class="c-label">Inicio:</span>
+                                    <span class="c-val">01 Mar 2024</span>
+                                </div>
+                                <div class="c-row">
+                                    <span class="c-label">Fin:</span>
+                                    <span class="c-val">28 Feb 2025</span>
+                                </div>
+                                <div class="c-row">
+                                    <span class="c-label">Monto:</span>
+                                    <span class="c-val text-dark">$780.000 / mes</span>
+                                </div>
+                            </div>
+                            <div class="contract-footer-card">
+                                <button class="btn-view-contract" data-id="CNT-2024-890">Ver historial</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="panel-pagos" class="account-panel">
+                    <h2 class="panel-title">Historial de Pagos</h2>
+                    <div class="payments-table-box">
+                        <div class="payment-row">
+                            <div class="pay-info-left">
+                                <span class="pay-concept">Arriendo Noviembre 2025</span>
+                                <span class="pay-date">Vence: 05/11/2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <span class="pay-amount">$850.000</span>
+                                <span class="pay-status pay-pending">Pendiente</span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-row">
+                            <div class="pay-info-left">
+                                <span class="pay-concept">Arriendo Octubre 2025</span>
+                                <span class="pay-date">Pagado el: 03/10/2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <span class="pay-amount">$850.000</span>
+                                <span class="pay-status pay-paid">Pagado</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-row">
+                            <div class="pay-info-left">
+                                <span class="pay-concept">Garantía + Mes 1</span>
+                                <span class="pay-date">Pagado el: 01/09/2025</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <span class="pay-amount">$1.700.000</span>
+                                <span class="pay-status pay-paid">Pagado</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="panel-seguridad" class="account-panel">
+                    <h2 class="panel-title">Seguridad y Contraseña</h2>
+                    <p style="color: #6B7280;">Aquí podrás cambiar tu contraseña y gestionar la autenticación en dos pasos.</p>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <footer class="main-footer-dark">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Políticas de Cookies</a></li>
+                        <li><a href="#">Ayuda</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="contract-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-lg-contract">
+            <div class="modal-header-clean">
+                <h2>Detalle del Contrato</h2>
+                <button id="close-contract-modal" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="contract-modal-body">
+                <div class="contract-hero-info">
+                    <div class="c-hero-left">
+                        <h3 id="modal-c-title">Contrato de Arrendamiento</h3>
+                        <p id="modal-c-prop"><i class="fa-solid fa-location-dot"></i> Cargando dirección...</p>
+                        <span id="modal-c-status" class="status-badge approved">Vigente</span>
+                    </div>
+                    <div class="c-hero-right">
+                        <span class="price-big" id="modal-c-price">$0</span>
+                        <span class="price-period">pesos / mes</span>
+                    </div>
+                </div>
+
+                <div class="contract-data-grid">
+                    <div class="c-data-group">
+                        <label>Fecha de Inicio</label>
+                        <strong id="modal-c-start">-</strong>
+                    </div>
+                    <div class="c-data-group">
+                        <label>Fecha de Término</label>
+                        <strong id="modal-c-end">-</strong>
+                    </div>
+                    <div class="c-data-group">
+                        <label>Día de Pago</label>
+                        <strong>Los días 5 de cada mes</strong>
+                    </div>
+                    <div class="c-data-group">
+                        <label>Garantía</label>
+                        <strong>1 mes de arriendo</strong>
+                    </div>
+                </div>
+
+                <div class="contract-parties">
+                    <div class="party-box">
+                        <span class="p-role">Arrendador (Propietario)</span>
+                        <div class="p-info">
+                            <div class="p-avatar">PR</div>
+                            <div class="p-text">
+                                <strong id="modal-c-landlord">Nombre Propietario</strong>
+                                <span>Propietario verificado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="party-box">
+                        <span class="p-role">Arrendatario (Tú)</span>
+                        <div class="p-info">
+                            <div class="p-avatar me">JD</div>
+                            <div class="p-text">
+                                <strong>Juan David</strong>
+                                <span>Identidad verificada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contract-clauses-box">
+                    <h4>Cláusulas Principales</h4>
+                    <ul class="clauses-list">
+                        <li><i class="fa-solid fa-check"></i> El contrato tiene una vigencia de 12 meses renovables.</li>
+                        <li><i class="fa-solid fa-check"></i> El pago debe realizarse vía transferencia bancaria a la cuenta registrada.</li>
+                        <li><i class="fa-solid fa-check"></i> No se permiten modificaciones estructurales sin permiso escrito.</li>
+                        <li><i class="fa-solid fa-check"></i> Se permiten mascotas pequeñas (hasta 10kg).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions">
+                <button class="btn-secondary" id="btn-close-c-modal">Cerrar</button>
+                <button class="btn-primary-download"><i class="fa-solid fa-file-pdf"></i> Descargar PDF Firmado</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>
