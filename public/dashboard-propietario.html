@@ -25,13 +25,55 @@
                 <a href="#" class="nav-link" data-tab="propiedades">Mis Propiedades</a>
                 <a href="#" class="nav-link" data-tab="solicitudes">Solicitudes</a>
                 <a href="#" class="nav-link" data-tab="contratos">Contratos</a>
+                <a href="#" class="nav-link" data-tab="mensajes">Mensajes <span class="nav-badge-sm"></span></a>
             </nav>
 
             <div class="header-user-actions">
-                <button class="icon-btn-white notification-btn">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge-dot-white"></span>
-                </button>
+                <div class="notif-wrapper" style="position: relative;">
+                    <button id="btn-bell" class="icon-btn-white notification-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge-dot-white"></span>
+                    </button>
+
+                    <div id="notif-window" class="notif-dropdown hidden">
+                        <div class="notif-header">
+                            <h3>Notificaciones</h3>
+                            <button class="btn-text-sm">Marcar leídas</button>
+                        </div>
+                        <div class="notif-body-scroll">
+                            <div class="notif-item unread">
+                                <div class="notif-icon-circle bg-green"><i class="fa-solid fa-check"></i></div>
+                                <div class="notif-content-text">
+                                    <p><strong>Propiedad Aprobada</strong></p>
+                                    <span class="sub-text">Tu "Apartamento Santa Mónica" ya es público.</span>
+                                    <span class="time-ago">Hace 2 horas</span>
+                                </div>
+                            </div>
+                            
+                            <div class="notif-item unread">
+                                <div class="notif-icon-circle bg-blue"><i class="fa-solid fa-file-signature"></i></div>
+                                <div class="notif-content-text">
+                                    <p><strong>Contrato listo</strong></p>
+                                    <span class="sub-text">Se generó el borrador para Juan David.</span>
+                                    <span class="time-ago">Ayer</span>
+                                </div>
+                            </div>
+
+                            <div class="notif-item">
+                                <div class="notif-icon-circle bg-gray"><i class="fa-regular fa-message"></i></div>
+                                <div class="notif-content-text">
+                                    <p><strong>Nuevo mensaje</strong></p>
+                                    <span class="sub-text">María ha preguntado por la casa.</span>
+                                    <span class="time-ago">Hace 1 día</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <a href="/cuenta">Ver todas</a>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="user-pill-white">
                     <div class="avatar-circle">CA</div>
                     <span>Carlos</span>
@@ -41,7 +83,7 @@
         </div>
     </header>
 
-    <main class="owner-main-container container">
+    <main class="owner-main-container">
         
         <div class="page-header-row">
             <h1 id="page-title">Panel de Control</h1>
@@ -169,6 +211,12 @@
                             <td>Casa Campestre</td>
                             <td><span class="status-text orange">Pendiente</span></td>
                         </tr>
+                        <tr>
+                            <td>#REQ-092</td>
+                            <td>Cambio de Precio</td>
+                            <td>Apto Santa Mónica</td>
+                            <td><span class="status-text green">Aprobado</span></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -182,9 +230,73 @@
             </div>
         </section>
 
+        <section id="view-mensajes" class="dashboard-view hidden">
+            <div class="messages-container" style="height: 500px;"> 
+                <div class="msg-sidebar">
+                    <div class="msg-search-box">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Buscar chat...">
+                        </div>
+                    </div>
+                    <div class="msg-list">
+                        <div class="msg-item unread active">
+                            <div class="msg-avatar">JD</div>
+                            <div class="msg-info">
+                                <div class="msg-header">
+                                    <span class="msg-name">Juan David</span>
+                                    <span class="msg-time">10:30 AM</span>
+                                </div>
+                                <div class="msg-property">Interesado en: Apto Santa Mónica</div>
+                                <div class="msg-preview">Hola, ¿sigue disponible el apartamento?</div>
+                            </div>
+                        </div>
+                        <div class="msg-item">
+                            <div class="msg-avatar" style="background:#6B7280;">MG</div>
+                            <div class="msg-info">
+                                <div class="msg-header">
+                                    <span class="msg-name">María García</span>
+                                    <span class="msg-time">Ayer</span>
+                                </div>
+                                <div class="msg-property">Interesado en: Casa Campestre</div>
+                                <div class="msg-preview">Gracias por la información.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-window">
+                    <div class="chat-header">
+                        <div class="chat-user-info">
+                            <div class="chat-avatar-sm">JD</div>
+                            <div class="chat-details">
+                                <h3>Juan David</h3>
+                                <span>Arrendatario Verificado</span>
+                            </div>
+                        </div>
+                        <div class="chat-actions"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                    </div>
+                    <div class="chat-body">
+                        <div class="message-bubble received">
+                            Hola, ¿sigue disponible el apartamento?
+                            <span class="msg-time-stamp">10:30 AM</span>
+                        </div>
+                        <div class="message-bubble sent">
+                            Hola Juan, sí, todavía está disponible para visitas.
+                            <span class="msg-time-stamp">10:35 AM</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <button class="btn-attach"><i class="fa-solid fa-paperclip"></i></button>
+                        <input type="text" class="chat-input-field" placeholder="Escribe un mensaje...">
+                        <button class="btn-send-msg"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <footer class="main-footer-dark" style="margin-top: 60px;">
+    <footer class="main-footer-dark">
         <div class="container">
             <div class="footer-grid-dark">
                 <div class="footer-col">
@@ -206,7 +318,7 @@
                     <h3 class="footer-heading">Enlaces</h3>
                     <ul class="links-list">
                         <li><a href="#">Ayuda</a></li>
-                        <li><a href="#">Términos</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
                     </ul>
                 </div>
             </div>
@@ -246,36 +358,73 @@
     </div>
 
     <script type="module" src="/js/app.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const links = document.querySelectorAll('.nav-link');
             const views = document.querySelectorAll('.dashboard-view');
             const pageTitle = document.getElementById('page-title');
+            const btnNew = document.getElementById('btn-new-property-main');
 
+            // 1. LÓGICA NAVEGACIÓN PESTAÑAS
             links.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Activar menú
+                    
+                    // Activar menú visualmente
                     links.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
 
-                    // Mostrar vista
+                    // Mostrar la vista correspondiente
                     const target = link.getAttribute('data-tab');
                     views.forEach(v => v.classList.add('hidden'));
-                    document.getElementById('view-' + target).classList.remove('hidden');
+                    const targetView = document.getElementById('view-' + target);
+                    if(targetView) targetView.classList.remove('hidden');
 
-                    // Actualizar título
-                    pageTitle.textContent = link.textContent;
+                    // Actualizar título (Limpio, sin badge)
+                    const tempLink = link.cloneNode(true);
+                    const badge = tempLink.querySelector('.nav-badge-sm');
+                    if (badge) badge.remove();
+                    pageTitle.textContent = tempLink.textContent.trim();
+                    
+                    // Ocultar botón "Publicar" en Mensajes/Contratos
+                    if(target === 'mensajes' || target === 'contratos') {
+                        if(btnNew) btnNew.style.display = 'none';
+                    } else {
+                        if(btnNew) btnNew.style.display = 'flex';
+                    }
                 });
             });
 
-            // Modal lógica simple
-            const btnOpen = document.getElementById('btn-new-property-main');
+            // 2. LÓGICA CAMPANA NOTIFICACIONES (La que faltaba)
+            const btnBell = document.getElementById('btn-bell');
+            const notifWindow = document.getElementById('notif-window');
+            
+            if(btnBell && notifWindow) {
+                // Clic en la campana -> Alternar ventana
+                btnBell.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    notifWindow.classList.toggle('hidden');
+                });
+
+                // Clic fuera -> Cerrar
+                document.addEventListener('click', (e) => {
+                    if (!notifWindow.contains(e.target) && e.target !== btnBell) {
+                        notifWindow.classList.add('hidden');
+                    }
+                });
+
+                // Clic dentro -> No cerrar
+                notifWindow.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+
+            // 3. LÓGICA MODAL NUEVA PROPIEDAD
             const modal = document.getElementById('new-property-modal');
             const btnsClose = [document.getElementById('close-new-prop'), document.getElementById('cancel-new-prop')];
             
-            if(btnOpen) btnOpen.addEventListener('click', () => modal.classList.remove('hidden'));
+            if(btnNew) btnNew.addEventListener('click', () => modal.classList.remove('hidden'));
             btnsClose.forEach(b => b.addEventListener('click', () => modal.classList.add('hidden')));
         });
     </script>
