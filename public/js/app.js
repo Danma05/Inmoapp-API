@@ -183,6 +183,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const passConfInput = document.getElementById('reg-password-confirm');
         const termsInput = document.getElementById('terms-split');
         const errorBox = document.getElementById('register-error');
+        const telError = document.getElementById('tel-error');
+
+// Validación en tiempo real del teléfono
+if (telInput && telError) {
+    telInput.addEventListener('input', () => {
+        const valor = telInput.value.trim();
+
+        // Vacío: permitido (es opcional)
+        if (valor === "") {
+            telError.style.display = "none";
+            return;
+        }
+
+        // Si contiene algo que no sea número
+        if (!/^[0-9]+$/.test(valor)) {
+            telError.style.display = "block";
+        } else {
+            telError.style.display = "none";
+        }
+    });
+}
+
 
         function showError(msg) {
             if (!errorBox) return alert(msg);
@@ -203,6 +225,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const apellido = apellidoInput.value.trim();
             const correo = emailInput.value.trim();
             const telefono = telInput.value.trim();
+// VALIDACIONES FRONT
+// -------------------------
+if (!nombre || !apellido || !correo || !password || !passwordConfirm) {
+    return showError("Todos los campos obligatorios deben estar completos.");
+}
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(correo)) {
+    return showError("El correo electrónico no es válido.");
+}
+
+// ⚠ Teléfono: opcional, pero si viene, solo números
+if (telefono && !/^[0-9]+$/.test(telefono)) {
+    if (telError) telError.style.display = "block";
+    return showError("El teléfono solo puede contener números.");
+}
+
+if (password.length < 8) {
+    return showError("La contraseña debe tener mínimo 8 caracteres.");
+}
             const password = passInput.value;
             const passwordConfirm = passConfInput.value;
 
@@ -272,6 +314,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+        function validarTelefono() {
+        const telInput = document.getElementById('reg-telefono');
+        const errorText = document.getElementById('tel-error');
+
+        if (!telInput) return;
+
+        const valor = telInput.value;
+
+        // Si el campo está vacío → opcional → no hay error
+        if (valor.trim() === "") {
+            errorText.style.display = "none";
+            return;
+        }
+
+        // Si detecta algo que no sea número
+        if (!/^[0-9]+$/.test(valor)) {
+            errorText.style.display = "block";
+        } else {
+            errorText.style.display = "none";
+        }
+    }
+
 
     // ======================================================
     // 5. LÓGICA DE CARGA DE ARCHIVOS (UPLOAD)
