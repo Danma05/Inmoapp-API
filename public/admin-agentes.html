@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Agentes - InmoApp</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/admin-dashboard" class="brand"><div class="logo-box">IA</div><span class="logo-text">InmoAdmin</span></a>
+            <nav class="top-nav">
+                <a href="/admin-dashboard">Dashboard</a>
+                <a href="/admin-agentes" class="active">Agentes</a>
+                <a href="/admin-propiedades">Propiedades</a>
+                <a href="/admin-solicitudes">Solicitudes</a>
+                <a href="/admin-leads">Leads IA</a>
+                <a href="/admin-contratos">Contratos</a>
+                <a href="/admin-chat">Chat</a>
+            </nav>
+            <div class="user-controls">
+                <div class="icon-action profile"><i class="fa-solid fa-user-shield"></i></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body" style="padding-top: 40px; min-height: 80vh;">
+        <div class="section-header-row">
+            <h2 class="dash-title">Directorio de Agentes</h2>
+            <button id="open-new-agent-modal" class="btn-outline-red-sm"><i class="fa-solid fa-user-plus"></i> Nuevo Agente</button>
+        </div>
+
+        <div class="content-card" style="padding: 0; overflow: hidden;">
+            <table class="simple-table">
+                <thead>
+                    <tr><th>Agente</th><th>Estado</th><th>Ventas (Mes)</th><th>Calificación</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 35px; height: 35px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-regular fa-user"></i></div>
+                            <strong>Laura Martínez</strong>
+                        </td>
+                        <td><span class="status-badge published">Activo</span></td>
+                        <td>4 Propiedades</td>
+                        <td><i class="fa-solid fa-star text-red"></i> 4.9</td>
+                        <td><button class="btn-icon"><i class="fa-solid fa-gear"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 35px; height: 35px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-regular fa-user"></i></div>
+                            <strong>Pedro Castillo</strong>
+                        </td>
+                        <td><span class="status-text orange">Ausente</span></td>
+                        <td>1 Propiedad</td>
+                        <td><i class="fa-solid fa-star text-red"></i> 4.5</td>
+                        <td><button class="btn-icon"><i class="fa-solid fa-gear"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="new-agent-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-wide">
+            <button id="close-agent-modal" class="close-btn">&times;</button>
+            
+            <div class="modal-header-clean">
+                <h2>Crear Nuevo Agente</h2>
+            </div>
+            
+            <div class="modal-body-scroll">
+                <form id="newAgentForm">
+                    <div class="form-section">
+                        <h3><i class="fa-solid fa-id-card"></i> Datos Personales</h3>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" class="input-style" placeholder="Nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Apellido</label>
+                                <input type="text" class="input-style" placeholder="Apellido" required>
+                            </div>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" class="input-style" placeholder="+57 3XX XXX XXXX">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="input-style" placeholder="correo@agente.com" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3><i class="fa-solid fa-user-lock"></i> Credenciales y Roles</h3>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Contraseña Inicial</label>
+                                <input type="password" class="input-style" placeholder="••••••••" required>
+                            </div>
+                            <div class="form-group">
+                                <label>ID de Registro (Cédula/DNI)</label>
+                                <input type="text" class="input-style" placeholder="C.C. o Identificación" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Rol / Especialidad</label>
+                            <select class="input-style">
+                                <option>Agente Residencial</option>
+                                <option>Agente Comercial</option>
+                                <option>Administrador Junior</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer-actions">
+                <button type="button" class="btn-secondary" id="cancel-agent-modal">Cancelar</button>
+                <button type="submit" class="btn-primary-download" form="newAgentForm" style="background: #10B981;">
+                    <i class="fa-solid fa-check"></i> Guardar Agente
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Lógica para abrir y cerrar el modal
+        const modal = document.getElementById('new-agent-modal');
+        const openBtn = document.getElementById('open-new-agent-modal');
+        const closeBtn = document.getElementById('close-agent-modal');
+        const cancelBtn = document.getElementById('cancel-agent-modal');
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Restaura el scroll
+        }
+        
+        // Abrir modal
+        openBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Evita el scroll del fondo
+        });
+
+        // Cerrar con botones
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Cerrar al hacer clic fuera del modal
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Manejo de la presentación del formulario (Simulación)
+        document.getElementById('newAgentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('¡Agente creado exitosamente! (Simulación de envío de datos)');
+            closeModal();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leads IA - InmoApp</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .ai-panel { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0; border-left: 4px solid var(--brand-red); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .ai-score { font-weight: 800; color: var(--brand-red); font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/admin-dashboard" class="brand"><div class="logo-box">IA</div><span class="logo-text">InmoAdmin</span></a>
+            <nav class="top-nav">
+                <a href="/admin-dashboard">Dashboard</a>
+                <a href="/admin-agentes">Agentes</a>
+                <a href="/admin-propiedades">Propiedades</a>
+                <a href="/admin-solicitudes">Solicitudes</a>
+                <a href="/admin-leads" class="active">Leads IA</a>
+                <a href="/admin-contratos">Contratos</a>
+                <a href="/admin-chat">Chat</a>
+            </nav>
+            <div class="user-controls">
+                <div class="icon-action profile"><i class="fa-solid fa-user-shield"></i></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body" style="padding-top: 40px; min-height: 80vh;">
+        <div class="ai-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h2 class="dash-title" style="margin:0;">Top 5 Oportunidades (IA)</h2>
+                    <p style="margin:5px 0 0; color: #6B7280;">Algoritmo de predicción de cierre basado en comportamiento.</p>
+                </div>
+                <div style="background: linear-gradient(90deg, #ef4444, #b91c1c); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                    <i class="fa-solid fa-brain"></i> Análisis en Tiempo Real
+                </div>
+            </div>
+
+            <div class="content-card" style="padding: 0; overflow: hidden; border: none; box-shadow: none;">
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Ranking</th>
+                            <th>Lead / Cliente</th>
+                            <th>Interés Principal</th>
+                            <th>Probabilidad Cierre</th>
+                            <th>Potencial</th>
+                            <th>Acción Sugerida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #FEF2F2;">
+                            <td><span style="background: var(--brand-red); color: white; padding: 4px 10px; border-radius: 50%; font-weight: bold;">1</span></td>
+                            <td><strong>Roberto Gómez</strong><br><span style="font-size: 0.8rem; color: #666;">Hace 2 horas</span></td>
+                            <td>Penthouse Centro</td>
+                            <td><span class="ai-score">98%</span></td>
+                            <td>$890M COP</td>
+                            <td><button class="btn-outline-red-sm">Llamar Ahora</button></td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: #333; color: white; padding: 4px 10px; border-radius: 50%; font-weight: bold;">2</span></td>
+                            <td><strong>Ana María Polo</strong><br><span style="font-size: 0.8rem; color: #666;">Hace 5 horas</span></td>
+                            <td>Casa Campestre</td>
+                            <td><span class="ai-score" style="color: #ea580c;">92%</span></td>
+                            <td>$1.200M COP</td>
+                            <td><button class="btn-icon"><i class="fa-brands fa-whatsapp"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: #666; color: white; padding: 4px 10px; border-radius: 50%; font-weight: bold;">3</span></td>
+                            <td><strong>Empresa Tech S.A.S</strong></td>
+                            <td>Oficinas Corp.</td>
+                            <td><span class="ai-score" style="color: #ea580c;">88%</span></td>
+                            <td>$15M / mes</td>
+                            <td><button class="btn-icon"><i class="fa-regular fa-envelope"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: #999; color: white; padding: 4px 10px; border-radius: 50%; font-weight: bold;">4</span></td>
+                            <td><strong>Familia Ruiz</strong></td>
+                            <td>Apto. 3 Hab</td>
+                            <td><span class="ai-score" style="color: #16a34a;">85%</span></td>
+                            <td>$450M COP</td>
+                            <td><button class="btn-icon"><i class="fa-solid fa-calendar-check"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: #ccc; color: white; padding: 4px 10px; border-radius: 50%; font-weight: bold;">5</span></td>
+                            <td><strong>Carlos Vives</strong></td>
+                            <td>Lote Vacacional</td>
+                            <td><span class="ai-score" style="color: #16a34a;">81%</span></td>
+                            <td>$320M COP</td>
+                            <td><button class="btn-icon"><i class="fa-solid fa-phone"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer></body>
+</html>

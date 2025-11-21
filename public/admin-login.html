@@ -9,19 +9,26 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/home.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* Estilos de estructura para centrar la tarjeta (Solo para esta página) */
+        /* Estilos de estructura para el BODY */
         body {
-            background-color: #F3F4F6; /* Fondo gris suave profesional */
+            background-color: #F3F4F6;
+            display: flex;
+            flex-direction: column; /* Esencial para que el footer se ancle abajo */
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Wrapper que centra el formulario y empuja el footer hacia abajo */
+        .admin-login-wrapper {
+            flex: 1; /* Ocupa todo el espacio restante */
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Inter', sans-serif; /* Aseguramos tu tipografía */
+            padding: 50px 0;
         }
 
         /* Tarjeta de Login (Simula tu .modal-content pero estático) */
@@ -35,122 +42,112 @@
             position: relative;
         }
 
-        .admin-logo-area {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
+        /* Estilos internos del formulario (ya definidos en home.css) */
         .admin-badge {
-            background-color: var(--brand-red);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            display: inline-block;
+            background: var(--brand-red);
+            color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-top: 10px; display: inline-block;
         }
-
-        /* Ajustes para que tus inputs se vean perfectos fuera del modal */
         .form-group { margin-bottom: 20px; }
         .form-group label {
-            display: block;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+            display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="admin-card">
-        <div class="admin-logo-area">
-            <a href="/" style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px; justify-content: center;">
-                <div class="logo-box" style="background: var(--brand-red); color: white; padding: 5px 10px; border-radius: 6px; font-weight: 800; font-size: 1.2rem;">IA</div>
-                <span style="font-size: 1.5rem; font-weight: 700; color: #111827;">InmoApp</span>
-            </a>
-            <div>
-                <span class="admin-badge">Panel Administrativo</span>
+    <div class="admin-login-wrapper">
+        <div class="admin-card">
+            <div class="admin-logo-area">
+                <a href="/" style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px; justify-content: center;">
+                    <div class="logo-box" style="background: var(--brand-red); color: white; padding: 5px 10px; border-radius: 6px; font-weight: 800; font-size: 1.2rem;">IA</div>
+                    <span style="font-size: 1.5rem; font-weight: 700; color: #111827;">InmoApp</span>
+                </a>
+                <div><span class="admin-badge">Panel Administrativo</span></div>
             </div>
-        </div>
 
-        <div class="login-header" style="text-align: center; margin-bottom: 25px;">
-            <h2 style="font-size: 1.2rem; color: #1F2937; margin-bottom: 5px;">Bienvenido de nuevo</h2>
-            <p style="color: #6B7280; font-size: 0.9rem;">Ingresa tus credenciales de gestión</p>
-        </div>
-
-        <form id="adminForm" class="login-form">
-            <div class="form-group">
-                <label>Correo electrónico</label>
-                <div class="input-wrapper gray-style">
-                    <i class="fa-regular fa-envelope left-icon"></i>
-                    <input type="email" id="email" placeholder="admin@inmoapp.com" required>
-                </div>
+            <div class="login-header" style="text-align: center; margin-bottom: 25px;">
+                <h2 style="font-size: 1.2rem; color: #1F2937; margin-bottom: 5px;">Bienvenido de nuevo</h2>
+                <p style="color: #6B7280; font-size: 0.9rem;">Ingresa tus credenciales de gestión</p>
             </div>
             
-            <div class="form-group">
-                <label>Contraseña</label>
-                <div class="input-wrapper gray-style">
-                    <i class="fa-solid fa-lock left-icon"></i>
-                    <input type="password" id="password" placeholder="••••••••" required>
-                    <button type="button" class="toggle-pass" style="background:none; border:none; cursor:pointer;">
-                        <i class="fa-regular fa-eye right-icon red-icon"></i>
-                    </button>
+            <form id="adminForm" class="login-form">
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-regular fa-envelope left-icon"></i>
+                        <input type="email" id="email" placeholder="admin@inmoapp.com" required>
+                    </div>
                 </div>
+                
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <div class="input-wrapper gray-style">
+                        <i class="fa-solid fa-lock left-icon"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <button type="button" class="toggle-pass" style="background:none; border:none; cursor:pointer;">
+                            <i class="fa-regular fa-eye right-icon red-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-full btn-red" style="margin-top: 10px;">
+                    <i class="fa-solid fa-shield-halved" style="margin-right: 8px;"></i> Iniciar Sesión
+                </button>
+            </form>
+            
+            <div class="login-footer" style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #F3F4F6;">
+                <a href="/" style="color: #6B7280; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: color 0.2s;">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al sitio principal
+                </a>
             </div>
-
-            <button type="submit" class="btn btn-full btn-red" style="margin-top: 10px;">
-                <i class="fa-solid fa-shield-halved" style="margin-right: 8px;"></i> Iniciar Sesión
-            </button>
-        </form>
-
-        <div class="login-footer" style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #F3F4F6;">
-            <a href="/" style="color: #6B7280; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: color 0.2s;">
-                <i class="fa-solid fa-arrow-left"></i> Volver al sitio principal
-            </a>
         </div>
     </div>
 
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Script simple para manejar el login y redirección
         document.getElementById('adminForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verificando...';
+            btn.style.opacity = '0.8';
 
-            // Simulación de validación (Aquí conectarías con tu backend real)
-            if(email && password) {
-                // Animación de carga simple en el botón
-                const btn = this.querySelector('button[type="submit"]');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verificando...';
-                btn.style.opacity = '0.8';
-
-                setTimeout(() => {
-                    // Redireccionar al Dashboard que creamos
-                    window.location.href = '/admin-dashboard';
-                }, 1000);
-            }
-        });
-
-        // Funcionalidad para mostrar/ocultar contraseña
-        document.querySelector('.toggle-pass').addEventListener('click', function() {
-            const input = document.getElementById('password');
-            const icon = this.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+            setTimeout(() => {
+                window.location.href = '/admin-dashboard';
+            }, 1000);
         });
     </script>
 </body>

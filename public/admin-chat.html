@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Soporte Admin - InmoApp</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Ajuste para que el contenedor del chat ocupe bien el espacio en modo Admin */
+        .admin-chat-container {
+            height: 70vh; /* Altura fija para el área de chat */
+            display: flex;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .msg-tag {
+            font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-weight: normal;
+        }
+        .tag-owner { background: #FEF3C7; color: #D97706; }
+        .tag-user { background: #E0F2FE; color: #0284C7; }
+    </style>
+</head>
+<body>
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/admin-dashboard" class="brand"><div class="logo-box">IA</div><span class="logo-text">InmoAdmin</span></a>
+            <nav class="top-nav">
+                <a href="/admin-dashboard">Dashboard</a>
+                <a href="/admin-agentes">Agentes</a>
+                <a href="/admin-propiedades">Propiedades</a>
+                <a href="/admin-solicitudes">Solicitudes</a>
+                <a href="/admin-leads">Leads IA</a>
+                <a href="/admin-contratos">Contratos</a>
+                <a href="/admin-chat" class="active">Chat</a>
+            </nav>
+            <div class="user-controls">
+                <div class="icon-action profile"><i class="fa-solid fa-user-shield"></i></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body" style="padding-top: 40px; min-height: 80vh;">
+        <div class="section-header-row">
+            <h2 class="dash-title">Centro de Mensajes (Soporte)</h2>
+        </div>
+
+        <div class="admin-chat-container">
+            <div class="msg-sidebar">
+                <div class="msg-search-box">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" placeholder="Buscar usuario...">
+                    </div>
+                </div>
+                <div class="msg-list">
+                    <div class="msg-item active">
+                        <div class="msg-avatar" style="background: #333;">JD</div>
+                        <div class="msg-info">
+                            <div class="msg-header">
+                                <span class="msg-name">Juan Dueño <span class="msg-tag tag-owner">Propietario</span></span>
+                                <span class="msg-time">10:30 AM</span>
+                            </div>
+                            <div class="msg-preview">Hola, necesito ayuda con mi publicación...</div>
+                        </div>
+                    </div>
+                    <div class="msg-item unread">
+                        <div class="msg-avatar" style="background: #666;">MR</div>
+                        <div class="msg-info">
+                            <div class="msg-header">
+                                <span class="msg-name">Maria Ruiz <span class="msg-tag tag-user">Inquilino</span></span>
+                                <span class="msg-time">09:15 AM</span>
+                            </div>
+                            <div class="msg-preview" style="font-weight: bold;">¿Cuándo aprueban mis documentos?</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar" style="background: #888;">AG</div>
+                        <div class="msg-info">
+                            <div class="msg-header">
+                                <span class="msg-name">Andrés Gómez <span class="msg-tag tag-user">Usuario</span></span>
+                                <span class="msg-time">Ayer</span>
+                            </div>
+                            <div class="msg-preview">Gracias por la información.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-window">
+                <div class="chat-header">
+                    <div class="chat-user-info">
+                        <div class="chat-avatar-sm" style="background: #333;">JD</div>
+                        <div class="chat-details">
+                            <h3>Juan Dueño</h3>
+                            <span style="color: #D97706;">Propietario Verificado</span>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <i class="fa-solid fa-circle-info" title="Ver info usuario"></i>
+                    </div>
+                </div>
+
+                <div class="chat-body">
+                    <div class="message-bubble received">
+                        Buenos días equipo de soporte. Tengo un problema al subir las fotos de mi apartamento.
+                        <span class="msg-time-stamp">10:28 AM</span>
+                    </div>
+                    
+                    <div class="message-bubble sent">
+                        Hola Juan, comprendo. ¿Te aparece algún error específico en la pantalla?
+                        <span class="msg-time-stamp">10:29 AM</span>
+                    </div>
+
+                    <div class="message-bubble received">
+                        Sí, dice "Formato no válido". Son archivos JPG.
+                        <span class="msg-time-stamp">10:30 AM</span>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <button class="btn-attach"><i class="fa-solid fa-paperclip"></i></button>
+                    <input type="text" class="chat-input-field" placeholder="Escribe una respuesta como Administrador...">
+                    <button class="btn-send-msg"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    </footer>
+</body>
+</html>

@@ -71,6 +71,36 @@ app.get('/admin-dashboard', (req, res) => {
     res.sendFile(__dirname + '/public/admin-dashboard.html');
 });
 
+// --- RUTAS DEL PANEL ADMINISTRADOR ---
+app.get('/admin-dashboard', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-dashboard.html');
+});
+
+app.get('/admin-agentes', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-agentes.html');
+});
+
+app.get('/admin-propiedades', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-propiedades.html');
+});
+
+app.get('/admin-solicitudes', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-solicitudes.html');
+});
+
+app.get('/admin-leads', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-leads.html');
+});
+
+app.get('/admin-contratos', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-contratos.html');
+});
+
+// CAMBIO IMPORTANTE: Ahora apunta a admin-chat.html
+app.get('/admin-chat', (req, res) => {
+    res.sendFile(__dirname + '/public/admin-chat.html');
+});
+
 // ------------------------------------------------------------
 // API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------

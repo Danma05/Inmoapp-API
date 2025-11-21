@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contratos - InmoApp</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/admin-dashboard" class="brand"><div class="logo-box">IA</div><span class="logo-text">InmoAdmin</span></a>
+            <nav class="top-nav">
+                <a href="/admin-dashboard">Dashboard</a>
+                <a href="/admin-agentes">Agentes</a>
+                <a href="/admin-propiedades">Propiedades</a>
+                <a href="/admin-solicitudes">Solicitudes</a>
+                <a href="/admin-leads">Leads IA</a>
+                <a href="/admin-contratos" class="active">Contratos</a>
+                <a href="/admin-chat">Chat</a>
+            </nav>
+            <div class="user-controls"><div class="icon-action profile"><i class="fa-solid fa-user-shield"></i></div></div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body" style="padding-top: 40px; min-height: 80vh;">
+        <div class="section-header-row">
+            <h2 class="dash-title">Gestión de Contratos</h2>
+            <div class="search-wrapper" style="width: 250px; background: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center;">
+                <i class="fa-solid fa-search" style="color: #999; margin-right: 5px;"></i>
+                <input type="text" placeholder="Buscar contrato..." style="border: none; outline: none;">
+            </div>
+        </div>
+
+        <div class="content-card" style="padding: 0; overflow: hidden;">
+            <table class="simple-table">
+                <thead>
+                    <tr><th>ID</th><th>Propiedad</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#CTR-001</td>
+                        <td>Local Comercial Centro</td>
+                        <td>Tech Solutions SAS</td>
+                        <td>01 Nov, 2025</td>
+                        <td><span class="status-text green"><i class="fa-solid fa-check-circle"></i> Firmado</span></td>
+                        <td><button class="btn-icon"><i class="fa-solid fa-file-pdf text-red"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>#CTR-002</td>
+                        <td>Casa Campestre</td>
+                        <td>Familia Rodriguez</td>
+                        <td>15 Nov, 2025</td>
+                        <td><span class="status-text orange"><i class="fa-solid fa-clock"></i> Pendiente</span></td>
+                        <td><button class="btn-icon"><i class="fa-regular fa-eye"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-grid-dark">
+                <div class="footer-col">
+                    <h3 class="footer-heading">Contacto</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
+                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
+                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-col center-col">
+                    <h3 class="footer-heading">Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col right-col">
+                    <h3 class="footer-heading">Enlaces</h3>
+                    <ul class="links-list">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Ayuda / Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom-dark">
+                <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer></body>
+</html> 
