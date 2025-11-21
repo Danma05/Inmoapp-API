@@ -35,7 +35,6 @@
                         <i class="fa-regular fa-bell"></i>
                         <span class="badge-dot-white"></span>
                     </button>
-
                     <div id="notif-menu" class="notif-dropdown hidden">
                         <div class="notif-header">
                             <h3>Notificaciones</h3>
@@ -58,18 +57,8 @@
                                     <span class="time">Ayer</span>
                                 </div>
                             </div>
-                            <div class="notif-item">
-                                <div class="notif-icon gray"><i class="fa-regular fa-comment"></i></div>
-                                <div class="notif-text">
-                                    <strong>Nuevo Mensaje</strong>
-                                    <p>Juan preguntó por el precio.</p>
-                                    <span class="time">Hace 1 día</span>
-                                </div>
-                            </div>
                         </div>
-                        <div class="notif-footer">
-                            <a href="#">Ver todas</a>
-                        </div>
+                        <div class="notif-footer"><a href="#">Ver todas</a></div>
                     </div>
                 </div>
 
@@ -79,14 +68,8 @@
                         <span>Carlos</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
-
                     <div id="user-dropdown" class="user-dropdown hidden">
-                        <a href="#" class="dropdown-item">
-                            <i class="fa-regular fa-user"></i> Mi Perfil
-                        </a>
-                        <a href="#" class="dropdown-item">
-                            <i class="fa-solid fa-gear"></i> Configuración
-                        </a>
+                        <a href="#" class="dropdown-item"><i class="fa-regular fa-user"></i> Mi Perfil</a>
                         <div class="dropdown-divider"></div>
                         <a href="/" class="dropdown-item logout-item" id="btn-logout">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
@@ -111,45 +94,24 @@
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-icon blue"><i class="fa-solid fa-building"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-label">Propiedades</span>
-                        <span class="metric-value">3</span>
-                    </div>
+                    <div class="metric-info"><span class="metric-label">Propiedades</span><span class="metric-value">3</span></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-label">Ingresos Mes</span>
-                        <span class="metric-value">$2.5M</span>
-                    </div>
+                    <div class="metric-info"><span class="metric-label">Ingresos Mes</span><span class="metric-value">$2.5M</span></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-icon orange"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-label">Pendientes</span>
-                        <span class="metric-value">1</span>
-                    </div>
+                    <div class="metric-info"><span class="metric-label">Pendientes</span><span class="metric-value">1</span></div>
                 </div>
             </div>
-
             <div class="content-card mt-30">
                 <h3 class="card-title">Actividad Reciente</h3>
                 <div class="activity-list-simple">
                     <div class="activity-row">
                         <div class="act-icon"><i class="fa-solid fa-check-circle text-green"></i></div>
-                        <div class="act-info">
-                            <strong>Propiedad Aprobada</strong>
-                            <p>El apartamento en Santa Mónica ya está visible.</p>
-                        </div>
+                        <div class="act-info"><strong>Propiedad Aprobada</strong><p>El apartamento en Santa Mónica ya está visible.</p></div>
                         <span class="act-time">Hace 2h</span>
-                    </div>
-                    <div class="activity-row">
-                        <div class="act-icon"><i class="fa-solid fa-file-contract text-blue"></i></div>
-                        <div class="act-info">
-                            <strong>Contrato Generado</strong>
-                            <p>Borrador de contrato listo para "Casa Campestre".</p>
-                        </div>
-                        <span class="act-time">Ayer</span>
                     </div>
                 </div>
             </div>
@@ -161,13 +123,8 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" placeholder="Buscar propiedad...">
                 </div>
-                <select class="select-filter">
-                    <option>Todos los estados</option>
-                    <option>Publicado</option>
-                    <option>En revisión</option>
-                </select>
+                <select class="select-filter"><option>Todos los estados</option><option>Publicado</option></select>
             </div>
-
             <div class="properties-list-vertical">
                 <div class="property-row-card">
                     <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200" class="row-img" alt="Prop">
@@ -184,130 +141,15 @@
                         </div>
                     </div>
                     <div class="row-actions">
-                        <button class="btn-icon" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-icon" title="Pausar"><i class="fa-solid fa-pause"></i></button>
-                    </div>
-                </div>
-
-                <div class="property-row-card">
-                    <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&w=200" class="row-img" alt="Prop">
-                    <div class="row-info">
-                        <div class="row-header">
-                            <h3>Casa Campestre - La Habana</h3>
-                            <span class="status-badge review">En Revisión</span>
-                        </div>
-                        <p class="row-address"><i class="fa-solid fa-location-dot"></i> Km 5 Vía Magdalena</p>
-                        <div class="alert-box-inline">
-                            <i class="fa-solid fa-info-circle"></i> Validando certificado de tradición.
-                        </div>
-                    </div>
-                    <div class="row-actions">
-                        <button class="btn-icon" title="Ver Documentos"><i class="fa-solid fa-file"></i></button>
+                        <button class="btn-icon"><i class="fa-solid fa-pen"></i></button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="view-solicitudes" class="dashboard-view hidden">
-            <div class="content-card">
-                <table class="simple-table">
-                    <thead>
-                        <tr>
-                            <th>ID Solicitud</th>
-                            <th>Tipo</th>
-                            <th>Propiedad</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#REQ-098</td>
-                            <td>Nueva Publicación</td>
-                            <td>Casa Campestre</td>
-                            <td><span class="status-text orange">Pendiente</span></td>
-                        </tr>
-                        <tr>
-                            <td>#REQ-092</td>
-                            <td>Cambio de Precio</td>
-                            <td>Apto Santa Mónica</td>
-                            <td><span class="status-text green">Aprobado</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="view-contratos" class="dashboard-view hidden">
-            <div class="empty-state-panel">
-                <i class="fa-solid fa-file-contract"></i>
-                <h3>No tienes contratos activos</h3>
-                <p>Cuando arriendes una propiedad, aquí aparecerán los documentos.</p>
-            </div>
-        </section>
-
-        <section id="view-mensajes" class="dashboard-view hidden">
-            <div class="messages-container" style="height: 500px;"> 
-                <div class="msg-sidebar">
-                    <div class="msg-search-box">
-                        <div class="search-input-wrapper">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" placeholder="Buscar chat...">
-                        </div>
-                    </div>
-                    <div class="msg-list">
-                        <div class="msg-item unread active">
-                            <div class="msg-avatar">JD</div>
-                            <div class="msg-info">
-                                <div class="msg-header">
-                                    <span class="msg-name">Juan David</span>
-                                    <span class="msg-time">10:30 AM</span>
-                                </div>
-                                <div class="msg-property">Interesado en: Apto Santa Mónica</div>
-                                <div class="msg-preview">Hola, ¿sigue disponible el apartamento?</div>
-                            </div>
-                        </div>
-                        <div class="msg-item">
-                            <div class="msg-avatar" style="background:#6B7280;">MG</div>
-                            <div class="msg-info">
-                                <div class="msg-header">
-                                    <span class="msg-name">María García</span>
-                                    <span class="msg-time">Ayer</span>
-                                </div>
-                                <div class="msg-property">Interesado en: Casa Campestre</div>
-                                <div class="msg-preview">Gracias por la información.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-window">
-                    <div class="chat-header">
-                        <div class="chat-user-info">
-                            <div class="chat-avatar-sm">JD</div>
-                            <div class="chat-details">
-                                <h3>Juan David</h3>
-                                <span>Arrendatario Verificado</span>
-                            </div>
-                        </div>
-                        <div class="chat-actions"><i class="fa-solid fa-ellipsis-vertical"></i></div>
-                    </div>
-                    <div class="chat-body">
-                        <div class="message-bubble received">
-                            Hola, ¿sigue disponible el apartamento?
-                            <span class="msg-time-stamp">10:30 AM</span>
-                        </div>
-                        <div class="message-bubble sent">
-                            Hola Juan, sí, todavía está disponible para visitas.
-                            <span class="msg-time-stamp">10:35 AM</span>
-                        </div>
-                    </div>
-                    <div class="chat-input-area">
-                        <button class="btn-attach"><i class="fa-solid fa-paperclip"></i></button>
-                        <input type="text" class="chat-input-field" placeholder="Escribe un mensaje...">
-                        <button class="btn-send-msg"><i class="fa-solid fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <section id="view-solicitudes" class="dashboard-view hidden"><div class="content-card"><h3>Solicitudes</h3></div></section>
+        <section id="view-contratos" class="dashboard-view hidden"><div class="empty-state-panel"><i class="fa-solid fa-file-contract"></i><h3>No tienes contratos</h3></div></section>
+        <section id="view-mensajes" class="dashboard-view hidden"><div class="content-card"><h3>Mensajes</h3></div></section>
 
     </main>
 
@@ -346,38 +188,45 @@
     <div id="new-property-modal" class="modal-overlay hidden">
         <div class="modal-content modal-lg">
             <div class="modal-header-clean">
-                <h2>Publicar Nuevo Inmueble</h2>
+                <h2><i class="fa-solid fa-house-chimney"></i> Publicar Nuevo Inmueble</h2>
                 <button id="close-new-prop" class="close-btn">&times;</button>
             </div>
             <div class="modal-body-scroll">
                 <form id="form-new-property">
                     <div class="form-section">
-                        <h3>Datos Principales</h3>
+                        <h3><i class="fa-solid fa-map-location-dot"></i> Ubicación y Tipo</h3>
                         <div class="form-grid-2">
-                            <div class="form-group"><label>Tipo</label><select class="input-style"><option>Apartamento</option><option>Casa</option></select></div>
+                            <div class="form-group"><label>Tipo de Inmueble</label><select class="input-style"><option>Apartamento</option><option>Casa</option></select></div>
                             <div class="form-group"><label>Operación</label><select class="input-style"><option>Arriendo</option><option>Venta</option></select></div>
                         </div>
-                        <div class="form-group"><label>Dirección</label><input type="text" class="input-style"></div>
+                        <div class="form-group"><label>Dirección Exacta</label><input type="text" class="input-style" placeholder="Ej: Calle 5 # 10-23, Buga"></div>
                     </div>
                     <div class="form-section">
-                        <h3>Precio</h3>
-                        <div class="form-group"><input type="text" class="input-style" placeholder="$ 0"></div>
+                        <h3><i class="fa-solid fa-list-check"></i> Características</h3>
+                        <div class="form-grid-3">
+                            <div class="form-group"><label>Habitaciones</label><input type="number" class="input-style" placeholder="0"></div>
+                            <div class="form-group"><label>Baños</label><input type="number" class="input-style" placeholder="0"></div>
+                            <div class="form-group"><label>Área (m²)</label><input type="number" class="input-style" placeholder="Ej: 80"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3><i class="fa-regular fa-file-lines"></i> Detalles</h3>
+                        <div class="form-group"><label>Descripción</label><textarea class="input-style" rows="3"></textarea></div>
+                        <div class="form-group"><label>Precio / Canon</label><input type="text" class="input-style" placeholder="$ 0"></div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer-actions">
                 <button class="btn-secondary" id="cancel-new-prop">Cancelar</button>
-                <button class="btn-primary-download" id="submit-new-prop">Enviar</button>
+                <button class="btn-primary-download" id="submit-new-prop"><i class="fa-solid fa-paper-plane"></i> Publicar</button>
             </div>
         </div>
     </div>
 
     <script type="module" src="/js/app.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- A. NAVEGACIÓN TABS ---
+            // -- LOGICA TABS --
             const links = document.querySelectorAll('.nav-link');
             const views = document.querySelectorAll('.dashboard-view');
             const pageTitle = document.getElementById('page-title');
@@ -386,20 +235,18 @@
             links.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    
                     links.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
-
                     const target = link.getAttribute('data-tab');
                     views.forEach(v => v.classList.add('hidden'));
-                    const targetView = document.getElementById('view-' + target);
-                    if(targetView) targetView.classList.remove('hidden');
-
-                    const tempLink = link.cloneNode(true);
-                    const badge = tempLink.querySelector('.nav-badge-sm');
-                    if(badge) badge.remove();
-                    pageTitle.textContent = tempLink.textContent.trim();
+                    document.getElementById('view-' + target).classList.remove('hidden');
                     
+                    // Titulo
+                    const temp = link.cloneNode(true);
+                    if(temp.querySelector('.nav-badge-sm')) temp.querySelector('.nav-badge-sm').remove();
+                    pageTitle.textContent = temp.textContent.trim();
+
+                    // Ocultar btn publicar
                     if(target === 'mensajes' || target === 'contratos') {
                         if(btnNew) btnNew.style.display = 'none';
                     } else {
@@ -408,65 +255,33 @@
                 });
             });
 
-            // --- B. NOTIFICACIONES (Campana) ---
+            // -- LOGICA MODAL PUBLICAR --
+            const modal = document.getElementById('new-property-modal');
+            const closeBtns = [document.getElementById('close-new-prop'), document.getElementById('cancel-new-prop')];
+            if(btnNew) btnNew.addEventListener('click', () => modal.classList.remove('hidden'));
+            closeBtns.forEach(btn => { if(btn) btn.addEventListener('click', () => modal.classList.add('hidden')); });
+
+            // -- LOGICA DROPDOWNS --
             const btnBell = document.getElementById('btn-bell');
             const notifMenu = document.getElementById('notif-menu');
-
-            if(btnBell && notifMenu) {
-                btnBell.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    notifMenu.classList.toggle('hidden');
-                    // Si abro notificaciones, cierro usuario
-                    if(userMenu) userMenu.classList.add('hidden');
-                });
-            }
-
-            // --- C. MENÚ DE USUARIO (Cerrar Sesión) ---
             const userBtn = document.getElementById('user-profile-btn');
             const userMenu = document.getElementById('user-dropdown');
-            const btnLogout = document.getElementById('btn-logout');
 
-            if(userBtn && userMenu) {
-                userBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    userMenu.classList.toggle('hidden');
-                    // Si abro usuario, cierro notificaciones
-                    if(notifMenu) notifMenu.classList.add('hidden');
-                });
-            }
-
-            // Lógica Global de Cierre al hacer clic fuera
+            if(btnBell) btnBell.addEventListener('click', (e) => {
+                e.stopPropagation(); notifMenu.classList.toggle('hidden');
+                if(userMenu) userMenu.classList.add('hidden');
+            });
+            if(userBtn) userBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); userMenu.classList.toggle('hidden');
+                if(notifMenu) notifMenu.classList.add('hidden');
+            });
             document.addEventListener('click', (e) => {
-                // Cerrar Notificaciones
-                if (notifMenu && !notifMenu.contains(e.target) && e.target !== btnBell) {
-                    notifMenu.classList.add('hidden');
-                }
-                // Cerrar Usuario
-                if (userMenu && !userMenu.contains(e.target) && !userBtn.contains(e.target)) {
-                    userMenu.classList.add('hidden');
-                }
+                if(notifMenu && !notifMenu.contains(e.target) && e.target !== btnBell) notifMenu.classList.add('hidden');
+                if(userMenu && !userMenu.contains(e.target) && !userBtn.contains(e.target)) userMenu.classList.add('hidden');
             });
 
-            // Evitar cierre al hacer clic dentro
-            if(notifMenu) notifMenu.addEventListener('click', e => e.stopPropagation());
-            if(userMenu) userMenu.addEventListener('click', e => e.stopPropagation());
-
-            // LOGOUT (Simulado)
-            if(btnLogout) {
-                btnLogout.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Simular salida
-                    alert('Cerrando sesión...');
-                    window.location.href = '/';
-                });
-            }
-
-            // --- D. MODAL NUEVA PROPIEDAD ---
-            const modal = document.getElementById('new-property-modal');
-            const btnsClose = [document.getElementById('close-new-prop'), document.getElementById('cancel-new-prop')];
-            
-            if(btnNew) btnNew.addEventListener('click', () => modal.classList.remove('hidden'));
-            btnsClose.forEach(b => b.addEventListener('click', () => modal.classList.add('hidden')));
+            const btnLogout = document.getElementById('btn-logout');
+            if(btnLogout) btnLogout.addEventListener('click', () => window.location.href = '/');
         });
     </script>
 </body>
