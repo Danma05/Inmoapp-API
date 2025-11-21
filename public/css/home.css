@@ -463,3 +463,121 @@
     transition: border-color 0.3s;
 }
 .btn-outline-light:hover { border-color: white; }
+
+/* --- MODAL DE REGISTRO DIVIDIDO (SPLIT) --- */
+
+/* Ajuste del contenedor del modal para que sea ancho y sin padding por defecto */
+.modal-content.modal-split-layout {
+    width: 900px;
+    max-width: 95vw;
+    padding: 0; /* Quitamos padding para que la imagen toque los bordes */
+    display: flex;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+/* Botón cerrar personalizado (flotante) */
+.close-btn-split {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #6B7280;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+}
+.close-btn-split:hover { color: #111827; }
+
+/* --- PANEL IZQUIERDO (IMAGEN) --- */
+.modal-left-panel {
+    width: 40%;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: white;
+    text-align: center;
+}
+
+.brand-overlay h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+.brand-overlay p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+.logo-box-lg {
+    width: 60px; height: 60px;
+    background: var(--brand-red);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+}
+
+/* --- PANEL DERECHO (FORMULARIO) --- */
+.modal-right-panel {
+    width: 60%;
+    padding: 40px 50px;
+    position: relative;
+}
+
+.modal-top-nav-simple { margin-bottom: 20px; }
+.btn-text-gray {
+    background: none; border: none; color: #6B7280;
+    cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;
+}
+.btn-text-gray:hover { color: #111827; }
+
+.login-header-left { text-align: left; margin-bottom: 25px; }
+.login-header-left h2 { font-size: 1.8rem; color: #111827; margin-bottom: 5px; }
+.login-header-left p { color: #6B7280; font-size: 0.95rem; }
+
+/* Fila para Nombre y Apellido */
+.form-row-split {
+    display: flex;
+    gap: 15px;
+}
+.form-row-split .form-group { flex: 1; }
+
+/* Botones Sociales */
+.social-login-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+.btn-social {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+    background: white;
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-social:hover { background: #F9FAFB; border-color: #D1D5DB; }
+.btn-social.google i { color: #DB4437; }
+.btn-social.facebook i { color: #4267B2; }
+
+/* Responsive móvil */
+@media (max-width: 768px) {
+    .modal-content.modal-split-layout { flex-direction: column; width: 95%; }
+    .modal-left-panel { display: none; /* Ocultar imagen en móvil para ahorrar espacio */ }
+    .modal-right-panel { width: 100%; padding: 25px; }
+    .form-row-split { flex-direction: column; gap: 0; }
+}

@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InmoApp - Explorar</title>
+    <title>InmoApp - Dashboard</title>
     
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/dashboard.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -19,13 +20,15 @@
                 <div class="logo-box">IA</div>
                 <span class="logo-text">InmoApp</span>
             </a>
+            
             <nav class="top-nav">
-                <a href="#" class="active">Explorar</a>
+                <a href="/explorar-menu">Explorar</a>
                 <a href="#">Favoritos</a>
                 <a href="#">Visitas</a>
                 <a href="#">Postulaciones</a>
                 <a href="#">Mensajes</a>
             </nav>
+            
             <div class="user-controls">
                 <button class="icon-action"><i class="fa-regular fa-heart"></i></button>
                 <button class="icon-action notification">
@@ -67,7 +70,7 @@
         <section class="dashboard-section">
             <div class="section-header-row">
                 <h2 class="dash-title">Propiedades destacadas</h2>
-                <a href="#" class="btn-outline-red-sm">Ver todas</a>
+                <a href="/explorar-menu" class="btn-outline-red-sm">Ver todas</a>
             </div>
 
             <div class="grid-2-cols">
@@ -157,7 +160,9 @@
             </div>
         </section>
 
-    </div> <footer class="dashboard-footer">
+    </div> 
+    
+    <footer class="dashboard-footer">
         <div class="container">
             <div class="footer-grid-dark">
                 <div class="footer-col">
