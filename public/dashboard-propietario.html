@@ -29,56 +29,71 @@
             </nav>
 
             <div class="header-user-actions">
-                <div class="notif-wrapper" style="position: relative;">
+                
+                <div class="notification-wrapper" style="position: relative;">
                     <button id="btn-bell" class="icon-btn-white notification-btn">
                         <i class="fa-regular fa-bell"></i>
                         <span class="badge-dot-white"></span>
                     </button>
 
-                    <div id="notif-window" class="notif-dropdown hidden">
+                    <div id="notif-menu" class="notif-dropdown hidden">
                         <div class="notif-header">
                             <h3>Notificaciones</h3>
-                            <button class="btn-text-sm">Marcar leídas</button>
+                            <span class="mark-read">Marcar leídas</span>
                         </div>
-                        <div class="notif-body-scroll">
+                        <div class="notif-list">
                             <div class="notif-item unread">
-                                <div class="notif-icon-circle bg-green"><i class="fa-solid fa-check"></i></div>
-                                <div class="notif-content-text">
-                                    <p><strong>Propiedad Aprobada</strong></p>
-                                    <span class="sub-text">Tu "Apartamento Santa Mónica" ya es público.</span>
-                                    <span class="time-ago">Hace 2 horas</span>
+                                <div class="notif-icon green"><i class="fa-solid fa-check"></i></div>
+                                <div class="notif-text">
+                                    <strong>Inmueble Aprobado</strong>
+                                    <p>Tu "Apartamento Santa Mónica" ya es público.</p>
+                                    <span class="time">Hace 2 horas</span>
                                 </div>
                             </div>
-                            
                             <div class="notif-item unread">
-                                <div class="notif-icon-circle bg-blue"><i class="fa-solid fa-file-signature"></i></div>
-                                <div class="notif-content-text">
-                                    <p><strong>Contrato listo</strong></p>
-                                    <span class="sub-text">Se generó el borrador para Juan David.</span>
-                                    <span class="time-ago">Ayer</span>
+                                <div class="notif-icon blue"><i class="fa-solid fa-file-contract"></i></div>
+                                <div class="notif-text">
+                                    <strong>Contrato Listo</strong>
+                                    <p>Borrador disponible para "Casa Campestre".</p>
+                                    <span class="time">Ayer</span>
                                 </div>
                             </div>
-
                             <div class="notif-item">
-                                <div class="notif-icon-circle bg-gray"><i class="fa-regular fa-message"></i></div>
-                                <div class="notif-content-text">
-                                    <p><strong>Nuevo mensaje</strong></p>
-                                    <span class="sub-text">María ha preguntado por la casa.</span>
-                                    <span class="time-ago">Hace 1 día</span>
+                                <div class="notif-icon gray"><i class="fa-regular fa-comment"></i></div>
+                                <div class="notif-text">
+                                    <strong>Nuevo Mensaje</strong>
+                                    <p>Juan preguntó por el precio.</p>
+                                    <span class="time">Hace 1 día</span>
                                 </div>
                             </div>
                         </div>
                         <div class="notif-footer">
-                            <a href="/cuenta">Ver todas</a>
+                            <a href="#">Ver todas</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="user-pill-white">
-                    <div class="avatar-circle">CA</div>
-                    <span>Carlos</span>
-                    <i class="fa-solid fa-chevron-down"></i>
+                <div class="user-profile-wrapper" style="position: relative;">
+                    <div class="user-pill-white" id="user-profile-btn">
+                        <div class="avatar-circle">CA</div>
+                        <span>Carlos</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+
+                    <div id="user-dropdown" class="user-dropdown hidden">
+                        <a href="#" class="dropdown-item">
+                            <i class="fa-regular fa-user"></i> Mi Perfil
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i> Configuración
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/" class="dropdown-item logout-item" id="btn-logout">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </div>
     </header>
@@ -361,33 +376,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- A. NAVEGACIÓN TABS ---
             const links = document.querySelectorAll('.nav-link');
             const views = document.querySelectorAll('.dashboard-view');
             const pageTitle = document.getElementById('page-title');
             const btnNew = document.getElementById('btn-new-property-main');
 
-            // 1. LÓGICA NAVEGACIÓN PESTAÑAS
             links.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     
-                    // Activar menú visualmente
                     links.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
 
-                    // Mostrar la vista correspondiente
                     const target = link.getAttribute('data-tab');
                     views.forEach(v => v.classList.add('hidden'));
                     const targetView = document.getElementById('view-' + target);
                     if(targetView) targetView.classList.remove('hidden');
 
-                    // Actualizar título (Limpio, sin badge)
                     const tempLink = link.cloneNode(true);
                     const badge = tempLink.querySelector('.nav-badge-sm');
-                    if (badge) badge.remove();
+                    if(badge) badge.remove();
                     pageTitle.textContent = tempLink.textContent.trim();
                     
-                    // Ocultar botón "Publicar" en Mensajes/Contratos
                     if(target === 'mensajes' || target === 'contratos') {
                         if(btnNew) btnNew.style.display = 'none';
                     } else {
@@ -396,31 +408,60 @@
                 });
             });
 
-            // 2. LÓGICA CAMPANA NOTIFICACIONES (La que faltaba)
+            // --- B. NOTIFICACIONES (Campana) ---
             const btnBell = document.getElementById('btn-bell');
-            const notifWindow = document.getElementById('notif-window');
-            
-            if(btnBell && notifWindow) {
-                // Clic en la campana -> Alternar ventana
+            const notifMenu = document.getElementById('notif-menu');
+
+            if(btnBell && notifMenu) {
                 btnBell.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    notifWindow.classList.toggle('hidden');
-                });
-
-                // Clic fuera -> Cerrar
-                document.addEventListener('click', (e) => {
-                    if (!notifWindow.contains(e.target) && e.target !== btnBell) {
-                        notifWindow.classList.add('hidden');
-                    }
-                });
-
-                // Clic dentro -> No cerrar
-                notifWindow.addEventListener('click', (e) => {
-                    e.stopPropagation();
+                    notifMenu.classList.toggle('hidden');
+                    // Si abro notificaciones, cierro usuario
+                    if(userMenu) userMenu.classList.add('hidden');
                 });
             }
 
-            // 3. LÓGICA MODAL NUEVA PROPIEDAD
+            // --- C. MENÚ DE USUARIO (Cerrar Sesión) ---
+            const userBtn = document.getElementById('user-profile-btn');
+            const userMenu = document.getElementById('user-dropdown');
+            const btnLogout = document.getElementById('btn-logout');
+
+            if(userBtn && userMenu) {
+                userBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userMenu.classList.toggle('hidden');
+                    // Si abro usuario, cierro notificaciones
+                    if(notifMenu) notifMenu.classList.add('hidden');
+                });
+            }
+
+            // Lógica Global de Cierre al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                // Cerrar Notificaciones
+                if (notifMenu && !notifMenu.contains(e.target) && e.target !== btnBell) {
+                    notifMenu.classList.add('hidden');
+                }
+                // Cerrar Usuario
+                if (userMenu && !userMenu.contains(e.target) && !userBtn.contains(e.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+
+            // Evitar cierre al hacer clic dentro
+            if(notifMenu) notifMenu.addEventListener('click', e => e.stopPropagation());
+            if(userMenu) userMenu.addEventListener('click', e => e.stopPropagation());
+
+            // LOGOUT (Simulado)
+            if(btnLogout) {
+                btnLogout.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Simular salida
+                    alert('Cerrando sesión...');
+                    window.location.href = '/';
+                });
+            }
+
+            // --- D. MODAL NUEVA PROPIEDAD ---
             const modal = document.getElementById('new-property-modal');
             const btnsClose = [document.getElementById('close-new-prop'), document.getElementById('cancel-new-prop')];
             

@@ -2031,3 +2031,100 @@
 
 /* Clase utilitaria para ocultar */
 .hidden { display: none !important; }
+
+/* --- ESTILOS MENÚ NOTIFICACIONES --- */
+
+/* Clase para ocultar elementos */
+.hidden { display: none !important; }
+
+/* La ventana flotante */
+.notif-dropdown {
+    position: absolute;
+    top: 50px;       /* Justo debajo del botón */
+    right: -10px;    /* Alineado a la derecha */
+    width: 320px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sombra elegante */
+    border: 1px solid #E5E7EB;
+    z-index: 1000;   /* Asegura que flote encima de todo */
+    overflow: hidden;
+}
+
+.notif-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px; border-bottom: 1px solid #F3F4F6; background: #fff;
+}
+.notif-header h3 { margin: 0; font-size: 1rem; color: #111827; }
+.mark-read { font-size: 0.75rem; color: var(--brand-red); cursor: pointer; font-weight: 600; }
+
+.notif-list { max-height: 300px; overflow-y: auto; }
+
+.notif-item {
+    display: flex; gap: 12px; padding: 12px 15px;
+    border-bottom: 1px solid #F3F4F6; cursor: pointer;
+    transition: background 0.2s;
+}
+.notif-item:hover { background: #F9FAFB; }
+.notif-item.unread { background: #FEF2F2; } /* Fondo rojizo suave para no leídas */
+
+.notif-icon {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; color: white; flex-shrink: 0;
+}
+.notif-icon.green { background: #10B981; }
+.notif-icon.blue { background: #3B82F6; }
+.notif-icon.gray { background: #9CA3AF; }
+
+.notif-text p { margin: 2px 0 4px; font-size: 0.85rem; color: #4B5563; line-height: 1.3; }
+.notif-text strong { font-size: 0.9rem; color: #111827; }
+.notif-text .time { font-size: 0.7rem; color: #9CA3AF; }
+
+.notif-footer { text-align: center; padding: 10px; background: #F9FAFB; border-top: 1px solid #E5E7EB; }
+.notif-footer a { font-size: 0.8rem; color: var(--brand-red); text-decoration: none; font-weight: 600; }
+
+
+/* =========================================
+   MENÚ DE USUARIO (Cerrar Sesión)
+   ========================================= */
+
+.user-dropdown {
+    position: absolute;
+    top: 55px;        /* Debajo del nombre */
+    right: 0;         /* Alineado a la derecha */
+    width: 200px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border: 1px solid #E5E7EB;
+    z-index: 1001;    /* Encima de todo */
+    padding: 6px 0;
+    overflow: hidden;
+    animation: fadeInDown 0.2s ease-out;
+}
+
+.dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    color: #4B5563; text-decoration: none; font-size: 0.9rem;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #F9FAFB; color: #111827;
+}
+
+.dropdown-item i {
+    width: 18px; text-align: center; color: #9CA3AF;
+}
+
+.dropdown-divider {
+    height: 1px; background: #F3F4F6; margin: 4px 0;
+}
+
+/* Estilo especial para Cerrar Sesión (Rojo) */
+.logout-item { color: #EF4444; }
+.logout-item i { color: #EF4444; }
+.logout-item:hover { background: #FEF2F2; color: #DC2626; }
