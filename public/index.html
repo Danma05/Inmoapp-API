@@ -191,27 +191,24 @@
                 <h2>Iniciar Sesión</h2>
                 <p>Accede a tu cuenta de InmoApp</p>
             </div>
-            <form class="login-form">
+            <form class="login-form" id="login-form">
                 <div class="form-group">
                     <label>Correo electrónico</label>
                     <div class="input-wrapper gray-style">
-                        <i class="fa-regular fa-envelope left-icon"></i>
-                        <input type="email" placeholder="tucorreo@ejemplo.com" required>
-                        <i class="fa-solid fa-unlock-keyhole right-icon red-icon"></i>
+                        <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" required>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label>Contraseña</label>
                     <div class="input-wrapper gray-style">
-                        <i class="fa-solid fa-lock left-icon"></i>
-                        <input type="password" placeholder="........" required>
-                        <i class="fa-regular fa-eye right-icon red-icon"></i>
-                    </div>
-                    <div class="forgot-row">
-                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                        <input type="password" id="login-password" placeholder="********" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-full btn-red">Iniciar Sesión</button>
+
+                <div id="login-error" style="color:#c0392b; font-size:0.9rem; display:none; margin-top:6px;"></div>
+
+                <button type="submit" class="btn btn-full btn-red">Iniciar sesión</button>
             </form>
             <div class="modal-divider">
                 <span class="line"></span>

@@ -87,6 +87,71 @@ app.get("/usuarios", async (_req, res) => {
 });
 
 
+// =======================================
+// LOGIN DE USUARIO
+// =======================================
+app.post("/login", async (req, res) => {
+  try {
+    const { correo, password } = req.body;
+
+    if (!correo || !password) {
+      return res.status(400).json({ error: "Correo y contraseña son obligatorios." });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+      return res.status(400).json({ error: "El correo electrónico no es válido." });
+    }
+
+    // Buscar usuario por correo
+    const query = `
+      SELECT id, nombre_completo, correo, rol, password_hash, activo
+      FROM public.usuarios
+      WHERE correo = $1
+      LIMIT 1;
+    `;
+    const result = await dbQuery(query, [correo]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Correo o contraseña incorrectos." });
+    }
+
+    const user = result.rows[0];
+
+    // Validar si está activo
+    if (user.activo === false) {
+      return res.status(403).json({ error: "Tu cuenta está inactiva. Contacta al administrador." });
+    }
+
+    // ⚠ De momento comparamos texto plano (para el curso está bien).
+    // Más adelante se puede reemplazar por bcrypt.compare(...)
+    if (password !== user.password_hash) {
+      return res.status(401).json({ error: "Correo o contraseña incorrectos." });
+    }
+
+    // Actualizar último acceso (opcional)
+    await dbQuery(
+      "UPDATE public.usuarios SET ultimo_acceso = NOW() WHERE id = $1;",
+      [user.id]
+    );
+
+    return res.json({
+      ok: true,
+      usuario: {
+        id: user.id,
+        nombre_completo: user.nombre_completo,
+        correo: user.correo,
+        rol: user.rol
+      }
+    });
+
+  } catch (e) {
+    console.error("❌ Error POST /login:", e);
+    return res.status(500).json({ error: "Error interno al iniciar sesión." });
+  }
+});
+
+
 // POST /usuarios (Simulado)
 app.post("/usuarios", async (req, res) => {
   try {
