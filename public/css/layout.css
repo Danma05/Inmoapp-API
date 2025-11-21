@@ -228,21 +228,21 @@ body {
 /* =========================================
    7. MODAL PASAPORTE (UPLOAD)
    ========================================= */
-.passport-header { text-align: left; margin-bottom: 25px; }
+.passport-header { text-align: left; margin-bottom: 15px; }
 .passport-header h2 { font-size: 1.4rem; margin: 10px 0 5px 0; color: #111827; }
 .passport-header p { color: #6B7280; font-size: 0.9rem; }
 
 .brand-small { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #1E293B; font-size: 0.9rem; }
 .logo-box-sm { background: #1E293B; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
 
-.progress-section { margin-bottom: 30px; }
+.progress-section { margin-bottom: 20px; }
 .progress-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: #4B5563; margin-bottom: 8px; }
 .progress-track { width: 100%; height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
 .progress-fill { height: 100%; background: #2563EB; border-radius: 4px; transition: width 0.4s ease; }
 
 .docs-title { text-align: left; font-size: 1rem; margin-bottom: 15px; color: #374151; }
 
-.docs-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+.docs-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
 .doc-item {
     display: flex; align-items: center; gap: 15px;
     border: 1px solid #E5E7EB; border-radius: 10px; padding: 15px; background: white;

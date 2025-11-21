@@ -4,8 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // --- BASE DE DATOS DESHABILITADA ---
-// import pool from "./db.js";
-// import { dbQuery } from "./dbQuery.js";
+ import pool from "./db.js";
+ import { dbQuery } from "./dbQuery.js";
 
 const app = express();
 app.use(express.json());
@@ -83,19 +83,28 @@ app.get("/usuarios", (_req, res) => {
 });
 
 // POST /usuarios (Simulado)
-app.post("/usuarios", (req, res) => {
-  const { nombreCompleto, correo, rol } = req.body;
-  console.log("📝 [MOCK] Creando usuario:", { nombreCompleto, correo });
+app.post("/usuarios", async (req, res) => {
+  try {
+    const { nombreCompleto, correo, rol } = req.body;
 
-  setTimeout(() => {
-    res.status(201).json({
-      id: Date.now(),
-      nombre_completo: nombreCompleto,
-      correo: correo,
-      rol: rol || 'ARRENDATARIO',
-      creado_en: new Date()
-    });
-  }, 300);
+    const insertQuery = `
+      INSERT INTO usuarios (nombre_completo, correo, rol)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `;
+
+    const result = await dbQuery(insertQuery, [
+      nombreCompleto,
+      correo,
+      rol || "ARRENDATARIO"
+    ]);
+
+    res.status(201).json(result.rows[0]);
+
+  } catch (e) {
+    console.error("❌ Error POST /usuarios:", e);
+    res.status(500).json({ error: "Error registrando usuario" });
+  }
 });
 
 // POST /passport/init (Simulado)

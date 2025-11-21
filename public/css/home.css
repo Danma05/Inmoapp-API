@@ -534,14 +534,14 @@
     position: relative;
 }
 
-.modal-top-nav-simple { margin-bottom: 20px; }
+.modal-top-nav-simple { margin-bottom: 10px; }
 .btn-text-gray {
     background: none; border: none; color: #6B7280;
     cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;
 }
 .btn-text-gray:hover { color: #111827; }
 
-.login-header-left { text-align: left; margin-bottom: 25px; }
+.login-header-left { text-align: left; margin-bottom: 10px; }
 .login-header-left h2 { font-size: 1.8rem; color: #111827; margin-bottom: 5px; }
 .login-header-left p { color: #6B7280; font-size: 0.95rem; }
 
