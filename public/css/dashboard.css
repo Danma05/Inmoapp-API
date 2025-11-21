@@ -1678,12 +1678,12 @@
 
 
 /* ==========================================================================
-   DASHBOARD PROPIETARIO - ESTILOS COMPLETOS
+   DASHBOARD PROPIETARIO - ESTILOS COMPLETOS (CORREGIDO)
    ========================================================================== */
 
 /* --- 1. HEADER ROJO CORPORATIVO --- */
 .owner-header-red {
-    background-color: var(--brand-red); /* Usando variable global */
+    background-color: var(--brand-red); /* Rojo corporativo */
     height: 70px;
     width: 100%;
     position: sticky; top: 0; z-index: 100;
@@ -1710,11 +1710,10 @@
     padding: 0 20px; display: flex; align-items: center;
     font-weight: 500; border-bottom: 4px solid transparent;
     transition: all 0.2s; height: 100%; font-size: 0.95rem;
-    gap: 8px;
+    gap: 8px; cursor: pointer;
 }
 .nav-link:hover { color: white; background: rgba(255,255,255,0.1); }
 .nav-link.active { color: white; border-bottom-color: white; font-weight: 600; }
-
 .nav-badge-sm {
     background: white; color: var(--brand-red);
     font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; font-weight: 700;
@@ -1724,6 +1723,7 @@
 .header-user-actions { display: flex; align-items: center; gap: 20px; }
 .icon-btn-white {
     background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; position: relative;
+    padding: 5px;
 }
 .badge-dot-white {
     width: 8px; height: 8px; background: #FACC15; border-radius: 50%; position: absolute; top: 0; right: 0;
@@ -1740,7 +1740,7 @@
 /* --- 2. CONTENEDOR PRINCIPAL --- */
 .owner-main-container {
     padding-top: 40px; padding-bottom: 60px;
-    min-height: calc(100vh - 350px); /* Altura mínima para empujar footer */
+    min-height: calc(100vh - 200px); /* Empuja el footer */
     max-width: 1200px; margin: 0 auto; padding-left: 20px; padding-right: 20px;
 }
 
@@ -1857,13 +1857,11 @@
 .empty-state-panel h3 { color: #111827; margin: 0 0 5px; font-size: 1.1rem; }
 
 
-/* --- 6. ESTILOS DEL CHAT (NUEVO) --- */
+/* --- 6. ESTILOS DEL CHAT --- */
 .messages-container {
     display: flex; background: white; border: 1px solid #E5E7EB;
     border-radius: 12px; height: 600px; overflow: hidden;
 }
-
-/* Sidebar Chat */
 .msg-sidebar { width: 320px; border-right: 1px solid #E5E7EB; display: flex; flex-direction: column; background: #F9FAFB; }
 .msg-search-box { padding: 15px; border-bottom: 1px solid #E5E7EB; background: white; }
 .search-input-wrapper { position: relative; }
@@ -1872,7 +1870,6 @@
     width: 100%; padding: 8px 10px 8px 35px; border: 1px solid #E5E7EB;
     border-radius: 6px; background: #F3F4F6; outline: none;
 }
-
 .msg-list { flex: 1; overflow-y: auto; }
 .msg-item {
     display: flex; gap: 12px; padding: 15px; border-bottom: 1px solid #F3F4F6;
@@ -1891,7 +1888,6 @@
 .msg-property { font-size: 0.75rem; color: #6B7280; margin-bottom: 4px; font-style: italic; }
 .msg-preview { font-size: 0.85rem; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Ventana Chat */
 .chat-window { flex: 1; display: flex; flex-direction: column; background: white; }
 .chat-header {
     padding: 15px 20px; border-bottom: 1px solid #E5E7EB; display: flex;
@@ -1924,20 +1920,23 @@
     border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 
-/* --- 7. FOOTER OSCURO (Fixed) --- */
+/* --- 7. FOOTER OSCURO --- */
 .main-footer-dark {
-    background-color: #111827; color: white; padding: 60px 0 20px;
-    width: 100%; margin-top: auto; /* Empuja al fondo */
+    background-color: #111827; /* Fondo oscuro */
+    color: white;
+    padding: 60px 0 30px;
+    width: 100%;
+    margin-top: 50px;
 }
 .footer-grid-dark {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;
-    max-width: 1200px; margin: 0 auto 40px; padding: 0 20px;
+    max-width: 1200px; margin: 0 auto; padding: 0 20px;
 }
 .footer-heading { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: white; }
-.contact-list, .links-list { list-style: none; padding: 0; }
+.contact-list, .links-list { list-style: none; padding: 0; margin: 0; }
 .contact-list li { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; color: #9CA3AF; font-size: 0.9rem; }
 .icon-red { color: var(--brand-red); width: 20px; text-align: center; }
-.links-list a { color: #9CA3AF; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+.links-list a { color: #9CA3AF; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; display: block; margin-bottom: 10px; }
 .links-list a:hover { color: white; }
 .social-icons { display: flex; gap: 10px; }
 .social-btn {
@@ -1947,127 +1946,34 @@
 }
 .social-btn:hover { background-color: var(--brand-red); }
 .footer-bottom-dark {
-    border-top: 1px solid #1F2937; padding-top: 20px; text-align: center;
+    border-top: 1px solid #374151; padding-top: 20px; text-align: center;
     color: #6B7280; font-size: 0.85rem; max-width: 1200px; margin: 0 auto;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .header-flex { padding: 0 15px; }
-    .nav-link span, .logo-text { display: none; } /* Ahorra espacio en móvil */
-    .property-row-card { flex-direction: column; align-items: flex-start; padding-right: 0; }
-    .row-img { width: 100%; height: 160px; }
-    .row-actions { padding: 15px; width: 100%; justify-content: flex-end; border-top: 1px solid #F3F4F6; }
-    .messages-container { flex-direction: column; height: auto; }
-    .msg-sidebar { width: 100%; height: 200px; }
-    .chat-window { height: 400px; }
-}
-
-
-/* =========================================
-   VENTANA DE NOTIFICACIONES (DROPDOWN)
-   ========================================= */
-
-.notif-dropdown {
+/* --- 8. MENÚS DESPLEGABLES (DROPDOWNS) --- */
+.notif-dropdown, .user-dropdown {
     position: absolute;
-    top: 50px; /* Justo debajo de la campana */
-    right: -10px; /* Alineado a la derecha */
-    width: 320px;
-    background: white;
-    border-radius: 12px;
+    top: 55px; right: 0;
+    width: 300px;
+    background: white; border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     border: 1px solid #E5E7EB;
-    z-index: 1000;
-    overflow: hidden;
-    animation: fadeInDown 0.2s ease-out;
+    z-index: 1000; overflow: hidden;
 }
-
-/* Animación suave de entrada */
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.notif-header {
-    padding: 15px;
-    border-bottom: 1px solid #F3F4F6;
-    display: flex; justify-content: space-between; align-items: center;
-}
-.notif-header h3 { margin: 0; font-size: 1rem; color: #111827; }
-.btn-text-sm { background: none; border: none; color: var(--brand-red); font-size: 0.8rem; cursor: pointer; font-weight: 600; }
-
-.notif-body-scroll {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.notif-item {
-    display: flex; gap: 12px; padding: 12px 15px;
-    border-bottom: 1px solid #F3F4F6; cursor: pointer;
-    transition: background 0.2s;
-}
-.notif-item:hover { background: #F9FAFB; }
-.notif-item.unread { background: #FEF2F2; /* Fondo rojizo muy suave */ }
-
-.notif-icon-circle {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 0.9rem; flex-shrink: 0;
-}
-.bg-green { background: #10B981; }
-.bg-blue { background: #3B82F6; }
-.bg-gray { background: #9CA3AF; }
-
-.notif-content-text p { margin: 0; font-size: 0.9rem; color: #1F2937; }
-.sub-text { display: block; font-size: 0.8rem; color: #6B7280; line-height: 1.3; margin-top: 2px; }
-.time-ago { font-size: 0.7rem; color: #9CA3AF; display: block; margin-top: 4px; }
-
-.notif-footer {
-    padding: 10px; text-align: center; background: #F9FAFB; border-top: 1px solid #E5E7EB;
-}
-.notif-footer a {
-    color: var(--brand-red); text-decoration: none; font-size: 0.85rem; font-weight: 600;
-}
-
-/* Clase utilitaria para ocultar */
-.hidden { display: none !important; }
-
-/* --- ESTILOS MENÚ NOTIFICACIONES --- */
-
-/* Clase para ocultar elementos */
-.hidden { display: none !important; }
-
-/* La ventana flotante */
-.notif-dropdown {
-    position: absolute;
-    top: 50px;       /* Justo debajo del botón */
-    right: -10px;    /* Alineado a la derecha */
-    width: 320px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sombra elegante */
-    border: 1px solid #E5E7EB;
-    z-index: 1000;   /* Asegura que flote encima de todo */
-    overflow: hidden;
-}
-
+.user-dropdown { width: 200px; } /* Más angosto para el usuario */
 .notif-header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 15px; border-bottom: 1px solid #F3F4F6; background: #fff;
 }
 .notif-header h3 { margin: 0; font-size: 1rem; color: #111827; }
 .mark-read { font-size: 0.75rem; color: var(--brand-red); cursor: pointer; font-weight: 600; }
-
 .notif-list { max-height: 300px; overflow-y: auto; }
-
 .notif-item {
     display: flex; gap: 12px; padding: 12px 15px;
-    border-bottom: 1px solid #F3F4F6; cursor: pointer;
-    transition: background 0.2s;
+    border-bottom: 1px solid #F3F4F6; cursor: pointer; transition: background 0.2s;
 }
 .notif-item:hover { background: #F9FAFB; }
-.notif-item.unread { background: #FEF2F2; } /* Fondo rojizo suave para no leídas */
-
+.notif-item.unread { background: #FEF2F2; }
 .notif-icon {
     width: 32px; height: 32px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
@@ -2076,55 +1982,80 @@
 .notif-icon.green { background: #10B981; }
 .notif-icon.blue { background: #3B82F6; }
 .notif-icon.gray { background: #9CA3AF; }
-
 .notif-text p { margin: 2px 0 4px; font-size: 0.85rem; color: #4B5563; line-height: 1.3; }
 .notif-text strong { font-size: 0.9rem; color: #111827; }
 .notif-text .time { font-size: 0.7rem; color: #9CA3AF; }
-
 .notif-footer { text-align: center; padding: 10px; background: #F9FAFB; border-top: 1px solid #E5E7EB; }
 .notif-footer a { font-size: 0.8rem; color: var(--brand-red); text-decoration: none; font-weight: 600; }
 
-
-/* =========================================
-   MENÚ DE USUARIO (Cerrar Sesión)
-   ========================================= */
-
-.user-dropdown {
-    position: absolute;
-    top: 55px;        /* Debajo del nombre */
-    right: 0;         /* Alineado a la derecha */
-    width: 200px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    border: 1px solid #E5E7EB;
-    z-index: 1001;    /* Encima de todo */
-    padding: 6px 0;
-    overflow: hidden;
-    animation: fadeInDown 0.2s ease-out;
-}
-
 .dropdown-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px;
-    color: #4B5563; text-decoration: none; font-size: 0.9rem;
-    transition: background 0.2s;
-    cursor: pointer;
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    color: #4B5563; text-decoration: none; font-size: 0.9rem; transition: background 0.2s;
 }
-
-.dropdown-item:hover {
-    background: #F9FAFB; color: #111827;
-}
-
-.dropdown-item i {
-    width: 18px; text-align: center; color: #9CA3AF;
-}
-
-.dropdown-divider {
-    height: 1px; background: #F3F4F6; margin: 4px 0;
-}
-
-/* Estilo especial para Cerrar Sesión (Rojo) */
+.dropdown-item:hover { background: #F9FAFB; color: #111827; }
+.dropdown-divider { height: 1px; background: #F3F4F6; margin: 4px 0; }
 .logout-item { color: #EF4444; }
-.logout-item i { color: #EF4444; }
 .logout-item:hover { background: #FEF2F2; color: #DC2626; }
+
+
+/* --- 9. MODAL (CORRECCIÓN CRÍTICA PARA QUE FLOTE) --- */
+.modal-overlay {
+    position: fixed; /* OBLIGATORIO: Fijo a la pantalla */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    z-index: 2000; /* Por encima de todo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: white;
+    width: 90%; max-width: 800px;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex; flex-direction: column;
+    max-height: 90vh; /* Límite de altura */
+}
+
+/* Estilos internos del modal */
+.modal-header-clean {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 25px; border-bottom: 1px solid #E5E7EB;
+}
+.modal-header-clean h2 { margin: 0; font-size: 1.25rem; color: #111827; }
+.close-btn { background: none; border: none; font-size: 1.5rem; color: #9CA3AF; cursor: pointer; }
+
+.modal-body-scroll { padding: 25px; overflow-y: auto; flex: 1; }
+.form-section { margin-bottom: 25px; border-bottom: 1px solid #F3F4F6; padding-bottom: 20px; }
+.form-section:last-child { border-bottom: none; }
+.form-section h3 { font-size: 1rem; color: #374151; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+.form-section h3 i { color: var(--brand-red); }
+
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #4B5563; margin-bottom: 6px; }
+.input-style {
+    width: 100%; padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 8px;
+    font-size: 0.95rem; color: #111827; outline: none; transition: border 0.2s; background: #F9FAFB;
+    box-sizing: border-box; /* Importante para que no se salga */
+}
+.input-style:focus { border-color: var(--brand-red); background: white; }
+
+.modal-footer-actions {
+    padding: 20px 25px; border-top: 1px solid #E5E7EB; background: #F9FAFB;
+    display: flex; justify-content: flex-end; gap: 12px;
+    border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+}
+.btn-secondary { background: white; border: 1px solid #D1D5DB; color: #374151; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-primary-download { background: var(--brand-red); border: none; color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+/* Responsive */
+@media (max-width: 640px) {
+    .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+}
