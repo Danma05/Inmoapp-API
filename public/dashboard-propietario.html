@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InmoApp - Panel de Propietario</title>
+    
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="explorer-header">
+        <div class="container header-content">
+            <a href="/" class="brand">
+                <div class="logo-box">IA</div>
+                <span class="logo-text">InmoApp</span>
+            </a>
+            <nav class="top-nav">
+                <a href="#" class="active">Panel de Control</a>
+                <a href="#">Oportunidades</a>
+                <a href="#">Recursos</a>
+            </nav>
+            <div class="user-controls">
+                <button class="icon-action notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">1</span>
+                </button>
+                <div class="user-profile-pill">
+                    <div class="user-avatar-sm">CA</div>
+                    <span class="user-name-text">Carlos Arrendador</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container dashboard-body">
+        <div class="account-grid">
+            
+            <aside class="account-sidebar">
+                <div class="owner-profile-card">
+                    <div class="owner-avatar">CA</div>
+                    <h3>Carlos Arrendador</h3>
+                    <span class="owner-badge">Propietario Verificado <i class="fa-solid fa-circle-check"></i></span>
+                </div>
+
+                <button class="btn-create-listing" id="btn-new-property">
+                    <i class="fa-solid fa-plus"></i> Publicar Propiedad
+                </button>
+                
+                <ul class="account-nav-list owner-nav">
+                    <li class="account-nav-item active" data-target="panel-resumen">
+                        <i class="fa-solid fa-chart-pie"></i> Resumen
+                    </li>
+                    <li class="account-nav-item" data-target="panel-propiedades">
+                        <i class="fa-solid fa-building-user"></i> Mis Propiedades
+                    </li>
+                    <li class="account-nav-item" data-target="panel-solicitudes">
+                        <i class="fa-solid fa-clipboard-list"></i> Solicitudes
+                    </li>
+                    <li class="account-nav-item" data-target="panel-contratos-owner">
+                        <i class="fa-solid fa-file-contract"></i> Contratos Activos
+                    </li>
+                    <li class="account-nav-item" data-target="panel-mensajes-owner">
+                        <i class="fa-regular fa-comments"></i> Mensajes
+                    </li>
+                </ul>
+            </aside>
+
+            <main class="account-content">
+                
+                <section id="panel-resumen" class="account-panel active">
+                    <h2 class="panel-title">Resumen General</h2>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon blue"><i class="fa-solid fa-house"></i></div>
+                            <div class="metric-info">
+                                <span class="metric-label">Propiedades</span>
+                                <span class="metric-value">3</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
+                            <div class="metric-info">
+                                <span class="metric-label">Ingresos (Mes)</span>
+                                <span class="metric-value">$2.5M</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon orange"><i class="fa-solid fa-clock"></i></div>
+                            <div class="metric-info">
+                                <span class="metric-label">En Revisión</span>
+                                <span class="metric-value">1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="sub-section-title">Actividad Reciente</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="act-icon"><i class="fa-solid fa-check-double"></i></div>
+                            <div class="act-text">
+                                <strong>Propiedad Aprobada</strong>
+                                <p>Tu inmueble en "Los Rosales" ya está visible para todos.</p>
+                            </div>
+                            <span class="act-time">Hace 2h</span>
+                        </div>
+                        <div class="activity-item">
+                            <div class="act-icon"><i class="fa-solid fa-file-signature"></i></div>
+                            <div class="act-text">
+                                <strong>Nuevo Contrato Firmado</strong>
+                                <p>El arrendatario ha firmado el contrato de "Av. 5ta Norte".</p>
+                            </div>
+                            <span class="act-time">Ayer</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="panel-propiedades" class="account-panel">
+                    <div class="panel-header-row">
+                        <h2 class="panel-title">Inventario de Propiedades</h2>
+                        <div class="filters">
+                            <select class="small-select">
+                                <option>Todos los estados</option>
+                                <option>Publicado</option>
+                                <option>En Revisión</option>
+                                <option>Arrendado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="owner-properties-list">
+                        
+                        <div class="owner-property-card">
+                            <div class="prop-thumb">
+                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200" alt="Apto">
+                                <span class="status-tag published">Publicado</span>
+                            </div>
+                            <div class="prop-details">
+                                <h3>Apartamento Moderno - Santa Mónica</h3>
+                                <p class="prop-address"><i class="fa-solid fa-location-dot"></i> Calle 14 #23-45, Buga</p>
+                                <div class="prop-meta">
+                                    <span><i class="fa-solid fa-bed"></i> 3 Hab</span>
+                                    <span><i class="fa-solid fa-ruler-combined"></i> 85 m²</span>
+                                    <span class="prop-price">$1.200.000 / mes</span>
+                                </div>
+                            </div>
+                            <div class="prop-actions">
+                                <button class="btn-action-outline"><i class="fa-regular fa-eye"></i> Ver</button>
+                                <button class="btn-action-outline"><i class="fa-solid fa-pen"></i> Editar</button>
+                                <button class="btn-action-text text-red"><i class="fa-solid fa-pause"></i> Pausar</button>
+                            </div>
+                        </div>
+
+                        <div class="owner-property-card">
+                            <div class="prop-thumb">
+                                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&w=200" alt="Casa">
+                                <span class="status-tag review">En Revisión</span>
+                            </div>
+                            <div class="prop-details">
+                                <h3>Casa Campestre - La Habana</h3>
+                                <p class="prop-address"><i class="fa-solid fa-location-dot"></i> Km 5 Vía Magdalena</p>
+                                <div class="prop-meta">
+                                    <span><i class="fa-solid fa-bed"></i> 4 Hab</span>
+                                    <span><i class="fa-solid fa-ruler-combined"></i> 200 m²</span>
+                                    <span class="prop-price">$3.500.000 / mes</span>
+                                </div>
+                                <div class="review-note">
+                                    <i class="fa-solid fa-circle-info"></i> Estamos validando el Certificado de Tradición.
+                                </div>
+                            </div>
+                            <div class="prop-actions">
+                                <button class="btn-action-outline disabled">Ver</button>
+                                <button class="btn-action-outline"><i class="fa-solid fa-upload"></i> Docs</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="panel-solicitudes" class="account-panel">
+                    <h2 class="panel-title">Historial de Solicitudes</h2>
+                    <div class="requests-table-wrapper">
+                        <table class="requests-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Propiedad</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#REQ-001</td>
+                                    <td>Publicación</td>
+                                    <td>Casa Campestre</td>
+                                    <td>20 Nov 2025</td>
+                                    <td><span class="status-pill orange">Pendiente</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#REQ-005</td>
+                                    <td>Cambio Precio</td>
+                                    <td>Apto Santa Mónica</td>
+                                    <td>15 Nov 2025</td>
+                                    <td><span class="status-pill green">Aprobado</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="panel-contratos-owner" class="account-panel">
+                    <h2 class="panel-title">Contratos con Arrendatarios</h2>
+                    <p>Aquí verás los contratos vigentes de tus propiedades.</p>
+                </section>
+                <section id="panel-mensajes-owner" class="account-panel">
+                    <h2 class="panel-title">Mensajes con la Inmobiliaria</h2>
+                    <p>Canal directo con tu agente asignado.</p>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <div id="new-property-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-lg">
+            <div class="modal-header-clean">
+                <h2>Publicar Nuevo Inmueble</h2>
+                <button id="close-new-prop" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body-scroll">
+                <form id="form-new-property">
+                    <div class="form-section">
+                        <h3>1. Información Básica</h3>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>Tipo de Inmueble</label>
+                                <select class="input-style"><option>Apartamento</option><option>Casa</option><option>Local</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Operación</label>
+                                <select class="input-style"><option>Arriendo</option><option>Venta</option></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Dirección Exacta</label>
+                            <input type="text" class="input-style" placeholder="Ej: Calle 10 #5-20">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>2. Características</h3>
+                        <div class="form-grid-3">
+                            <div class="form-group"><label>Habitaciones</label><input type="number" class="input-style"></div>
+                            <div class="form-group"><label>Baños</label><input type="number" class="input-style"></div>
+                            <div class="form-group"><label>Área (m²)</label><input type="number" class="input-style"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción para el aviso</label>
+                            <textarea class="input-style" rows="3" placeholder="Describe lo mejor de tu inmueble..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>3. Precio</h3>
+                        <div class="form-group">
+                            <label>Valor Mensual Sugerido ($)</label>
+                            <input type="text" class="input-style" placeholder="$ 0.000.000">
+                            <p class="hint-text">La inmobiliaria revisará este valor según el mercado.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-actions">
+                <button class="btn-secondary" id="cancel-new-prop">Cancelar</button>
+                <button class="btn-primary-download" id="submit-new-prop">Enviar a Revisión</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>

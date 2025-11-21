@@ -235,17 +235,18 @@
                     <div class="option-info">
                         <h3>Quiero Arrendar</h3>
                         <p>Encuentra el lugar perfecto para vivir. Explora propiedades disponibles.</p>
-                        <button class="btn-blue-select">Seleccionar</button>
+                        <button class="btn-blue-select btn-rent-select">Seleccionar</button>
                     </div>
                 </div>
+
                 <div class="option-card">
                     <div class="option-image">
                         <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=400" alt="Publicar">
                     </div>
                     <div class="option-info">
-                        <h3>Quiero Publicar un Inmueble</h3>
+                        <h3>Quiero Publicar</h3>
                         <p>Ofrece tu propiedad a una amplia audiencia. Gestiona tus anuncios.</p>
-                        <button class="btn-blue-select">Seleccionar</button>
+                        <button class="btn-blue-select btn-publish-select">Seleccionar</button>
                     </div>
                 </div>
             </div>
@@ -253,68 +254,90 @@
     </div>
 
     <div id="register-form-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-top-nav">
-                <button id="back-to-selection" class="nav-icon-btn"><i class="fa-solid fa-arrow-left"></i></button>
-                <button id="close-register-form" class="nav-icon-btn"><i class="fa-solid fa-times"></i></button>
+        <div class="modal-content modal-split-layout">
+            <button id="close-register-form" class="close-btn-split">&times;</button>
+            
+            <div class="modal-left-panel">
+                <div class="brand-overlay">
+                    <div class="logo-box-lg">IA</div>
+                    <h2>Alcanza tus sueños con nosotros</h2>
+                    <p>Descubre oportunidades únicas en el mercado inmobiliario y gestiona todo desde un solo lugar.</p>
+                </div>
             </div>
-            <div class="login-header">
-                <h2>Crear Cuenta</h2>
-                <p>Únete a InmoApp y encuentra tu hogar ideal</p>
-            </div>
-            <form class="login-form">
-                <div class="form-group">
-                    <label>Nombre completo</label>
-                    <div class="input-wrapper gray-style">
-                        <i class="fa-regular fa-user left-icon"></i>
-                        <input type="text" placeholder="Juan Pérez" required>
+
+            <div class="modal-right-panel">
+                <div class="modal-top-nav-simple">
+                    <button id="back-to-selection" class="btn-text-gray"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                </div>
+
+                <div class="login-header-left">
+                    <h2>Crear Cuenta</h2>
+                    <p>Únete a InmoApp gratis</p>
+                </div>
+
+                <form class="login-form">
+                    <div class="form-row-split">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <div class="input-wrapper gray-style">
+                                <input type="text" placeholder="Nombre" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <div class="input-wrapper gray-style">
+                                <input type="text" placeholder="Apellido" required>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Correo electrónico</label>
-                    <div class="input-wrapper gray-style">
-                        <i class="fa-regular fa-envelope left-icon"></i>
-                        <input type="email" placeholder="tucorreo@ejemplo.com" required>
-                        <i class="fa-solid fa-lock right-icon red-icon"></i>
+                    
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <div class="input-wrapper gray-style">
+                            <input type="email" placeholder="tucorreo@ejemplo.com" required>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    <div class="input-wrapper gray-style">
-                        <i class="fa-solid fa-phone left-icon"></i>
-                        <input type="tel" placeholder="+57 300 123 4567" required>
+
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <div class="input-wrapper gray-style">
+                            <input type="password" placeholder="********" required>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <div class="input-wrapper gray-style">
-                        <i class="fa-solid fa-lock left-icon"></i>
-                        <input type="password" placeholder="........" required>
-                        <i class="fa-regular fa-eye right-icon red-icon"></i>
+                    
+                    <div class="form-group">
+                        <label>Confirmar Contraseña</label>
+                        <div class="input-wrapper gray-style">
+                            <input type="password" placeholder="********" required>
+                        </div>
                     </div>
-                    <p class="input-hint">Mínimo 8 caracteres</p>
-                </div>
-                <div class="form-group">
-                    <label>Confirmar Contraseña</label>
-                    <div class="input-wrapper gray-style">
-                        <i class="fa-solid fa-lock left-icon"></i>
-                        <input type="password" placeholder="........" required>
-                        <i class="fa-regular fa-eye right-icon red-icon"></i>
+
+                    <div class="terms-check">
+                        <input type="checkbox" id="terms-split" required>
+                        <label for="terms-split">Acepto los <a href="#">términos y condiciones</a></label>
                     </div>
+
+                    <button type="submit" class="btn btn-full btn-red">Crear Cuenta</button>
+
+                    <div class="modal-divider">
+                        <span class="line"></span>
+                        <span class="circle-text">o regístrate con</span>
+                        <span class="line"></span>
+                    </div>
+
+                    <div class="social-login-buttons">
+                        <button type="button" class="btn-social google">
+                            <i class="fa-brands fa-google"></i> Google
+                        </button>
+                        <button type="button" class="btn-social facebook">
+                            <i class="fa-brands fa-facebook-f"></i> Facebook
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="login-footer">
+                    <p>¿Ya tienes una cuenta? <a href="#" class="open-login-link">Inicia sesión</a></p>
                 </div>
-                <div class="terms-check">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a></label>
-                </div>
-                <button type="submit" class="btn btn-full btn-red">Crear Cuenta</button>
-            </form>
-            <div class="modal-divider">
-                <span class="line"></span>
-                <span class="circle-text">o</span>
-                <span class="line"></span>
-            </div>
-            <div class="login-footer">
-                <p>¿Ya tienes una cuenta? <a href="#" class="open-login-link">Inicia sesión aquí</a></p>
             </div>
         </div>
     </div>
@@ -387,6 +410,68 @@
 
             <div class="passport-footer">
                 <button id="btn-finish-passport" class="btn-gray-disabled">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="publisher-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-wide">
+            <button id="close-publisher" class="close-btn">&times;</button>
+            
+            <div class="passport-header">
+                <div class="brand-small">
+                    <div class="logo-box-sm">IA</div> InmoApp
+                </div>
+                <h2>Verificación de Propietario</h2>
+                <p>Para publicar, necesitamos validar la propiedad del inmueble.</p>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-labels">
+                    <span>Progreso</span>
+                    <span id="pub-progress-text">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="pub-progress-bar-fill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <h3 class="docs-title">Documentación Requerida</h3>
+
+            <div class="docs-list">
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-regular fa-id-card"></i></div>
+                    <div class="doc-info">
+                        <h4>Documento de Identidad</h4>
+                        <p>Cédula del propietario titular</p>
+                    </div>
+                    <input type="file" class="file-input pub-file" id="pub-file-id" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('pub-file-id').click()">Subir</button>
+                </div>
+
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-solid fa-certificate"></i></div>
+                    <div class="doc-info">
+                        <h4>Certificado de Libertad</h4>
+                        <p>Vigencia menor a 30 días</p>
+                    </div>
+                    <input type="file" class="file-input pub-file" id="pub-file-cert" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('pub-file-cert').click()">Subir</button>
+                </div>
+
+                <div class="doc-item">
+                    <div class="doc-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                    <div class="doc-info">
+                        <h4>Impuesto Predial</h4>
+                        <p>Último comprobante de pago</p>
+                    </div>
+                    <input type="file" class="file-input pub-file" id="pub-file-tax" hidden>
+                    <button class="btn-upload" onclick="document.getElementById('pub-file-tax').click()">Subir</button>
+                </div>
+            </div>
+
+            <div class="passport-footer">
+                <button id="btn-finish-publisher" class="btn-gray-disabled">Finalizar Registro</button>
             </div>
         </div>
     </div>

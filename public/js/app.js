@@ -1,28 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Frontend cargado y listo 🚀');
 
-    // --- REFERENCIAS A ELEMENTOS ---
+    // ======================================================
+    // 1. REFERENCIAS GLOBALES Y UTILIDADES
+    // ======================================================
     const loginModal = document.getElementById('login-modal');
     const registerSelectionModal = document.getElementById('register-modal');
     const registerFormModal = document.getElementById('register-form-modal');
     const passportModal = document.getElementById('passport-modal');
-
-    // --- UTILIDADES MODALES ---
-    function openModal(modal) {
-        if(modal) modal.classList.remove('hidden');
-    }
-    function closeModal(modal) {
-        if(modal) modal.classList.add('hidden');
-    }
-    function closeAllModals() {
-        [loginModal, registerSelectionModal, registerFormModal, passportModal].forEach(m => {
-            if(m) closeModal(m);
-        });
-    }
-
-    // --- 1. GESTIÓN DE APERTURA DE MODALES ---
+    const publisherModal = document.getElementById('publisher-modal');
     
-    // Login
+    // Variable para saber si es Arrendatario o Propietario
+    let selectedRole = 'renter'; 
+
+    function openModal(modal) { if(modal) modal.classList.remove('hidden'); }
+    function closeModal(modal) { if(modal) modal.classList.add('hidden'); }
+    
+    function closeAllModals() {
+        const modals = [loginModal, registerSelectionModal, registerFormModal, passportModal, publisherModal];
+        modals.forEach(m => { if(m) closeModal(m); });
+        
+        // También cerrar modales opcionales si existen
+        const contractModal = document.getElementById('contract-modal');
+        const compareModal = document.getElementById('compare-modal');
+        if(contractModal) closeModal(contractModal);
+        if(compareModal) closeModal(compareModal);
+    }
+
+    // ======================================================
+    // 2. GESTIÓN DE APERTURA (LOGIN / REGISTRO)
+    // ======================================================
+    
+    // Botones "Iniciar Sesión"
     document.querySelectorAll('.open-login-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -33,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeLoginBtn = document.getElementById('close-modal');
     if(closeLoginBtn) closeLoginBtn.addEventListener('click', () => closeModal(loginModal));
 
-    // Registro Selección
+    // Botones "Registrarse"
     document.querySelectorAll('.open-register-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -44,20 +53,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRegSelBtn = document.getElementById('close-register');
     if(closeRegSelBtn) closeRegSelBtn.addEventListener('click', () => closeModal(registerSelectionModal));
 
+    // Link interno "¿Ya tienes cuenta?"
+    const openLoginLink = document.querySelector('.open-login-link');
+    if(openLoginLink) {
+        openLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeAllModals();
+            openModal(loginModal);
+        });
+    }
 
-    // --- 2. FLUJO DE NAVEGACIÓN ---
+    // ======================================================
+    // 3. NAVEGACIÓN DE REGISTRO (ARRENDAR VS PUBLICAR)
+    // ======================================================
 
-    // De Selección a Formulario (Opción Arrendar)
-    const selectRentBtn = document.querySelector('#register-modal .btn-blue-select'); 
+    // Opción A: "Quiero Arrendar"
+    const selectRentBtn = document.querySelector('.btn-rent-select') || document.querySelector('#register-modal .btn-blue-select'); 
     if (selectRentBtn) {
         selectRentBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            selectedRole = 'renter'; // Guardamos rol
             closeModal(registerSelectionModal);
             openModal(registerFormModal);
         });
     }
 
-    // De Formulario (Atrás) a Selección
+    // Opción B: "Quiero Publicar"
+    const selectPublishBtn = document.querySelector('.btn-publish-select'); 
+    if (selectPublishBtn) {
+        selectPublishBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            selectedRole = 'publisher'; // Guardamos rol
+            closeModal(registerSelectionModal);
+            openModal(registerFormModal);
+        });
+    }
+
+    // Botón Atrás en el formulario
     const backToSelectionBtn = document.getElementById('back-to-selection');
     if(backToSelectionBtn) {
         backToSelectionBtn.addEventListener('click', () => {
@@ -68,19 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRegFormBtn = document.getElementById('close-register-form');
     if(closeRegFormBtn) closeRegFormBtn.addEventListener('click', () => closeModal(registerFormModal));
 
-    // Link "Inicia sesión aquí"
-    const openLoginLink = document.querySelector('.open-login-link');
-    if(openLoginLink) {
-        openLoginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeAllModals();
-            openModal(loginModal);
-        });
-    }
+    // ======================================================
+    // 4. ENVÍO DE FORMULARIOS (SUBMITS)
+    // ======================================================
 
-    // --- 3. SUBMITS Y REDIRECCIONES ---
-
-    // Submit LOGIN -> Ir al Dashboard
+    // Login -> Ir al Dashboard
     const loginForm = document.querySelector('#login-modal form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -89,86 +113,96 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Submit REGISTRO -> Ir a PASAPORTE
+    // Registro -> Abrir Pasaporte (Arrendatario) o Verificación (Propietario)
     const registerForm = document.querySelector('#register-form-modal form');
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             closeModal(registerFormModal);
-            openModal(passportModal);
+            
+            if (selectedRole === 'publisher') {
+                openModal(publisherModal); // Nuevo modal
+            } else {
+                openModal(passportModal);  // Modal clásico
+            }
         });
     }
 
-    // --- 4. LÓGICA DE UPLOAD Y BARRA DE PROGRESO ---
+    // ======================================================
+    // 5. LÓGICA DE CARGA DE ARCHIVOS (UPLOAD)
+    // ======================================================
     
-    const progressBar = document.getElementById('progress-bar-fill');
-    const progressText = document.getElementById('progress-text');
-    const btnFinishPassport = document.getElementById('btn-finish-passport');
-    const fileInputs = document.querySelectorAll('#passport-modal .file-input');
+    // Función reutilizable para ambos modales
+    function setupUploadLogic(inputSelector, barId, textId, btnId) {
+        const inputs = document.querySelectorAll(inputSelector);
+        const bar = document.getElementById(barId);
+        const text = document.getElementById(textId);
+        const btn = document.getElementById(btnId);
 
-    let uploadedCount = 0;
-    const totalDocs = fileInputs.length; // 4
+        if(inputs.length === 0) return;
 
-    function updateProgress() {
-        uploadedCount = 0;
-        fileInputs.forEach(input => {
-            if (input.files.length > 0) uploadedCount++;
+        function update() {
+            let count = 0;
+            inputs.forEach(inp => { if(inp.files.length > 0) count++; });
+            
+            const pct = Math.round((count / inputs.length) * 100);
+            if(bar) bar.style.width = `${pct}%`;
+            if(text) text.textContent = `${pct}%`;
+
+            if(pct > 0 && btn) {
+                btn.classList.remove('btn-gray-disabled');
+                btn.classList.add('btn-finish-active');
+                btn.textContent = pct === 100 ? "Finalizar" : "Continuar";
+            }
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const item = input.closest('.doc-item');
+                if (!item) return;
+                const btnUp = item.querySelector('.btn-upload');
+                const icon = item.querySelector('.doc-icon');
+
+                if (input.files.length > 0) {
+                    icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    icon.classList.add('success');
+                    btnUp.textContent = "Listo";
+                    btnUp.classList.add('uploaded');
+                } else {
+                    // Icono por defecto simple si se borra
+                    icon.innerHTML = '<i class="fa-regular fa-file"></i>'; 
+                    icon.classList.remove('success');
+                    btnUp.textContent = "Subir";
+                    btnUp.classList.remove('uploaded');
+                }
+                update();
+            });
         });
-        const percentage = Math.round((uploadedCount / totalDocs) * 100);
-        if(progressBar) progressBar.style.width = `${percentage}%`;
-        if(progressText) progressText.textContent = `${percentage}%`;
 
-        if (percentage > 0 && btnFinishPassport) {
-            btnFinishPassport.classList.remove('btn-gray-disabled');
-            btnFinishPassport.classList.add('btn-finish-active');
-            btnFinishPassport.textContent = percentage === 100 ? "Finalizar" : "Continuar";
+        if(btn) {
+            btn.addEventListener('click', () => {
+                // Al finalizar, ir al dashboard
+                window.location.href = '/dashboard';
+            });
         }
     }
 
-    fileInputs.forEach(input => {
-        input.addEventListener('change', () => {
-            const item = input.closest('.doc-item');
-            if (!item) return;
-            const btn = item.querySelector('.btn-upload');
-            const icon = item.querySelector('.doc-icon');
-
-            if (input.files.length > 0) {
-                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
-                icon.classList.add('success');
-                btn.textContent = "Cambiado";
-                btn.classList.add('uploaded');
-            } else {
-                icon.innerHTML = '<i class="fa-regular fa-address-card"></i>';
-                icon.classList.remove('success');
-                btn.textContent = "Subir";
-                btn.classList.remove('uploaded');
-            }
-            updateProgress();
-        });
-    });
-
-    if (btnFinishPassport) {
-        btnFinishPassport.addEventListener('click', () => {
-            if (btnFinishPassport.classList.contains('btn-finish-active')) {
-                window.location.href = '/dashboard';
-            } else {
-                window.location.href = '/dashboard';
-            }
-        });
-    }
-
-    // Cierre Global Modales
-    window.addEventListener('click', (e) => {
-        if (e.target === loginModal) closeModal(loginModal);
-        if (e.target === registerSelectionModal) closeModal(registerSelectionModal);
-        if (e.target === registerFormModal) closeModal(registerFormModal);
-        if (e.target === passportModal) closeModal(passportModal);
-    });
-
-    // ======================================================
-    // 6. LÓGICA DE FAVORITOS Y COMPARACIÓN
-    // ======================================================
+    // Configurar Arrendatario
+    setupUploadLogic('#passport-modal .file-input', 'progress-bar-fill', 'progress-text', 'btn-finish-passport');
     
+    // Configurar Propietario
+    setupUploadLogic('#publisher-modal .file-input', 'pub-progress-bar-fill', 'pub-progress-text', 'btn-finish-publisher');
+
+    const closePassportBtn = document.getElementById('close-passport');
+    if(closePassportBtn) closePassportBtn.addEventListener('click', () => closeModal(passportModal));
+
+    const closePubBtn = document.getElementById('close-publisher');
+    if(closePubBtn) closePubBtn.addEventListener('click', () => closeModal(publisherModal));
+
+
+    // ======================================================
+    // 6. FAVORITOS Y COMPARACIÓN
+    // ======================================================
     const checkboxes = document.querySelectorAll('.select-check');
     const compareBar = document.getElementById('compare-bar');
     const selectedCountSpan = document.getElementById('selected-count');
@@ -196,69 +230,59 @@ document.addEventListener('DOMContentLoaded', () => {
         if(btnCompareAction) {
             btnCompareAction.addEventListener('click', () => {
                 const compareModal = document.getElementById('compare-modal');
-                if (compareModal) compareModal.classList.remove('hidden');
+                openModal(compareModal);
             });
         }
 
         const closeCompareBtn = document.getElementById('close-compare');
         const compareModal = document.getElementById('compare-modal');
         if (closeCompareBtn && compareModal) {
-            closeCompareBtn.addEventListener('click', () => {
-                compareModal.classList.add('hidden');
-            });
-            window.addEventListener('click', (e) => {
-                if (e.target === compareModal) compareModal.classList.add('hidden');
-            });
+            closeCompareBtn.addEventListener('click', () => closeModal(compareModal));
         }
     }
 
     // ======================================================
-    // 7. SISTEMA DE MENSAJERÍA (SIMULACIÓN BASE DE DATOS)
+    // 7. CHAT / MENSAJERÍA (MOCK)
     // ======================================================
-    
-    // 1. Definimos una "Base de Datos" falsa de mensajes
     const MOCK_DB_MESSAGES = {
-        "CM": [ // Carlos Mendoza
+        "CM": [
             { type: 'received', text: 'Hola, ¿sigue disponible el apartamento?', time: '10:30 AM' },
             { type: 'sent', text: 'Hola Carlos, sí, todavía está disponible.', time: '10:35 AM' },
             { type: 'received', text: '¡Genial! ¿Podríamos agendar una visita?', time: '10:36 AM' },
             { type: 'sent', text: 'Claro, ¿te parece bien mañana a las 10:00 AM?', time: '10:40 AM' },
             { type: 'received', text: 'Perfecto, nos vemos mañana a las 10:00 AM', time: '10:42 AM' }
         ],
-        "MG": [ // María González
+        "MG": [
             { type: 'received', text: 'Buenas tardes, vi su anuncio en Ñuñoa.', time: 'Ayer' },
             { type: 'sent', text: 'Hola María, gusto en saludarte.', time: 'Ayer' },
             { type: 'received', text: 'Gracias por tu interés. Te enviaré más fotos en un momento.', time: 'Ayer' }
         ],
-        "RS": [ // Roberto Silva
+        "RS": [
             { type: 'received', text: '¿El precio del Penthouse es conversable?', time: '2 días' },
             { type: 'sent', text: 'Hola Roberto, depende del tiempo de contrato.', time: '2 días' },
             { type: 'received', text: 'El precio es negociable para arriendo largo plazo', time: '2 días' }
         ],
-        "JT": [ // Juan Torres
+        "JT": [
             { type: 'received', text: 'Hola, necesito oficina para 5 personas.', time: '5 días' },
             { type: 'sent', text: 'Tenemos varias opciones en el centro.', time: '5 días' },
             { type: 'received', text: '¿Sigue disponible para visitar el lunes?', time: '5 días' }
         ]
     };
 
+    const chatBody = document.getElementById('chat-body-scroll');
     const emptyState = document.getElementById('empty-state');
     const chatInterface = document.getElementById('chat-interface');
-    const chatBody = document.getElementById('chat-body-scroll');
 
-    // Función global para cargar chat
+    // Función Global para cargar chat
     window.loadChat = function(element) {
-        // 1. UI: Activar item seleccionado
         document.querySelectorAll('.msg-item').forEach(item => item.classList.remove('active'));
         element.classList.add('active');
         element.classList.remove('unread');
 
-        // 2. DATA: Obtener info del usuario
         const name = element.getAttribute('data-name');
         const prop = element.getAttribute('data-prop');
-        const initials = element.getAttribute('data-initials'); // Usamos esto como ID (CM, MG...)
+        const initials = element.getAttribute('data-initials');
 
-        // 3. Header: Actualizar info
         const headerName = document.getElementById('chat-header-name');
         const headerProp = document.getElementById('chat-header-prop');
         const headerAvatar = document.getElementById('chat-header-avatar');
@@ -267,37 +291,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if(headerProp) headerProp.textContent = prop;
         if(headerAvatar) headerAvatar.textContent = initials;
 
-        // 4. Body: Cargar mensajes de la "Base de Datos"
         if (chatBody) {
-            // Limpiamos el chat anterior
             chatBody.innerHTML = '';
-
-            // Buscamos los mensajes de este usuario
             const messages = MOCK_DB_MESSAGES[initials] || [];
-
-            // Los pintamos en pantalla
             messages.forEach(msg => {
-                const bubbleHTML = `
-                    <div class="message-bubble ${msg.type}">
-                        ${msg.text}
-                        <span class="msg-time-stamp">${msg.time}</span>
-                    </div>
-                `;
+                const bubbleHTML = `<div class="message-bubble ${msg.type}">${msg.text}<span class="msg-time-stamp">${msg.time}</span></div>`;
                 chatBody.insertAdjacentHTML('beforeend', bubbleHTML);
             });
-
-            // Scroll al final
-            setTimeout(() => {
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }, 50);
+            setTimeout(() => { chatBody.scrollTop = chatBody.scrollHeight; }, 50);
         }
 
-        // 5. Mostrar interfaz
         if(emptyState) emptyState.classList.add('hidden');
         if(chatInterface) chatInterface.classList.remove('hidden');
     };
 
-    // Lógica de envío de mensaje (Input)
+    // Enviar Mensaje
     const btnSend = document.getElementById('btn-send-message');
     const inputMsg = document.getElementById('message-input');
 
@@ -305,52 +313,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const sendMessage = () => {
             const text = inputMsg.value.trim();
             if (text === "") return;
-
             const now = new Date();
             const timeString = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-
-            // Inyectar burbuja visualmente
-            const bubbleHTML = `
-                <div class="message-bubble sent">
-                    ${text}
-                    <span class="msg-time-stamp">${timeString}</span>
-                </div>
-            `;
-
+            
+            const bubbleHTML = `<div class="message-bubble sent">${text}<span class="msg-time-stamp">${timeString}</span></div>`;
             chatBody.insertAdjacentHTML('beforeend', bubbleHTML);
             inputMsg.value = "";
             chatBody.scrollTop = chatBody.scrollHeight;
-
-            // NOTA PARA IMPLEMENTACIÓN REAL:
-            // Aquí harías: fetch('/api/mensajes/enviar', { method: 'POST', body: ... })
         };
 
         btnSend.addEventListener('click', sendMessage);
         inputMsg.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
+    }
 
-        // ======================================================
-    // 8. LÓGICA DE MI CUENTA (TABS)
     // ======================================================
-    
+    // 8. PESTAÑAS DE "MI CUENTA" (TABS)
+    // ======================================================
     const accountTabs = document.querySelectorAll('.account-nav-item');
     const accountPanels = document.querySelectorAll('.account-panel');
 
     if(accountTabs.length > 0) {
         accountTabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                // Si es "Cerrar sesión", no hacemos tab switch (aquí iría logout real)
                 if(tab.textContent.includes('Cerrar Sesión')) {
-                    window.location.href = '/'; // Volver al inicio
+                    window.location.href = '/';
                     return;
                 }
-
-                // 1. Quitar activo de todos
+                // Switch Tabs
                 accountTabs.forEach(t => t.classList.remove('active'));
                 accountPanels.forEach(p => p.classList.remove('active'));
 
-                // 2. Activar el clickeado
                 tab.classList.add('active');
                 const targetId = tab.getAttribute('data-target');
                 const targetPanel = document.getElementById(targetId);
@@ -359,91 +353,75 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Hacer que el icono de PERFIL en el header lleve a esta página
+    // Links de Header a Cuenta
     const profileBtns = document.querySelectorAll('.icon-action.profile');
-    profileBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.href = '/cuenta';
-        });
-    });
+    profileBtns.forEach(btn => btn.addEventListener('click', () => window.location.href = '/cuenta'));
     
-    // Hacer que el icono de NOTIFICACIONES lleve a esta página (Tab Notificaciones)
     const notifBtns = document.querySelectorAll('.icon-action.notification');
-    notifBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.href = '/cuenta'; // Por defecto abre en notificaciones
-        });
+    notifBtns.forEach(btn => btn.addEventListener('click', () => window.location.href = '/cuenta'));
+
+    // CIERRE GLOBAL (Cualquier clic fuera de modales)
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) closeModal(loginModal);
+        if (e.target === registerSelectionModal) closeModal(registerSelectionModal);
+        if (e.target === registerFormModal) closeModal(registerFormModal);
+        if (e.target === passportModal) closeModal(passportModal);
+        if (e.target === publisherModal) closeModal(publisherModal);
         
+        const contractModal = document.getElementById('contract-modal');
+        if (e.target === contractModal) closeModal(contractModal);
+        const compareModal = document.getElementById('compare-modal');
+        if (e.target === compareModal) closeModal(compareModal);
     });
-    }
-});
+
+}); // <-- FIN DOMContentLoaded
+
 
 // ======================================================
-    // 9. LÓGICA DE CONTRATOS (MODAL)
-    // ======================================================
+// 9. LÓGICA DE CONTRATOS (FUERA DEL DOMContentLoaded)
+// ======================================================
 
-    // Base de datos simulada de contratos
-    const MOCK_CONTRACTS = {
-        "CNT-2025-001": {
-            id: "CNT-2025-001",
-            prop: "Av. Providencia 1234, Santiago",
-            status: "Vigente",
-            statusClass: "approved",
-            price: "$850.000",
-            start: "01 Marzo 2025",
-            end: "28 Febrero 2026",
-            landlord: "Patricia Rojas",
-            landlordInitials: "PR"
-        },
-        "CNT-2024-890": {
-            id: "CNT-2024-890",
-            prop: "Calle Los Leones 45, Providencia",
-            status: "Finalizado",
-            statusClass: "rejected", // Usamos estilo rejected para gris/rojo
-            price: "$780.000",
-            start: "01 Marzo 2024",
-            end: "28 Febrero 2025",
-            landlord: "Roberto Fernández",
-            landlordInitials: "RF"
-        }
-    };
+const MOCK_CONTRACTS = {
+    "CNT-2025-001": {
+        id: "CNT-2025-001", prop: "Av. Providencia 1234, Santiago", status: "Vigente", statusClass: "approved",
+        price: "$850.000", start: "01 Marzo 2025", end: "28 Febrero 2026", landlord: "Patricia Rojas", landlordInitials: "PR"
+    },
+    "CNT-2024-890": {
+        id: "CNT-2024-890", prop: "Calle Los Leones 45, Providencia", status: "Finalizado", statusClass: "rejected",
+        price: "$780.000", start: "01 Marzo 2024", end: "28 Febrero 2025", landlord: "Roberto Fernández", landlordInitials: "RF"
+    }
+};
 
-    const contractModal = document.getElementById('contract-modal');
-    const closeContractBtns = [
-        document.getElementById('close-contract-modal'),
-        document.getElementById('btn-close-c-modal')
-    ];
+window.openContractModal = function(contractId) {
+    const data = MOCK_CONTRACTS[contractId];
+    if(!data) return;
 
-    // Función para abrir modal de contrato
-    window.openContractModal = function(contractId) {
-        const data = MOCK_CONTRACTS[contractId];
-        if(!data) return;
-
-        // Llenar datos en el modal
-        document.getElementById('modal-c-title').textContent = `Contrato #${data.id}`;
-        document.getElementById('modal-c-prop').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.prop}`;
-        
-        const statusBadge = document.getElementById('modal-c-status');
+    const modalTitle = document.getElementById('modal-c-title');
+    if(modalTitle) modalTitle.textContent = `Contrato #${data.id}`;
+    
+    const modalProp = document.getElementById('modal-c-prop');
+    if(modalProp) modalProp.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.prop}`;
+    
+    const statusBadge = document.getElementById('modal-c-status');
+    if(statusBadge) {
         statusBadge.textContent = data.status;
         statusBadge.className = `status-badge ${data.statusClass}`;
+    }
 
-        document.getElementById('modal-c-price').textContent = data.price;
-        document.getElementById('modal-c-start').textContent = data.start;
-        document.getElementById('modal-c-end').textContent = data.end;
-        
-        document.getElementById('modal-c-landlord').textContent = data.landlord;
-        
-        // Avatar del dueño
-        const avatar = document.querySelector('.party-box .p-avatar:not(.me)');
-        if(avatar) {
-            avatar.textContent = data.landlordInitials;
-        }
+    if(document.getElementById('modal-c-price')) document.getElementById('modal-c-price').textContent = data.price;
+    if(document.getElementById('modal-c-start')) document.getElementById('modal-c-start').textContent = data.start;
+    if(document.getElementById('modal-c-end')) document.getElementById('modal-c-end').textContent = data.end;
+    if(document.getElementById('modal-c-landlord')) document.getElementById('modal-c-landlord').textContent = data.landlord;
+    
+    const avatar = document.querySelector('.party-box .p-avatar:not(.me)');
+    if(avatar) avatar.textContent = data.landlordInitials;
 
-        // Mostrar
-        if(contractModal) contractModal.classList.remove('hidden');
-    };
+    const contractModal = document.getElementById('contract-modal');
+    if(contractModal) contractModal.classList.remove('hidden');
+};
 
-    // Event Listeners para botones "Ver contrato"
+// Listeners de botones de contrato (se agregan dinámicamente)
+document.addEventListener('DOMContentLoaded', () => {
     const viewContractBtns = document.querySelectorAll('.btn-view-contract');
     viewContractBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -451,12 +429,66 @@ document.addEventListener('DOMContentLoaded', () => {
             openContractModal(id);
         });
     });
-
-    // Cerrar Modal
+    
+    const closeContractBtns = [document.getElementById('close-contract-modal'), document.getElementById('btn-close-c-modal')];
     closeContractBtns.forEach(btn => {
         if(btn) {
             btn.addEventListener('click', () => {
-                if(contractModal) contractModal.classList.add('hidden');
+                const cm = document.getElementById('contract-modal');
+                if(cm) cm.classList.add('hidden');
             });
         }
     });
+});
+
+// ======================================================
+    // 10. LÓGICA DASHBOARD PROPIETARIO (NUEVO)
+    // ======================================================
+
+    const btnNewProp = document.getElementById('btn-new-property');
+    const modalNewProp = document.getElementById('new-property-modal');
+    const closeNewPropBtns = [
+        document.getElementById('close-new-prop'),
+        document.getElementById('cancel-new-prop')
+    ];
+    const formNewProp = document.getElementById('form-new-property');
+    const submitNewPropBtn = document.getElementById('submit-new-prop');
+
+    // Abrir Modal Publicar
+    if(btnNewProp && modalNewProp) {
+        btnNewProp.addEventListener('click', () => {
+            modalNewProp.classList.remove('hidden');
+        });
+    }
+
+    // Cerrar Modal Publicar
+    if(modalNewProp) {
+        closeNewPropBtns.forEach(btn => {
+            if(btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    modalNewProp.classList.add('hidden');
+                });
+            }
+        });
+    }
+
+    // Simular Envío de Propiedad a Revisión
+    if(submitNewPropBtn) {
+        submitNewPropBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Aquí iría la lógica real de guardar en BD
+            // Simulamos éxito:
+            submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            
+            setTimeout(() => {
+                alert('¡Solicitud Enviada! La inmobiliaria revisará tu inmueble en las próximas 24 horas.');
+                modalNewProp.classList.add('hidden');
+                submitNewPropBtn.textContent = 'Enviar a Revisión';
+                if(formNewProp) formNewProp.reset();
+                
+                // Opcional: Recargar para ver cambios (en producción no recargamos, actualizamos DOM)
+                // window.location.reload(); 
+            }, 1500);
+        });
+    }

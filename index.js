@@ -58,6 +58,11 @@ app.get("/cuenta", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "cuenta.html"));
 });
 
+// --- Dashboard PropietarioX---
+app.get("/dashboard-propietario", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dashboard-propietario.html"));
+});
+
 // ------------------------------------------------------------
 // API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------
