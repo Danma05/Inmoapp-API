@@ -18,6 +18,7 @@ import mensajesRouter from "./routers/mensajes.js";
 import usuariosRouter from "./routers/usuarios.js";
 import notificacionesRouter from "./routers/notificaciones.js";
 import passportRouter from "./routers/passport.js";
+import adminRouter from "./routers/admin.js";
 
 const app = express();
 app.use(express.json());
@@ -124,6 +125,9 @@ app.use("/notificaciones", notificacionesRouter);
 
 // Pasaporte del arrendatario
 app.use("/passport", passportRouter);
+
+// Rutas de administración
+app.use('/admin', adminRouter);
 
 
 // ------------------------------------------------------------
