@@ -1,4 +1,4 @@
-// routers/postulaciones.js - Gestión de postulaciones
+// routers/postulaciones.js
 import express from "express";
 import { dbQuery } from "../dbQuery.js";
 
@@ -9,38 +9,38 @@ const router = express.Router();
 // =======================================
 router.get("/", async (req, res) => {
   try {
-    const { usuarioId, estado } = req.query;
+    const { usuarioId } = req.query;
 
-    if (!usuarioId) {
-      return res.status(400).json({ error: "usuarioId es obligatorio" });
-    }
+    if (!usuarioId) return res.status(400).json({ error: "Falta usuarioId" });
 
-    let query = `
+    // Consulta segura: Solo pedimos columnas que sabemos que existen
+    const query = `
       SELECT 
-        po.*,
-        p.*,
+        po.id as postulacion_id,
+        po.mensaje,
+        po.mensaje_respuesta,
+        po.estado,
+        po.creado_en,
+        p.id as propiedad_id,
+        p.direccion,
+        p.precio_canon,
+        p.imagen_url,
+        p.operacion,
         u.nombre_completo as propietario_nombre,
-        u.correo as propietario_correo
+        u.correo as propietario_correo,
+        u.telefono as propietario_telefono
       FROM public.postulaciones po
       INNER JOIN public.propiedades p ON po.propiedad_id = p.id
       INNER JOIN public.usuarios u ON p.propietario_id = u.id
       WHERE po.usuario_id = $1
+      ORDER BY po.creado_en DESC
     `;
 
-    const params = [usuarioId];
-
-    if (estado) {
-      query += ` AND po.estado = $2`;
-      params.push(estado);
-    }
-
-    query += ` ORDER BY po.creado_en DESC`;
-
-    const result = await dbQuery(query, params);
+    const result = await dbQuery(query, [usuarioId]);
     res.json(result.rows);
   } catch (e) {
-    console.error("❌ Error GET /postulaciones:", e);
-    res.status(500).json({ error: "Error consultando postulaciones" });
+    console.error("❌ Error GET /postulaciones:", e.message);
+    res.status(500).json({ error: "Error interno: " + e.message });
   }
 });
 
@@ -52,17 +52,17 @@ router.post("/", async (req, res) => {
     const { usuarioId, propiedadId, mensaje } = req.body;
 
     if (!usuarioId || !propiedadId) {
-      return res.status(400).json({ error: "usuarioId y propiedadId son obligatorios" });
+      return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
 
-    // Verificar si ya existe una postulación
+    // Verificar duplicados
     const existing = await dbQuery(
       "SELECT id FROM public.postulaciones WHERE usuario_id = $1 AND propiedad_id = $2",
       [usuarioId, propiedadId]
     );
 
     if (existing.rows.length > 0) {
-      return res.status(400).json({ error: "Ya existe una postulación para esta propiedad" });
+      return res.status(400).json({ error: "Ya te has postulado a esta propiedad." });
     }
 
     const query = `
@@ -74,52 +74,9 @@ router.post("/", async (req, res) => {
     const result = await dbQuery(query, [usuarioId, propiedadId, mensaje || null]);
     res.status(201).json(result.rows[0]);
   } catch (e) {
-    console.error("❌ Error POST /postulaciones:", e);
-    res.status(500).json({ error: "Error creando postulación" });
-  }
-});
-
-// =======================================
-// PUT Actualizar estado de postulación
-// =======================================
-router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { estado, mensajeRespuesta } = req.body;
-
-    if (!estado || !["PENDIENTE", "EN_REVISION", "APROBADA", "RECHAZADA"].includes(estado)) {
-      return res.status(400).json({ error: "estado válido es obligatorio" });
-    }
-
-    const updateFields = [`estado = $1`, `actualizado_en = NOW()`];
-    const params = [estado];
-
-    if (mensajeRespuesta !== undefined) {
-      updateFields.push(`mensaje_respuesta = $${params.length + 1}`);
-      params.push(mensajeRespuesta);
-    }
-
-    params.push(id);
-
-    const query = `
-      UPDATE public.postulaciones
-      SET ${updateFields.join(", ")}
-      WHERE id = $${params.length}
-      RETURNING *
-    `;
-
-    const result = await dbQuery(query, params);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Postulación no encontrada" });
-    }
-
-    res.json(result.rows[0]);
-  } catch (e) {
-    console.error("❌ Error PUT /postulaciones/:id:", e);
-    res.status(500).json({ error: "Error actualizando postulación" });
+    console.error("❌ Error POST /postulaciones:", e.message);
+    res.status(500).json({ error: "Error al postular: " + e.message });
   }
 });
 
 export default router;
-

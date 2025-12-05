@@ -59,7 +59,7 @@ app.get("/visitas", (_req, res) => {
 });
 
 // ruta postulaciones
-app.get("/postulaciones", (_req, res) => {
+app.get("/postulaciones", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "postulaciones.html"));
 });
 
@@ -116,7 +116,7 @@ app.use("/api/favoritos", favoritosRouter);
 app.use('/api/visitas', visitasRouter);
 
 // Postulaciones
-app.use("/postulaciones", postulacionesRouter);
+app.use('/api/postulaciones', postulacionesRouter);
 
 // Mensajes
 app.use("/mensajes", mensajesRouter);
