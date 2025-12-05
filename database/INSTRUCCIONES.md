@@ -85,3 +85,17 @@ Deberías ver estas tablas:
 - usuarios
 - visitas
 
+### Añadir la tabla de auditoría (opcional)
+
+Si quieres habilitar el registro de auditoría para acciones administrativas (como la publicación masiva que implementamos), ejecuta el archivo de migración que añadimos:
+
+1. Abre `database/001-create-admin-auditoria.sql` y ejecuta su contenido en tu Query Tool (pgAdmin) o mediante `psql`.
+
+2. Verifica la creación con:
+
+```sql
+SELECT * FROM public.admin_auditoria LIMIT 10;
+```
+
+La tabla tiene la estructura: `id, admin_id, propiedad_ids (JSON text), cantidad, creado_en`.
+

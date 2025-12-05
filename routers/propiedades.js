@@ -4,6 +4,7 @@ import { dbQuery } from "../dbQuery.js";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import sharp from 'sharp';
 import { authenticate } from './authMiddleware.js';
 
 const router = express.Router();
@@ -239,12 +240,27 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename: function (req, file, cb) {
-    const safeName = Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const rnd = Math.floor(Math.random() * 1e9);
+    const safeOrig = file.originalname.replace(/[^a-zA-Z0-9.\-_\.]/g, '_');
+    const safeName = `${Date.now()}-${rnd}-${safeOrig}`;
     cb(null, safeName);
   }
 });
 
-const upload = multer({ storage });
+// Valid mime types and limits
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_FILE_BYTES },
+  fileFilter: function (req, file, cb) {
+    if (ALLOWED_MIMES.includes(file.mimetype)) return cb(null, true);
+    const err = new Error('Tipo de archivo no permitido. Solo se aceptan: jpeg, png, webp.');
+    err.code = 'LIMIT_FILE_TYPE';
+    return cb(err);
+  }
+});
 
 // =======================================
 // POST CREAR PROPIEDAD (soporta multipart/form-data con campo 'imagen')
@@ -278,8 +294,21 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
 
     // Si llegó un archivo multipart, definir imagenUrl a la ruta pública
     let finalImagenUrl = imagenUrl || null;
+    let finalThumbnailUrl = null;
     if (req.file && req.file.filename) {
       finalImagenUrl = `/uploads/${req.file.filename}`;
+      try {
+        // generar miniatura 400x300
+        const thumbName = `thumb-${req.file.filename}`;
+        const thumbPath = path.join(uploadsDir, thumbName);
+        await sharp(req.file.path)
+          .resize(400, 300, { fit: 'cover' })
+          .toFile(thumbPath);
+        finalThumbnailUrl = `/uploads/${thumbName}`;
+      } catch (thumbErr) {
+        console.warn('No se pudo generar thumbnail:', thumbErr && thumbErr.message ? thumbErr.message : thumbErr);
+        // no bloquear creación si thumbnail falla
+      }
     }
 
     // autoPublish puede venir en body o en header 'x-auto-publish'
@@ -325,9 +354,10 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
         descripcion,
         precio_canon,
         imagen_url,
+        thumbnail_url,
         estado_publicacion
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
       RETURNING *;
     `;
 
@@ -342,6 +372,7 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
       descripcion || null,
       precioCanon,
       finalImagenUrl || null,
+      finalThumbnailUrl || null,
       estadoPublicacion
     ]);
 
@@ -491,6 +522,20 @@ router.delete("/:id", authenticate, async (req, res) => {
     console.error("❌ Error DELETE /propiedades/:id:", e);
     res.status(500).json({ error: "Error eliminando propiedad" });
   }
+});
+
+// Manejar errores de multer/archivo y devolver mensajes amigables
+router.use((err, req, res, next) => {
+  if (!err) return next();
+  console.error('Router error handler:', err && err.message ? err.message : err);
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ error: `El archivo excede el tamaño máximo de ${MAX_FILE_BYTES / (1024 * 1024)}MB.` });
+  }
+  if (err.code === 'LIMIT_FILE_TYPE') {
+    return res.status(400).json({ error: err.message || 'Tipo de archivo no permitido.' });
+  }
+  // Pasar al handler global si no es un error que manejemos aquí
+  return next(err);
 });
 
 // =======================================
