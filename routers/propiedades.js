@@ -475,4 +475,42 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// =======================================
+// POST Publicar propiedad (cambiar estado a PUBLICADO)
+// Requiere X-Usuario-Id header o usuarioId en body y que el usuario sea propietario de la propiedad
+// =======================================
+router.post("/:id/publish", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const headerUsuarioId = req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
+    const bodyUsuarioId = req.body && req.body.usuarioId;
+    const usuarioId = headerUsuarioId || bodyUsuarioId;
+
+    if (!usuarioId) {
+      return res.status(400).json({ error: 'Se requiere usuarioId en header (X-Usuario-Id) o body' });
+    }
+
+    // Verificar existencia y propiedad
+    const check = await dbQuery('SELECT id, propietario_id FROM public.propiedades WHERE id = $1 LIMIT 1', [id]);
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: 'Propiedad no encontrada' });
+    }
+
+    const prop = check.rows[0];
+    if (Number(prop.propietario_id) !== Number(usuarioId)) {
+      return res.status(403).json({ error: 'No autorizado: no eres el propietario de esta propiedad' });
+    }
+
+    const upd = await dbQuery(
+      `UPDATE public.propiedades SET estado_publicacion = 'PUBLICADO', activa = TRUE, actualizado_en = NOW() WHERE id = $1 RETURNING *`,
+      [id]
+    );
+
+    res.json({ ok: true, message: 'Propiedad publicada', propiedad: upd.rows[0] });
+  } catch (e) {
+    console.error('❌ Error POST /propiedades/:id/publish:', e);
+    res.status(500).json({ error: 'Error publicando propiedad' });
+  }
+});
+
 export default router;
