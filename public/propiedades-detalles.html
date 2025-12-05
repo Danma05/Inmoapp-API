@@ -243,7 +243,7 @@
 
             try {
                 // 3. Cargar Datos
-                const response = await fetch(`/api/propiedades/${propiedadActualId}`);
+                const response = await fetch(`/propiedades/${propiedadActualId}`);
                 if (!response.ok) throw new Error('Error al cargar');
                 const prop = await response.json();
 
@@ -342,7 +342,7 @@
                 const mensaje = document.getElementById('postulacion-mensaje').value;
 
                 try {
-                    const res = await fetch('/postulaciones', {
+                    const res = await fetch('/api/postulaciones', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
