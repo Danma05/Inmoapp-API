@@ -49,14 +49,6 @@
                                     <span class="time">Hace 2 horas</span>
                                 </div>
                             </div>
-                            <div class="notif-item unread">
-                                <div class="notif-icon blue"><i class="fa-solid fa-file-contract"></i></div>
-                                <div class="notif-text">
-                                    <strong>Contrato Listo</strong>
-                                    <p>Borrador disponible para "Casa Campestre".</p>
-                                    <span class="time">Ayer</span>
-                                </div>
-                            </div>
                         </div>
                         <div class="notif-footer"><a href="#">Ver todas</a></div>
                     </div>
@@ -64,14 +56,14 @@
 
                 <div class="user-profile-wrapper" style="position: relative;">
                     <div class="user-pill-white" id="user-profile-btn">
-                        <div class="avatar-circle">CA</div>
-                        <span>Carlos</span>
+                        <div class="avatar-circle">PR</div>
+                        <span id="header-username">Propietario</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
                     <div id="user-dropdown" class="user-dropdown hidden">
                         <a href="#" class="dropdown-item"><i class="fa-regular fa-user"></i> Mi Perfil</a>
                         <div class="dropdown-divider"></div>
-                        <a href="/" class="dropdown-item logout-item" id="btn-logout">
+                        <a href="#" class="dropdown-item logout-item" id="btn-logout">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
                         </a>
                     </div>
@@ -94,25 +86,21 @@
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-icon blue"><i class="fa-solid fa-building"></i></div>
-                    <div class="metric-info"><span class="metric-label">Propiedades</span><span class="metric-value">3</span></div>
+                    <div class="metric-info"><span class="metric-label">Propiedades</span><span class="metric-value" id="metric-props">0</span></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
-                    <div class="metric-info"><span class="metric-label">Ingresos Mes</span><span class="metric-value">$2.5M</span></div>
+                    <div class="metric-info"><span class="metric-label">Ingresos Mes</span><span class="metric-value">$0</span></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-icon orange"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <div class="metric-info"><span class="metric-label">Pendientes</span><span class="metric-value">1</span></div>
+                    <div class="metric-info"><span class="metric-label">Pendientes</span><span class="metric-value">0</span></div>
                 </div>
             </div>
             <div class="content-card mt-30">
                 <h3 class="card-title">Actividad Reciente</h3>
                 <div class="activity-list-simple">
-                    <div class="activity-row">
-                        <div class="act-icon"><i class="fa-solid fa-check-circle text-green"></i></div>
-                        <div class="act-info"><strong>Propiedad Aprobada</strong><p>El apartamento en Santa Mónica ya está visible.</p></div>
-                        <span class="act-time">Hace 2h</span>
-                    </div>
+                    <p style="color:#666; padding:10px;">No hay actividad reciente.</p>
                 </div>
             </div>
         </section>
@@ -125,60 +113,20 @@
                 </div>
                 <select class="select-filter"><option>Todos los estados</option><option>Publicado</option></select>
             </div>
-            <div class="properties-list-vertical">
-                <div class="property-row-card">
-                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200" class="row-img" alt="Prop">
-                    <div class="row-info">
-                        <div class="row-header">
-                            <h3>Apartamento Moderno - Santa Mónica</h3>
-                            <span class="status-badge published">Publicado</span>
-                        </div>
-                        <p class="row-address"><i class="fa-solid fa-location-dot"></i> Calle 14 #23-45, Buga</p>
-                        <div class="row-stats">
-                            <span><i class="fa-solid fa-bed"></i> 3 Hab</span>
-                            <span><i class="fa-solid fa-ruler"></i> 85 m²</span>
-                            <span class="price">$1.200.000</span>
-                        </div>
-                    </div>
-                    <div class="row-actions">
-                        <button class="btn-icon"><i class="fa-solid fa-pen"></i></button>
-                    </div>
-                </div>
+            
+            <div class="properties-list-vertical" id="lista-mis-propiedades">
+                <p style="text-align: center; padding: 40px;">Cargando propiedades...</p>
             </div>
         </section>
 
-        <section id="view-solicitudes" class="dashboard-view hidden"><div class="content-card"><h3>Solicitudes</h3></div></section>
-        <section id="view-contratos" class="dashboard-view hidden"><div class="empty-state-panel"><i class="fa-solid fa-file-contract"></i><h3>No tienes contratos</h3></div></section>
-        <section id="view-mensajes" class="dashboard-view hidden"><div class="content-card"><h3>Mensajes</h3></div></section>
+        <section id="view-solicitudes" class="dashboard-view hidden"><div class="content-card"><h3>Solicitudes</h3><p>No tienes solicitudes pendientes.</p></div></section>
+        <section id="view-contratos" class="dashboard-view hidden"><div class="empty-state-panel"><i class="fa-solid fa-file-contract"></i><h3>No tienes contratos activos</h3></div></section>
+        <section id="view-mensajes" class="dashboard-view hidden"><div class="content-card"><h3>Mensajes</h3><p>Bandeja de entrada vacía.</p></div></section>
 
     </main>
 
     <footer class="main-footer-dark">
         <div class="container">
-            <div class="footer-grid-dark">
-                <div class="footer-col">
-                    <h3 class="footer-heading">Contacto</h3>
-                    <ul class="contact-list">
-                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
-                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
-                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
-                    </ul>
-                </div>
-                <div class="footer-col center-col">
-                    <h3 class="footer-heading">Síguenos</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col right-col">
-                    <h3 class="footer-heading">Enlaces</h3>
-                    <ul class="links-list">
-                        <li><a href="#">Ayuda</a></li>
-                        <li><a href="#">Términos y Condiciones</a></li>
-                    </ul>
-                </div>
-            </div>
             <div class="footer-bottom-dark">
                 <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
             </div>
@@ -186,7 +134,7 @@
     </footer>
 
     <div id="new-property-modal" class="modal-overlay hidden">
-        <div class="modal-content modal-lg">
+        <div class="modal-content modal-lg" style="max-height: 90vh; overflow-y: auto;">
             <div class="modal-header-clean">
                 <h2><i class="fa-solid fa-house-chimney"></i> Publicar Nuevo Inmueble</h2>
                 <button id="close-new-prop" class="close-btn">&times;</button>
@@ -198,14 +146,16 @@
                         <div class="form-grid-2">
                             <div class="form-group">
                                 <label>Tipo de Inmueble</label>
-                                <select class="input-style" id="prop-tipo">
+                                <select class="input-style" id="prop-tipo" name="tipoInmueble">
                                     <option value="APARTAMENTO">Apartamento</option>
                                     <option value="CASA">Casa</option>
+                                    <option value="OFICINA">Oficina</option>
+                                    <option value="LOCAL">Local</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Operación</label>
-                                <select class="input-style" id="prop-operacion">
+                                <select class="input-style" id="prop-operacion" name="operacion">
                                     <option value="ARRIENDO">Arriendo</option>
                                     <option value="VENTA">Venta</option>
                                 </select>
@@ -213,7 +163,7 @@
                         </div>
                         <div class="form-group">
                             <label>Dirección Exacta</label>
-                            <input type="text" class="input-style" id="prop-direccion" placeholder="Ej: Calle 5 # 10-23, Buga">
+                            <input type="text" class="input-style" id="prop-direccion" name="direccion" placeholder="Ej: Calle 5 # 10-23, Buga" required>
                         </div>
                     </div>
 
@@ -222,15 +172,15 @@
                         <div class="form-grid-3">
                             <div class="form-group">
                                 <label>Habitaciones</label>
-                                <input type="number" class="input-style" id="prop-habitaciones" placeholder="0">
+                                <input type="number" class="input-style" id="prop-habitaciones" name="habitaciones" placeholder="0">
                             </div>
                             <div class="form-group">
                                 <label>Baños</label>
-                                <input type="number" class="input-style" id="prop-banos" placeholder="0">
+                                <input type="number" class="input-style" id="prop-banos" name="banos" placeholder="0">
                             </div>
                             <div class="form-group">
                                 <label>Área (m²)</label>
-                                <input type="number" class="input-style" id="prop-area" placeholder="Ej: 80">
+                                <input type="number" class="input-style" id="prop-area" name="areaM2" placeholder="Ej: 80">
                             </div>
                         </div>
                     </div>
@@ -239,210 +189,34 @@
                         <h3><i class="fa-regular fa-file-lines"></i> Detalles</h3>
                         <div class="form-group">
                             <label>Descripción</label>
-                            <textarea class="input-style" id="prop-descripcion" rows="3"></textarea>
+                            <textarea class="input-style" id="prop-descripcion" name="descripcion" rows="3"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Precio / Canon</label>
-                            <input type="text" class="input-style" id="prop-precio" placeholder="$ 0">
+                            <input type="text" class="input-style" id="prop-precio" name="precioCanon" placeholder="$ 0" required>
                         </div>
                         <div class="form-group">
                             <label>Imagen principal (URL)</label>
-                            <input type="url" class="input-style" id="prop-imagen-url" placeholder="https://...">
+                            <input type="url" class="input-style" id="prop-imagen-url" name="imagenUrl" placeholder="https://...">
                         </div>
                         <div class="form-group">
                             <label>O subir imagen</label>
-                            <input type="file" class="input-style" id="prop-imagen-file" accept="image/*">
+                            <input type="file" class="input-style" id="prop-imagen-file" name="imagen" accept="image/*">
                         </div>
                     </div>
+                    
+                    <div class="modal-footer-actions">
+                        <button type="button" class="btn-secondary" id="cancel-new-prop">Cancelar</button>
+                        <button type="submit" class="btn-primary-download" id="submit-new-prop">
+                            <i class="fa-solid fa-paper-plane"></i> Publicar
+                        </button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer-actions">
-                <button class="btn-secondary" id="cancel-new-prop">Cancelar</button>
-                <button class="btn-primary-download" id="submit-new-prop"><i class="fa-solid fa-paper-plane"></i> Publicar</button>
             </div>
         </div>
     </div>
 
     <script type="module" src="/js/app.js"></script>
     <script type="module" src="/js/dashboard-propietario.js"></script>
-        <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // ===============================
-            // 0. USUARIO LOGUEADO DESDE LOCALSTORAGE
-            // ===============================
-            let currentUser = null;
-            try {
-                const stored = localStorage.getItem('inmoapp_user');
-                if (stored) currentUser = JSON.parse(stored);
-            } catch (e) {
-                console.error('Error leyendo usuario de localStorage', e);
-            }
-
-            if (!currentUser || !currentUser.correo) {
-                // Si no hay usuario válido, lo sacamos
-                window.location.href = '/';
-                return;
-            }
-
-            // -- LOGICA TABS --
-            const links = document.querySelectorAll('.nav-link');
-            const views = document.querySelectorAll('.dashboard-view');
-            const pageTitle = document.getElementById('page-title');
-            const btnNew = document.getElementById('btn-new-property-main');
-
-            links.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    links.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    const target = link.getAttribute('data-tab');
-                    views.forEach(v => v.classList.add('hidden'));
-                    document.getElementById('view-' + target).classList.remove('hidden');
-                    
-                    const temp = link.cloneNode(true);
-                    if(temp.querySelector('.nav-badge-sm')) temp.querySelector('.nav-badge-sm').remove();
-                    pageTitle.textContent = temp.textContent.trim();
-
-                    if(target === 'mensajes' || target === 'contratos') {
-                        if(btnNew) btnNew.style.display = 'none';
-                    } else {
-                        if(btnNew) btnNew.style.display = 'flex';
-                    }
-                });
-            });
-
-            // -- LOGICA MODAL PUBLICAR --
-            const modal = document.getElementById('new-property-modal');
-            const closeBtns = [
-                document.getElementById('close-new-prop'),
-                document.getElementById('cancel-new-prop')
-            ];
-            const formNewProp = document.getElementById('form-new-property');
-            const submitNewPropBtn = document.getElementById('submit-new-prop');
-
-            if(btnNew) btnNew.addEventListener('click', () => modal.classList.remove('hidden'));
-            closeBtns.forEach(btn => { if(btn) btn.addEventListener('click', () => modal.classList.add('hidden')); });
-
-            // Inputs del formulario
-            const tipoInput        = document.getElementById('prop-tipo');
-            const operacionInput   = document.getElementById('prop-operacion');
-            const dirInput         = document.getElementById('prop-direccion');
-            const habInput         = document.getElementById('prop-habitaciones');
-            const banosInput       = document.getElementById('prop-banos');
-            const areaInput        = document.getElementById('prop-area');
-            const descInput        = document.getElementById('prop-descripcion');
-            const precioInput      = document.getElementById('prop-precio');
-            const imgUrlInput      = document.getElementById('prop-imagen-url');
-
-            if (submitNewPropBtn && formNewProp) {
-                submitNewPropBtn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-
-                    // Preparar datos del formulario
-                    const payloadObj = {
-                        correoPropietario: currentUser.correo,
-                        tipoInmueble:   tipoInput.value,
-                        operacion:      operacionInput.value,
-                        direccion:      dirInput.value.trim(),
-                        habitaciones:   Number(habInput.value || 0),
-                        banos:          Number(banosInput.value || 0),
-                        areaM2:         Number(areaInput.value || 0),
-                        descripcion:    descInput.value.trim(),
-                        precioCanon:    precioInput.value.trim(),
-                        imagenUrl:      imgUrlInput.value.trim()
-                    };
-
-                    if (!payloadObj.direccion || !payloadObj.precioCanon) {
-                        alert('La dirección y el precio son obligatorios.');
-                        return;
-                    }
-
-                    submitNewPropBtn.disabled = true;
-                    submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
-
-                    try {
-                        // Si el usuario seleccionó un archivo, enviar FormData con 'imagen'
-                        const fileInput = document.getElementById('prop-imagen-file');
-                        let resp, data;
-                        if (fileInput && fileInput.files && fileInput.files.length > 0) {
-                            const fd = new FormData();
-                            // agregar campos del formulario
-                            Object.keys(payloadObj).forEach(k => fd.append(k, payloadObj[k]));
-                            fd.append('imagen', fileInput.files[0]);
-
-                            // enviar autoPublish=true para publicar inmediatamente
-                            fd.append('autoPublish', 'true');
-                            const token = localStorage.getItem('inmoapp_token');
-                            const headers = {};
-                            if (token) headers['Authorization'] = `Bearer ${token}`;
-                            else headers['x-usuario-id'] = String(currentUser.id);
-                            resp = await fetch('/propiedades', {
-                                method: 'POST',
-                                headers,
-                                body: fd
-                            });
-                            data = await resp.json();
-                        } else {
-                            // enviar JSON como antes
-                            // enviar autoPublish=true por defecto desde dashboard propietario
-                            payloadObj.autoPublish = true;
-                            const token = localStorage.getItem('inmoapp_token');
-                            const headers = { 'Content-Type': 'application/json' };
-                            if (token) headers['Authorization'] = `Bearer ${token}`;
-                            else headers['x-usuario-id'] = String(currentUser.id);
-                            resp = await fetch('/propiedades', {
-                                method: 'POST',
-                                headers,
-                                body: JSON.stringify(payloadObj)
-                            });
-                            data = await resp.json();
-                        }
-
-                        if (!resp.ok) {
-                            console.error('Error al crear propiedad:', data);
-                            alert(data.error || 'Error registrando la propiedad.');
-                        } else {
-                            alert('Inmueble enviado a revisión correctamente.');
-                            modal.classList.add('hidden');
-                            formNewProp.reset();
-                        }
-                    } catch (err) {
-                        console.error('Error de red creando propiedad:', err);
-                        alert('No se pudo conectar con el servidor.');
-                    } finally {
-                        submitNewPropBtn.disabled = false;
-                        submitNewPropBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar';
-                    }
-                });
-            }
-
-            // -- LOGICA DROPDOWNS --
-            const btnBell = document.getElementById('btn-bell');
-            const notifMenu = document.getElementById('notif-menu');
-            const userBtn = document.getElementById('user-profile-btn');
-            const userMenu = document.getElementById('user-dropdown');
-
-            if(btnBell) btnBell.addEventListener('click', (e) => {
-                e.stopPropagation(); notifMenu.classList.toggle('hidden');
-                if(userMenu) userMenu.classList.add('hidden');
-            });
-            if(userBtn) userBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); userMenu.classList.toggle('hidden');
-                if(notifMenu) notifMenu.classList.add('hidden');
-            });
-            document.addEventListener('click', (e) => {
-                if(notifMenu && !notifMenu.contains(e.target) && e.target !== btnBell) notifMenu.classList.add('hidden');
-                if(userMenu && !userMenu.contains(e.target) && !userBtn.contains(e.target)) userMenu.classList.add('hidden');
-            });
-
-            const btnLogout = document.getElementById('btn-logout');
-            if(btnLogout) btnLogout.addEventListener('click', () => {
-                localStorage.removeItem('inmoapp_user');
-                window.location.href = '/';
-            });
-        });
-        </script>
-
 </body>
 </html>
