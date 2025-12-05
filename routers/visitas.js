@@ -1,4 +1,4 @@
-// routers/visitas.js - Gestión de visitas
+// routers/visitas.js - VERSIÓN CORREGIDA (SIN COLUMNA CIUDAD)
 import express from "express";
 import { dbQuery } from "../dbQuery.js";
 
@@ -9,16 +9,17 @@ const router = express.Router();
 // =======================================
 router.get("/", async (req, res) => {
   try {
-    const { usuarioId, estado } = req.query;
+    const { usuarioId } = req.query;
 
-    console.log(`📡 Consultando visitas para usuario: ${usuarioId}`); // LOG PARA DEPURAR
+    console.log(`📡 Consultando visitas para usuario: ${usuarioId}`);
 
     if (!usuarioId) {
       return res.status(400).json({ error: "usuarioId es obligatorio" });
     }
 
-    // He quitado 'p.thumbnail_url' por si acaso no existe en tu BD
-    let query = `
+    // HE QUITADO 'p.ciudad' y 'p.operacion' PARA EVITAR ERRORES
+    // Si quieres ciudad, tendrás que agregarla a la base de datos primero.
+    const query = `
       SELECT 
         v.id as visita_id,
         v.fecha_visita,
@@ -27,10 +28,8 @@ router.get("/", async (req, res) => {
         v.notas,
         p.id as propiedad_id,
         p.direccion,
-        p.ciudad,
         p.precio_canon,
         p.imagen_url,
-        p.operacion,
         u.nombre_completo as propietario_nombre,
         u.correo as propietario_correo,
         u.telefono as propietario_telefono
@@ -38,35 +37,25 @@ router.get("/", async (req, res) => {
       INNER JOIN public.propiedades p ON v.propiedad_id = p.id
       INNER JOIN public.usuarios u ON p.propietario_id = u.id
       WHERE v.usuario_id = $1
+      ORDER BY v.fecha_visita DESC
     `;
 
-    const params = [usuarioId];
-
-    if (estado && estado !== 'TODAS') {
-      query += ` AND v.estado = $2`;
-      params.push(estado);
-    }
-
-    query += ` ORDER BY v.fecha_visita DESC`;
-
-    const result = await dbQuery(query, params);
+    const result = await dbQuery(query, [usuarioId]);
     console.log(`✅ Se encontraron ${result.rows.length} visitas`);
     
     res.json(result.rows);
   } catch (e) {
-    console.error("❌ Error CRÍTICO en GET /visitas:", e.message); // ESTE MENSAJE ES EL IMPORTANTE
-    res.status(500).json({ error: "Error interno del servidor: " + e.message });
+    console.error("❌ Error CRÍTICO en GET /visitas:", e.message);
+    res.status(500).json({ error: "Error interno: " + e.message });
   }
 });
 
 // =======================================
-// POST Crear visita (Agendar)
+// POST Crear visita
 // =======================================
 router.post("/", async (req, res) => {
   try {
     const { usuarioId, propiedadId, fechaVisita, horaVisita, notas } = req.body;
-
-    console.log("📝 Intentando crear visita:", req.body);
 
     if (!usuarioId || !propiedadId || !fechaVisita || !horaVisita) {
       return res.status(400).json({ error: "Faltan datos obligatorios" });
@@ -94,14 +83,12 @@ router.post("/", async (req, res) => {
 });
 
 // =======================================
-// PUT Actualizar visita (Cancelar/Confirmar)
+// PUT Actualizar visita
 // =======================================
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
-
-    console.log(`🔄 Actualizando visita ${id} a estado: ${estado}`);
 
     if (!estado) return res.status(400).json({ error: "Estado obligatorio" });
 
