@@ -243,7 +243,7 @@
 
             try {
                 // 3. Cargar Datos
-                const response = await fetch(`/propiedades/${propiedadActualId}`);
+                const response = await fetch(`/api/propiedades/${propiedadActualId}`);
                 if (!response.ok) throw new Error('Error al cargar');
                 const prop = await response.json();
 
