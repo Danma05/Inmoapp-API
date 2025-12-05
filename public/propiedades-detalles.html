@@ -312,7 +312,7 @@
                 if (!fecha || !hora) return alert("Completa fecha y hora");
 
                 try {
-                    const res = await fetch('/visitas', {
+                    const res = await fetch('/api/visitas', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

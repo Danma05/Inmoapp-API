@@ -113,7 +113,7 @@ app.use("/propiedades", propiedadesRouter);
 app.use("/api/favoritos", favoritosRouter);
 
 // Visitas
-app.use("/visitas", visitasRouter);
+app.use('/api/visitas', visitasRouter);
 
 // Postulaciones
 app.use("/postulaciones", postulacionesRouter);

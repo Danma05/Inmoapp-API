@@ -122,7 +122,7 @@
             const usuario = JSON.parse(userStr);
 
             try {
-                const res = await fetch(`/visitas?usuarioId=${usuario.id}`);
+                const res = await fetch(`/api/visitas?usuarioId=${usuario.id}`);
                 const data = await res.json();
                 
                 todasLasVisitas = data;
