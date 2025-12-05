@@ -104,8 +104,8 @@ app.use("/", authRouter);
 // Propiedades
 app.use("/propiedades", propiedadesRouter);
 
-// Favoritos
-app.use("/favoritos", favoritosRouter);
+// Favoritos (API mounted under /api to avoid conflict with page route)
+app.use("/api/favoritos", favoritosRouter);
 
 // Visitas
 app.use("/visitas", visitasRouter);

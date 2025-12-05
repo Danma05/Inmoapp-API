@@ -1,3 +1,5 @@
+import { initFavButtons, loadFavorites, renderizarFavoritos, obtenerUsuario } from './propiedades.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Frontend cargado y listo 🚀');
 
@@ -107,6 +109,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // ======================================================
     // 4. ENVÍO DE FORMULARIOS (SUBMITS)
     // ======================================================
+
+    // Inicializar favoritos (delegado)
+    try { initFavButtons(); } catch (e) { console.warn('No se pudo inicializar favoritos:', e); }
+
+    // Si estamos en la página de Favoritos -> cargar favoritos reales
+    const favGrid = document.getElementById('favorites-grid');
+    if (favGrid) {
+        (async () => {
+            try {
+                const user = obtenerUsuario();
+                if (!user) {
+                    favGrid.innerHTML = '<p style="text-align:center; padding:40px; color:#6B7280;">Debes iniciar sesión para ver tus favoritos.</p>';
+                    return;
+                }
+                const data = await loadFavorites();
+                renderizarFavoritos(data.favoritos || []);
+            } catch (err) {
+                console.error('Error cargando favoritos en página:', err);
+                favGrid.innerHTML = '<p style="text-align:center; padding:40px; color:#DC2626;">No se pudieron cargar favoritos.</p>';
+            }
+        })();
+    }
 
     // =======================================
     // LOGIN REAL CONTRA LA BASE DE DATOS (+ GUARDAR SESIÓN)

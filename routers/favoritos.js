@@ -17,8 +17,16 @@ router.get("/", async (req, res) => {
 
     const query = `
       SELECT 
-        f.*,
-        p.*,
+        f.id AS favorito_id,
+        f.creado_en AS favorito_creado_en,
+        p.id AS propiedad_id,
+        p.direccion,
+        p.precio_canon,
+        p.imagen_url,
+        p.habitaciones,
+        p.banos,
+        p.area_m2,
+        p.activa,
         u.nombre_completo as propietario_nombre
       FROM public.favoritos f
       INNER JOIN public.propiedades p ON f.propiedad_id = p.id
@@ -28,7 +36,26 @@ router.get("/", async (req, res) => {
     `;
 
     const result = await dbQuery(query, [usuarioId]);
-    res.json(result.rows);
+
+    // Mapear resultado para devolver estructura clara: { favoritoId, propiedad: { ... } }
+    const mapped = result.rows.map(r => ({
+      favorito_id: r.favorito_id,
+      favoritoId: r.favorito_id,
+      creado_en: r.favorito_creado_en,
+      propiedad: {
+        id: r.propiedad_id,
+        direccion: r.direccion,
+        precio_canon: r.precio_canon,
+        imagen_url: r.imagen_url,
+        habitaciones: r.habitaciones,
+        banos: r.banos,
+        area_m2: r.area_m2,
+        activo: r.activa
+      },
+      propietario_nombre: r.propietario_nombre
+    }));
+
+    res.json({ favoritos: mapped });
   } catch (e) {
     console.error("❌ Error GET /favoritos:", e);
     res.status(500).json({ error: "Error consultando favoritos" });

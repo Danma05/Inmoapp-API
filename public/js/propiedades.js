@@ -36,6 +36,118 @@ export async function cargarPropiedades(filtros = {}) {
   }
 }
 
+// =========================
+// Favoritos - funciones cliente
+// =========================
+const FAVORITOS_BASE = '/api/favoritos';
+
+export async function addFavorite(usuarioId, propiedadId) {
+  const resp = await fetch(FAVORITOS_BASE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ usuarioId, propiedadId })
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || 'Error agregando favorito');
+  }
+  return await resp.json();
+}
+
+export async function removeFavorite(usuarioId, favoritoId) {
+  const resp = await fetch(`${FAVORITOS_BASE}/${favoritoId}?usuarioId=${usuarioId}`, {
+    method: 'DELETE'
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || 'Error eliminando favorito');
+  }
+  return await resp.json();
+}
+
+export async function loadFavorites() {
+  const user = obtenerUsuario();
+  if (!user) return { favoritos: [] };
+  const resp = await fetch(`${FAVORITOS_BASE}?usuarioId=${user.id}`);
+  if (!resp.ok) throw new Error('Error cargando favoritos');
+  return await resp.json();
+}
+
+// Inicializar listeners delegados para botones de favorito
+export function initFavButtons() {
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.fav-btn');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const propId = btn.getAttribute('data-propiedad-id');
+    if (!propId) return alert('Propiedad inválida');
+
+    const user = obtenerUsuario();
+    if (!user) {
+      return alert('Debes iniciar sesión para marcar favoritos.');
+    }
+
+    // Si ya tiene favoritoId -> eliminar, sino crear
+    const favId = btn.getAttribute('data-favorito-id');
+    try {
+      if (favId) {
+        await removeFavorite(user.id, favId);
+        btn.removeAttribute('data-favorito-id');
+        btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+        btn.style.color = '';
+      } else {
+        const res = await addFavorite(user.id, Number(propId));
+        // backend devuelve la fila insertada
+        const newId = res.id || res.favoritoId || res.favorito_id || res.id_favorito || (res.id || null);
+        if (newId) btn.setAttribute('data-favorito-id', newId);
+        btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+        btn.style.color = 'var(--brand-red)';
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      alert(err.message || 'Error en favoritos');
+    }
+  });
+}
+
+// Renderizar grid de favoritos (usado en favoritos.html)
+export function renderizarFavoritos(favoritos, contenedorId = 'favorites-grid') {
+  const contenedor = document.getElementById(contenedorId);
+  if (!contenedor) return;
+
+  if (!favoritos || favoritos.length === 0) {
+    contenedor.innerHTML = '<p style="text-align:center; padding:40px; color:#6B7280;">No tienes favoritos aún.</p>';
+    return;
+  }
+
+  contenedor.innerHTML = favoritos.map(f => {
+    const p = f.propiedad || {};
+    return `
+      <article class="prop-card-list" style="flex-direction: column; height: auto;">
+        <div class="card-img-list" style="width: 100%; height: 220px;">
+          <input type="checkbox" class="select-check" data-id="${p.id}">
+          <img src="${p.imagen_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400'}" alt="Propiedad">
+          <button class="fav-btn" data-propiedad-id="${p.id}" data-favorito-id="${f.favoritoId || ''}" style="color: var(--brand-red);">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+        </div>
+        <div class="card-info-list" style="padding: 15px;">
+          <div class="price-red">${p.precio_canon || '$0'}</div>
+          <h3>${p.direccion || 'Dirección no disponible'}</h3>
+          <p class="location-list"><i class="fa-solid fa-location-dot"></i> ${p.direccion || ''}</p>
+          <div class="specs-list">
+            <span><i class="fa-solid fa-bed"></i> ${p.habitaciones || 0}</span>
+            <span><i class="fa-solid fa-bath"></i> ${p.banos || 0}</span>
+            <span><i class="fa-solid fa-maximize"></i> ${p.area_m2 || 0} m²</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
 /**
  * Renderizar propiedades en un contenedor
  */
