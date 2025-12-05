@@ -265,8 +265,19 @@ const upload = multer({
 // =======================================
 // POST CREAR PROPIEDAD (soporta multipart/form-data con campo 'imagen')
 // =======================================
-router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res) => {
   try {
+    // Si el request es multipart/form-data, invocar multer dinámicamente.
+    const contentType = req.headers['content-type'] || '';
+    if (contentType.startsWith('multipart/form-data')) {
+      await new Promise((resolve, reject) => {
+        upload.single('imagen')(req, res, (err) => {
+          if (err) return reject(err);
+          return resolve();
+        });
+      });
+    }
+
     const {
       correoPropietario,
       tipoInmueble,
