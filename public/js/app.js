@@ -1,4 +1,4 @@
-import { initFavButtons, loadFavorites, renderizarFavoritos, obtenerUsuario } from './propiedades.js';
+import {obtenerUsuario } from './propiedades.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Frontend cargado y listo 🚀');
