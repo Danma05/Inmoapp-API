@@ -127,7 +127,7 @@ app.use("/notificaciones", notificacionesRouter);
 app.use("/passport", passportRouter);
 
 // Rutas de administración
-app.use('/admin', adminRouter);
+//app.use('/admin', adminRouter);
 
 
 // ------------------------------------------------------------
