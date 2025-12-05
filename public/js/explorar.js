@@ -1,28 +1,73 @@
 // public/js/explorar.js - Script para la página de explorar propiedades
 import { cargarPropiedades } from './propiedades.js';
 
+let usuarioActual = null;
+let favoritosActuales = []; // Lista de IDs de propiedades favoritas del usuario
+
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('🚀 Página Explorar iniciada');
 
-  // 1. Cargar propiedades iniciales
+  // 1. Obtener Usuario y cargar favoritos iniciales
+  const userStr = localStorage.getItem('inmoapp_user');
+  if (userStr) {
+    usuarioActual = JSON.parse(userStr);
+    await cargarFavoritosIniciales();
+  }
+
+  // 2. Ejecutar búsqueda inicial (con filtros vacíos)
   await ejecutarBusqueda();
 
-  // 2. Configurar botón Aplicar Filtros
-  const btnAplicar = document.getElementById('btn-aplicar-filtros');
-  if (btnAplicar) {
-    btnAplicar.addEventListener('click', (e) => {
-      e.preventDefault();
-      ejecutarBusqueda();
-    });
-  }
-
-  // 3. Configurar ordenamiento
-  const selectOrden = document.getElementById('filtro-ordenar');
-  if (selectOrden) {
-    selectOrden.addEventListener('change', () => ejecutarBusqueda());
-  }
+  // 3. Configurar listeners para filtros, ordenamiento Y el corazón
+  configurarListenersFiltros();
 });
 
+
+async function cargarFavoritosIniciales() {
+    try {
+        // Usamos la ruta API segura que configuramos previamente
+        const res = await fetch(`/api/favoritos?usuarioId=${usuarioActual.id}`);
+        const data = await res.json();
+        
+        // Guardamos solo los IDs para una búsqueda rápida
+        // Aseguramos que propiedad_id sea string para coincidir con prop.id.toString()
+        favoritosActuales = data.favoritos.map(fav => fav.propiedad_id.toString());
+        console.log(`❤️ Cargados ${favoritosActuales.length} favoritos iniciales.`);
+    } catch (e) {
+        console.error("Error cargando lista de favoritos:", e);
+    }
+}
+
+function configurarListenersFiltros() {
+    const btnAplicar = document.getElementById('btn-aplicar-filtros');
+    if (btnAplicar) {
+        btnAplicar.addEventListener('click', (e) => {
+            e.preventDefault();
+            ejecutarBusqueda();
+        });
+    }
+
+    const selectOrden = document.getElementById('filtro-ordenar');
+    if (selectOrden) {
+        selectOrden.addEventListener('change', () => ejecutarBusqueda());
+    }
+
+    // LISTENER PARA LOS BOTONES DE CORAZÓN
+    document.addEventListener('click', (e) => {
+        const heartButton = e.target.closest('.fav-btn');
+        if (heartButton) {
+            const propiedadId = heartButton.dataset.propiedadId;
+            if (propiedadId && usuarioActual) {
+                toggleFavorito(propiedadId, heartButton);
+            } else if (!usuarioActual) {
+                 alert("Debes iniciar sesión para agregar favoritos.");
+            }
+        }
+    });
+}
+
+/**
+ * Función central que lee los filtros, llama a la API y pinta la grilla
+ */
 async function ejecutarBusqueda() {
   const gridContainer = document.querySelector('.grid-3-cols');
   const resultadosSpan = document.querySelector('.sort-controls-box span');
@@ -45,13 +90,14 @@ async function ejecutarBusqueda() {
     }
 
     if (data.propiedades && data.propiedades.length > 0) {
-      gridContainer.innerHTML = data.propiedades.map(prop => crearCardPropiedad(prop)).join('');
+      // Pasamos la lista de favoritos al crear las tarjetas
+      gridContainer.innerHTML = data.propiedades.map(prop => crearCardPropiedad(prop, favoritosActuales)).join('');
     } else {
       gridContainer.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
             <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: #e5e7eb; margin-bottom: 20px;"></i>
-            <h3 style="color: #374151;">No encontramos propiedades</h3>
-            <p style="color: #6B7280;">Intenta ajustar tus filtros.</p>
+            <h3 style="color: #374151; font-size: 1.2rem;">No encontramos propiedades</h3>
+            <p style="color: #6B7280;">Intenta ajustar tus filtros de búsqueda.</p>
         </div>
       `;
     }
@@ -89,7 +135,10 @@ function obtenerFiltrosDesdeHTML() {
   return params;
 }
 
-function crearCardPropiedad(prop) {
+function crearCardPropiedad(prop, favoritosList) {
+  // Verificamos si la propiedad está en la lista de favoritos del usuario
+  const isFavorite = favoritosList.includes(prop.id.toString()); 
+  
   const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400';
   const precio = prop.precio_canon || '$0';
   const direccion = prop.direccion || 'Ubicación no disponible';
@@ -106,15 +155,17 @@ function crearCardPropiedad(prop) {
       <div class="card-img-list">
         <span class="new-tag" style="${tagColor}">${operacionTag}</span>
         <img src="${imagen}" alt="${direccion}" style="width: 100%; height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400'">
-        <button class="fav-btn" data-propiedad-id="${prop.id}">
-          <i class="fa-regular fa-heart"></i>
+        
+        <button class="fav-btn" data-propiedad-id="${prop.id}" style="${isFavorite ? 'color: var(--brand-red);' : ''}">
+          <i class="${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
         </button>
+
       </div>
       <div class="card-info-list">
         <div class="price-red">${precio}</div>
         <h3>${direccion}</h3>
         <p class="location-list">
-          <i class="fa-solid fa-location-dot"></i> ${direccion}
+          <i class="fa-solid fa-location-dot"></i> ${prop.ciudad || direccion}
         </p>
         <div class="specs-list">
           <span><i class="fa-solid fa-bed"></i> ${habitaciones}</span>
@@ -131,4 +182,53 @@ function crearCardPropiedad(prop) {
       </div>
     </article>
   `;
+}
+
+async function toggleFavorito(propiedadId, buttonElement) {
+    const isCurrentlyFavorite = buttonElement.querySelector('.fa-solid').classList.contains('fa-heart');
+    
+    // Si ya es favorito, eliminamos. Si no, agregamos.
+    const url = `/api/favoritos${isCurrentlyFavorite ? '/' + propiedadId : ''}?usuarioId=${usuarioActual.id}`;
+    
+    // 1. Optimistic UI update (para que se sienta rápido)
+    const icon = buttonElement.querySelector('i');
+    buttonElement.style.color = isCurrentlyFavorite ? '' : 'var(--brand-red)';
+    icon.classList.toggle('fa-solid');
+    icon.classList.toggle('fa-regular');
+
+    try {
+        const method = isCurrentlyFavorite ? 'DELETE' : 'POST';
+        const bodyData = isCurrentlyFavorite ? {} : { usuarioId: usuarioActual.id, propiedadId: propiedadId };
+
+        const res = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: method === 'POST' ? JSON.stringify(bodyData) : null
+        });
+
+        if (!res.ok) {
+            // Revertir la UI si la API falla
+            alert(`Error al ${isCurrentlyFavorite ? 'quitar' : 'agregar'} de favoritos.`);
+            buttonElement.style.color = isCurrentlyFavorite ? 'var(--brand-red)' : '';
+            icon.classList.toggle('fa-solid');
+            icon.classList.toggle('fa-regular');
+            return;
+        }
+
+        // 3. Actualizar el estado global de la lista de IDs (para recargas y consistencia)
+        if (isCurrentlyFavorite) {
+            favoritosActuales = favoritosActuales.filter(id => id !== propiedadId);
+        } else {
+            favoritosActuales.push(propiedadId);
+        }
+
+    } catch (e) {
+        console.error(e);
+        alert("Error de conexión al servidor.");
+        
+        // Revertir UI en caso de error de conexión
+        buttonElement.style.color = isCurrentlyFavorite ? 'var(--brand-red)' : '';
+        icon.classList.toggle('fa-solid');
+        icon.classList.toggle('fa-regular');
+    }
 }
