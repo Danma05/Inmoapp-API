@@ -209,7 +209,7 @@
                 <h2>Iniciar Sesión</h2>
                 <p>Accede a tu cuenta de InmoApp</p>
             </div>
-            <form class="login-form">
+            <form id="login-form-id" class="login-form">
                 <div class="form-group">
                     <label>Correo electrónico</label>
                     <div class="input-wrapper gray-style">
@@ -492,7 +492,7 @@
             </div>
 
             <div class="passport-footer">
-                <button id="btn-finish-publisher" class="btn-gray-disabled" disabled>Finalizar Registro</button>
+                <button id="btn-finish-publisher" class="btn btn-full btn-red" disabled>Finalizar Registro</button>
             </div>
         </div>
     </div>
@@ -520,7 +520,8 @@
         const publishSelectBtn = document.querySelector('.btn-publish-select');
         const selectedRoleInput = document.getElementById('selected-role');
 
-        // Botones de finalización
+        // Formularios y botones de finalización
+        const loginForm = document.getElementById('login-form-id');
         const registerForm = document.getElementById('register-form');
         const btnFinishPublisher = document.getElementById('btn-finish-publisher'); // Propietario
         const btnFinishPassport = document.getElementById('btn-finish-passport');     // Arrendatario
@@ -557,7 +558,7 @@
 
             pubFileInputs.forEach(input => {
                 const docItem = input.closest('.doc-item');
-                const uploadBtn = docItem.querySelector('.btn-upload');
+                const uploadBtn = docItem.querySelector('button');
                 
                 if (input.files.length > 0) {
                     completedCount++;
@@ -591,6 +592,7 @@
             // Habilitar botón de finalización solo cuando 100% completo
             if (progressPercentage === 100) {
                 btnFinishPublisher.classList.remove('btn-gray-disabled');
+                btnFinishPublisher.classList.remove('btn-red'); // Asegura que se usa la clase principal del botón si no es .btn-red
                 btnFinishPublisher.classList.add('btn-red');
                 btnFinishPublisher.disabled = false;
             } else {
@@ -607,7 +609,7 @@
 
             passportFileInputs.forEach(input => {
                 const docItem = input.closest('.doc-item');
-                const uploadBtn = docItem.querySelector('.btn-upload');
+                const uploadBtn = docItem.querySelector('button');
                 
                 if (input.files.length > 0) {
                     completedCount++;
@@ -652,8 +654,7 @@
 
         // --- MANEJADORES DE EVENTOS GLOBALES ---
 
-        // Abrir/Cerrar modales (Lógica existente)
-        // ... (Tu código de apertura/cierre de modales sigue aquí) ...
+        // Abrir/Cerrar modales
         [...openLoginBtns, document.querySelector('.open-login-link')].forEach(btn => btn.addEventListener('click', (e) => {
             e.preventDefault();
             closeModal(registerFormModal);
@@ -684,6 +685,23 @@
             closeModal(loginModal);
             openModal(registerModal);
         });
+
+
+        // --- MANEJO DE INICIO DE SESIÓN (LOGIN) ---
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Simulación: asume que el inicio de sesión fue exitoso
+
+                // 1. Cerrar el modal
+                closeModal(loginModal); 
+                
+                // 2. Redireccionar al dashboard (general)
+                // Nota: En una app real, aquí se verificaría el rol (arrendatario/propietario)
+                // Para simplificar, redirigimos al general /dashboard
+                window.location.href = '/dashboard'; 
+            });
+        }
 
 
         // --- ASIGNACIÓN DE ROL Y FLUJO DE REGISTRO ---

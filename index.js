@@ -19,261 +19,177 @@ const __dirname = path.dirname(__filename);
 // Servir carpeta public (CSS, JS, Imágenes)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Rutas de Pantallas
+// --- RUTAS PRINCIPALES ---
+
 app.get("/", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.get("/dashboard", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
+    res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-// --- NUEVA RUTA PARA EL MENÚ DE EXPLORACIÓN ---
 app.get("/explorar-menu", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "explorar-menu.html"));
+    res.sendFile(path.join(__dirname, "public", "explorar-menu.html"));
 });
 
-// RUTA FAVORITOS
+// 🚨 RUTA AGREGADA PARA LA PÁGINA DE DETALLE DE PROPIEDAD 🚨
+app.get("/propiedad-detalle", (_req, res) => {
+    res.sendFile(path.join(__dirname, "public", "propiedad-detalle.html"));
+});
+
 app.get("/favoritos", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "favoritos.html"));
+    res.sendFile(path.join(__dirname, "public", "favoritos.html"));
 });
 
-//ruta visitas
 app.get("/visitas", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "visitas.html"));
+    res.sendFile(path.join(__dirname, "public", "visitas.html"));
 });
 
-// ruta postulaciones
 app.get("/postulaciones", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "postulaciones.html"));
+    res.sendFile(path.join(__dirname, "public", "postulaciones.html"));
 });
 
-//  ruta mensajes
 app.get("/mensajes", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "mensajes.html"));
+    res.sendFile(path.join(__dirname, "public", "mensajes.html"));
 });
 
-// --- RUTA MI CUENTA ---
 app.get("/cuenta", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "cuenta.html"));
+    res.sendFile(path.join(__dirname, "public", "cuenta.html"));
 });
 
-// --- Dashboard PropietarioX---
 app.get("/dashboard-propietario", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "dashboard-propietario.html"));
+    res.sendFile(path.join(__dirname, "public", "dashboard-propietario.html"));
 });
 
-// --- Rutas Admin ---
-app.get('/admin-login', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-login.html');
+// --- Rutas Admin (Limpieza de duplicados) ---
+app.get('/admin-login', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
 });
-app.get('/admin-dashboard', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-dashboard.html');
+app.get('/admin-dashboard', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
 });
-
-// --- RUTAS DEL PANEL ADMINISTRADOR ---
-app.get('/admin-dashboard', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-dashboard.html');
+app.get('/admin-agentes', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-agentes.html'));
 });
-
-app.get('/admin-agentes', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-agentes.html');
+app.get('/admin-propiedades', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-propiedades.html'));
 });
-
-app.get('/admin-propiedades', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-propiedades.html');
+app.get('/admin-solicitudes', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-solicitudes.html'));
 });
-
-app.get('/admin-solicitudes', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-solicitudes.html');
+app.get('/admin-leads', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-leads.html'));
 });
-
-app.get('/admin-leads', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-leads.html');
+app.get('/admin-contratos', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-contratos.html'));
+});
+app.get('/admin-chat', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-chat.html'));
 });
 
-app.get('/admin-contratos', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-contratos.html');
-});
-
-// CAMBIO IMPORTANTE: Ahora apunta a admin-chat.html
-app.get('/admin-chat', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-chat.html');
-});
-
-// --- RUTAS DE NAVEGACIÓN DE USUARIO (Asegurar que existan y apunten bien) ---
-
-app.get('/dashboard', (req, res) => {
-    res.sendFile(__dirname + '/public/dashboard.html');
-});
-app.get('/explorar-menu', (req, res) => {
-    res.sendFile(__dirname + '/public/explorar-menu.html');
-});
-app.get('/favoritos', (req, res) => {
-    res.sendFile(__dirname + '/public/favoritos.html');
-});
-app.get('/visitas', (req, res) => {
-    res.sendFile(__dirname + '/public/visitas.html');
-});
-app.get('/postulaciones', (req, res) => {
-    res.sendFile(__dirname + '/public/postulaciones.html');
-});
-app.get('/mensajes', (req, res) => {
-    res.sendFile(__dirname + '/public/mensajes.html');
-});
-
-// --- RUTAS DE ADMINISTRADOR (Creadas anteriormente) ---
-
-app.get('/admin-login', (req, res) => {
-    res.sendFile(__dirname + '/public/admin-login.html');
-});
-// ... (y todas las demás rutas admin: /admin-agentes, /admin-propiedades, etc.)  
 
 // ------------------------------------------------------------
 // API MOCK (SIMULADA - PARA QUE EL FRONTEND NO FALLE)
 // ------------------------------------------------------------
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, mode: "mock" });
+    res.json({ ok: true, mode: "mock" });
 });
 
 app.get("/health/db", (_req, res) => {
-  res.json({ ok: true, db: "mocked_connected", now: new Date().toISOString() });
+    res.json({ ok: true, db: "mocked_connected", now: new Date().toISOString() });
 });
 
 // GET /usuarios (Simulado)
 app.get("/usuarios", (_req, res) => {
-  res.json([
-    { id: 1, nombre_completo: "Usuario Mock", correo: "test@mock.com" }
-  ]);
+    res.json([
+        { id: 1, nombre_completo: "Usuario Mock", correo: "test@mock.com" }
+    ]);
 });
 
 // POST /usuarios (Simulado)
 app.post("/usuarios", (req, res) => {
-  const { nombreCompleto, correo, rol } = req.body;
-  console.log("📝 [MOCK] Creando usuario:", { nombreCompleto, correo });
+    const { nombreCompleto, correo, rol } = req.body;
+    console.log("📝 [MOCK] Creando usuario:", { nombreCompleto, correo });
 
-  setTimeout(() => {
-    res.status(201).json({
-      id: Date.now(),
-      nombre_completo: nombreCompleto,
-      correo: correo,
-      rol: rol || 'ARRENDATARIO',
-      creado_en: new Date()
-    });
-  }, 300);
+    setTimeout(() => {
+        res.status(201).json({
+            id: Date.now(),
+            nombre_completo: nombreCompleto,
+            correo: correo,
+            rol: rol || 'ARRENDATARIO',
+            creado_en: new Date()
+        });
+    }, 300);
 });
 
 // POST /passport/init (Simulado)
 app.post("/passport/init", (req, res) => {
-  const { usuarioId } = req.body;
-  console.log(`🛂 [MOCK] Inicializando pasaporte para usuario ${usuarioId}`);
-  
-  res.status(201).json({
-    id: 100,
-    usuario_id: usuarioId,
-    progreso_porcentaje: 0,
-    completado: false
-  });
+    const { usuarioId } = req.body;
+    console.log(`🛂 [MOCK] Inicializando pasaporte para usuario ${usuarioId}`);
+    
+    res.status(201).json({
+        id: 100,
+        usuario_id: usuarioId,
+        progreso_porcentaje: 0,
+        completado: false
+    });
 });
 
 // POST /passport/document (Simulado)
 app.post("/passport/document", (req, res) => {
-  const { usuarioId, tipoDocumento } = req.body;
-  console.log(`📄 [MOCK] Documento subido: ${tipoDocumento} (Usuario: ${usuarioId})`);
-
-  res.status(201).json({
-    documento: {
-      id: Math.floor(Math.random() * 1000),
-      nombre_archivo: "archivo_mock.pdf",
-      tipo_documento: tipoDocumento
-    },
-    pasaporte: {
-      usuario_id: usuarioId,
-      tiene_doc_identidad: tipoDocumento === 'IDENTIDAD',
-      tiene_solvencia: tipoDocumento === 'SOLVENCIA',
-      tiene_ingresos: tipoDocumento === 'INGRESOS',
-      tiene_otros: tipoDocumento === 'OTROS',
-      progreso_porcentaje: 25,
-      actualizado_en: new Date()
-    }
-  });
-});
-
-app.post("/passport/document", async (req, res) => {
-  try {
-    const {
-      usuarioId,
-      tipoDocumento,   // 'IDENTIDAD' | 'SOLVENCIA' | 'INGRESOS' | 'OTROS'
-      nombreArchivo,
-      rutaArchivo,
-      mimeType,
-      tamanoBytes
-    } = req.body;
-
-    // 1) Guardar registro del documento
-    const insertDocQuery = `
-      INSERT INTO documentos_arrendatario (
-        usuario_id, tipo_documento, nombre_archivo, ruta_archivo, mime_type, tamano_bytes
-      )
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *;
-    `;
-
-    const docResult = await dbQuery(insertDocQuery, [
-      usuarioId,
-      tipoDocumento,
-      nombreArchivo,
-      rutaArchivo,
-      mimeType,
-      tamanoBytes
-    ]);
-
-    // 2) Actualizar flags del pasaporte según tipoDocumento
-    let column;
-    if (tipoDocumento === "IDENTIDAD") column = "tiene_doc_identidad";
-    if (tipoDocumento === "SOLVENCIA") column = "tiene_solvencia";
-    if (tipoDocumento === "INGRESOS") column = "tiene_ingresos";
-    if (tipoDocumento === "OTROS") column = "tiene_otros";
-
-    const updateFlagsQuery = `
-      UPDATE pasaportes_arrendatario
-      SET ${column} = TRUE,
-          actualizado_en = NOW()
-      WHERE usuario_id = $1
-      RETURNING tiene_doc_identidad, tiene_solvencia, tiene_ingresos, tiene_otros;
-    `;
-    const passportFlags = await dbQuery(updateFlagsQuery, [usuarioId]);
-    const flags = passportFlags.rows[0];
-
-    // 3) Recalcular progreso (25% por documento)
-    const countTrue = [
-      flags.tiene_doc_identidad,
-      flags.tiene_solvencia,
-      flags.tiene_ingresos,
-      flags.tiene_otros
-    ].filter(Boolean).length;
-
-    const progreso = countTrue * 25;
-
-    const updateProgressQuery = `
-      UPDATE pasaportes_arrendatario
-      SET progreso_porcentaje = $1,
-          completado = ($1 = 100),
-          actualizado_en = NOW()
-      WHERE usuario_id = $2
-      RETURNING *;
-    `;
-    const passportUpdated = await dbQuery(updateProgressQuery, [progreso, usuarioId]);
+    const { usuarioId, tipoDocumento } = req.body;
+    console.log(`📄 [MOCK] Documento subido: ${tipoDocumento} (Usuario: ${usuarioId})`);
 
     res.status(201).json({
-      documento: docResult.rows[0],
-      pasaporte: passportUpdated.rows[0]
+        documento: {
+            id: Math.floor(Math.random() * 1000),
+            nombre_archivo: "archivo_mock.pdf",
+            tipo_documento: tipoDocumento
+        },
+        pasaporte: {
+            usuario_id: usuarioId,
+            tiene_doc_identidad: tipoDocumento === 'IDENTIDAD',
+            tiene_solvencia: tipoDocumento === 'SOLVENCIA',
+            tiene_ingresos: tipoDocumento === 'INGRESOS',
+            tiene_otros: tipoDocumento === 'OTROS',
+            progreso_porcentaje: 25,
+            actualizado_en: new Date()
+        }
     });
-  } catch (e) {
-    console.error("❌ Error POST /passport/document:", e);
-    res.status(500).json({ error: "Error registrando documento" });
-  }
+});
+
+// POST /passport/document (Simulado, basado en la estructura de DBQuery)
+app.post("/passport/document", async (req, res) => {
+    // ESTE ES UN MOCK ASÍNCRONO, IGNORANDO LA LÓGICA DE DB REAL
+    try {
+        const { usuarioId, tipoDocumento } = req.body;
+
+        // Simulación de actualización de flags y progreso
+        let progreso = 25; // Simulación simple de avance
+        if (tipoDocumento === 'IDENTIDAD') progreso = 25;
+        if (tipoDocumento === 'SOLVENCIA') progreso = 50;
+        if (tipoDocumento === 'INGRESOS') progreso = 75;
+        if (tipoDocumento === 'OTROS') progreso = 100;
+
+        res.status(201).json({
+            documento: {
+                id: Math.floor(Math.random() * 1000),
+                nombre_archivo: "archivo_mock.pdf",
+                tipo_documento: tipoDocumento
+            },
+            pasaporte: {
+                usuario_id: usuarioId,
+                progreso_porcentaje: progreso,
+                completado: progreso === 100,
+                actualizado_en: new Date()
+            }
+        });
+    } catch (e) {
+        console.error("❌ Error POST /passport/document mock:", e);
+        res.status(500).json({ error: "Error simulado registrando documento" });
+    }
 });
 
 
@@ -282,11 +198,11 @@ app.post("/passport/document", async (req, res) => {
 // ------------------------------------------------------------
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-  console.log(`\n🚀 Servidor MOCK corriendo en http://localhost:${PORT}`);
-  console.log("⚠️  NO hay conexión a base de datos real. Todo es simulado.\n");
+    console.log(`\n🚀 Servidor MOCK corriendo en http://localhost:${PORT}`);
+    console.log("⚠️  NO hay conexión a base de datos real. Todo es simulado.\n");
 });
 
 process.on("SIGINT", () => {
-  console.log("\n👋 Cerrando servidor...");
-  server.close(() => process.exit(0));
+    console.log("\n👋 Cerrando servidor...");
+    server.close(() => process.exit(0));
 });
