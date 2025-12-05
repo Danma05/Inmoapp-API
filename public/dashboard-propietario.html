@@ -371,6 +371,8 @@
                             Object.keys(payloadObj).forEach(k => fd.append(k, payloadObj[k]));
                             fd.append('imagen', fileInput.files[0]);
 
+                            // enviar autoPublish=true para publicar inmediatamente
+                            fd.append('autoPublish', 'true');
                             resp = await fetch('/propiedades', {
                                 method: 'POST',
                                 headers: { 'x-usuario-id': String(currentUser.id) },
@@ -379,6 +381,8 @@
                             data = await resp.json();
                         } else {
                             // enviar JSON como antes
+                            // enviar autoPublish=true por defecto desde dashboard propietario
+                            payloadObj.autoPublish = true;
                             resp = await fetch('/propiedades', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(currentUser.id) },

@@ -261,7 +261,8 @@ router.post("/", upload.single('imagen'), async (req, res) => {
       descripcion,
       precioCanon,
       imagenUrl,
-      usuarioId: bodyUsuarioId
+      usuarioId: bodyUsuarioId,
+      autoPublish: bodyAutoPublish
     } = req.body;
 
     // Aceptar usuarioId desde header o body para autenticación ligera
@@ -279,6 +280,11 @@ router.post("/", upload.single('imagen'), async (req, res) => {
     if (req.file && req.file.filename) {
       finalImagenUrl = `/uploads/${req.file.filename}`;
     }
+
+    // autoPublish puede venir en body o en header 'x-auto-publish'
+    const headerAuto = req.headers['x-auto-publish'];
+    const autoPublish = (typeof bodyAutoPublish !== 'undefined') ? (bodyAutoPublish === 'true' || bodyAutoPublish === true) : (headerAuto === 'true' || headerAuto === true);
+    const estadoPublicacion = autoPublish ? 'PUBLICADO' : 'EN_REVISION';
 
     if (usuarioId) {
       // Validar que el usuario exista y sea propietario activo
@@ -317,9 +323,10 @@ router.post("/", upload.single('imagen'), async (req, res) => {
         area_m2,
         descripcion,
         precio_canon,
-        imagen_url
+        imagen_url,
+        estado_publicacion
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
       RETURNING *;
     `;
 
@@ -333,7 +340,8 @@ router.post("/", upload.single('imagen'), async (req, res) => {
       Number(areaM2 || 0),
       descripcion || null,
       precioCanon,
-      finalImagenUrl || null
+      finalImagenUrl || null,
+      estadoPublicacion
     ]);
 
     return res.status(201).json({
