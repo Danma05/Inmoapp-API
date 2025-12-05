@@ -55,4 +55,31 @@ router.post('/propiedades/publish', authenticate, async (req, res) => {
   }
 });
 
+// GET /admin/auditoria
+// Devuelve registros de admin_auditoria. Query params: limit, offset
+router.get('/auditoria', authenticate, async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) return res.status(401).json({ error: 'Autenticación requerida' });
+    if ((user.rol || '').toUpperCase() !== 'ADMIN') return res.status(403).json({ error: 'Permisos insuficientes' });
+
+    const limit = Math.min(Number(req.query.limit) || 100, 500);
+    const offset = Number(req.query.offset) || 0;
+
+    const q = `
+      SELECT a.id, a.admin_id, a.propiedad_ids, a.cantidad, a.creado_en, u.nombre_completo as admin_nombre
+      FROM public.admin_auditoria a
+      LEFT JOIN public.usuarios u ON a.admin_id = u.id
+      ORDER BY a.creado_en DESC
+      LIMIT $1 OFFSET $2
+    `;
+
+    const result = await dbQuery(q, [limit, offset]);
+    return res.json({ ok: true, rows: result.rows });
+  } catch (e) {
+    console.error('❌ Error GET /admin/auditoria:', e);
+    return res.status(500).json({ error: 'Error consultando auditoría' });
+  }
+});
+
 export default router;
