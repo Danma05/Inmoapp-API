@@ -298,10 +298,14 @@ if (telInput && telError) {
             termsInput.checked = false;
             closeModal(registerFormModal);
 
-            if (selectedRole === 'PROPIETARIO') {
-                openModal(publisherModal);
+            // Auto-login: redirigir directamente al dashboard correspondiente
+            // para que la sesión use la cuenta recién creada en lugar de una
+            // cuenta predeterminada que pudiera estar en localStorage.
+            const roleUpper = (selectedRole || '').toString().toUpperCase();
+            if (roleUpper === 'PROPIETARIO') {
+                window.location.href = '/dashboard-propietario';
             } else {
-                openModal(passportModal);
+                window.location.href = '/dashboard';
             }
 
         } catch (err) {
