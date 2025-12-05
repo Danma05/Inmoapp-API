@@ -78,6 +78,11 @@ app.get("/dashboard-propietario", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard-propietario.html"));
 });
 
+app.get("/propiedades-detalles", (_req, res) => {
+  // Asegúrate de que el nombre del archivo coincida EXACTAMENTE con el que tienes en la carpeta public
+  res.sendFile(path.join(__dirname, "public", "propiedades-detalles.html"));
+});
+
 // ------------------------------------------------------------
 // ENDPOINTS DE SALUD Y ESTADO
 // ------------------------------------------------------------
