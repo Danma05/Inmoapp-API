@@ -356,10 +356,11 @@
                     submitNewPropBtn.disabled = true;
                     submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
 
-                    try {
+                        try {
+                        // Enviar X-Usuario-Id en header para identificar al propietario de forma fiable
                         const resp = await fetch('/propiedades', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(currentUser.id) },
                             body: JSON.stringify(payload)
                         });
                         const data = await resp.json();
