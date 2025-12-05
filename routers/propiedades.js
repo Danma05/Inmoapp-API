@@ -352,7 +352,11 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
 
   } catch (e) {
     console.error("❌ Error POST /propiedades:", e);
-    return res.status(500).json({ error: "Error registrando propiedad." });
+    // En desarrollo, devolver detalle del error para facilitar debugging.
+    const dev = (process.env.NODE_ENV || '').toLowerCase() !== 'production';
+    const resp = { error: "Error registrando propiedad." };
+    if (dev) resp.detail = e && e.message ? e.message : String(e);
+    return res.status(500).json(resp);
   }
 });
 
