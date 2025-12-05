@@ -283,7 +283,17 @@ if (telInput && telError) {
                 return showError(data.error || "Error registrando usuario.");
             }
 
-            // ÉXITO → Cerrar modal y abrir siguiente paso
+            // ÉXITO → Guardar usuario registrado en localStorage y seguir flujo
+            // Guardamos el usuario devuelto por el servidor para que la app no siga
+            // usando una sesión previa almacenada (evita que aparezca otro usuario).
+            if (data && data.usuario) {
+                try {
+                    localStorage.setItem('inmoapp_user', JSON.stringify(data.usuario));
+                } catch (e) {
+                    console.warn('No se pudo guardar usuario en localStorage:', e);
+                }
+            }
+
             registerForm.reset();
             termsInput.checked = false;
             closeModal(registerFormModal);
