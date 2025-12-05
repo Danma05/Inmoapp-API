@@ -1,5 +1,6 @@
 // routers/auth.js - Autenticación y registro
 import express from "express";
+import bcrypt from "bcryptjs";
 import { dbQuery } from "../dbQuery.js";
 
 const router = express.Router();
@@ -40,9 +41,9 @@ router.post("/login", async (req, res) => {
       return res.status(403).json({ error: "Tu cuenta está inactiva. Contacta al administrador." });
     }
 
-    // ⚠ De momento comparamos texto plano (para el curso está bien).
-    // Más adelante se puede reemplazar por bcrypt.compare(...)
-    if (password !== user.password_hash) {
+    // Comparar con bcrypt (passwords almacenadas como hash)
+    const match = await bcrypt.compare(password, user.password_hash || '');
+    if (!match) {
       return res.status(401).json({ error: "Correo o contraseña incorrectos." });
     }
 
@@ -104,8 +105,8 @@ router.post("/usuarios", async (req, res) => {
     const nombreCompleto = `${nombre.trim()} ${apellido.trim()}`.trim();
     const rolFinal = rol || "ARRENDATARIO";
 
-    // ⚠ En producción deberías encriptar esta contraseña
-    const passwordHash = password;
+  // Hashear contraseña con bcryptjs antes de guardar
+  const passwordHash = await bcrypt.hash(password, 10);
 
     const insertQuery = `
       INSERT INTO public.usuarios (
@@ -137,6 +138,10 @@ router.post("/usuarios", async (req, res) => {
 
   } catch (e) {
     console.error("❌ Error POST /usuarios:", e);
+    // Manejar violación de unicidad en correo (Postgres code 23505)
+    if (e && e.code === '23505') {
+      return res.status(409).json({ error: "El correo ya está registrado." });
+    }
     return res.status(500).json({ error: "Error registrando usuario." });
   }
 });
