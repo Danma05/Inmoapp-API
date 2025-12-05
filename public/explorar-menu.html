@@ -22,10 +22,10 @@
             </a>
             <nav class="top-nav">
                 <a href="/explorar-menu" class="active">Explorar</a> 
-                <a href="#">Favoritos</a>
-                <a href="#">Visitas</a>
-                <a href="#">Postulaciones</a>
-                <a href="#">Mensajes</a>
+                <a href="/favoritos">Favoritos</a>
+                <a href="/visitas">Visitas</a>
+                <a href="/postulaciones">Postulaciones</a>
+                <a href="/mensajes">Mensajes</a>
             </nav>
             <div class="user-controls">
                 <button class="icon-action"><i class="fa-regular fa-heart"></i></button>
@@ -50,6 +50,7 @@
                     <option value="500000">$500.000</option>
                     <option value="1000000">$1.000.000</option>
                     <option value="2000000">$2.000.000</option>
+                    <option value="3000000">$3.000.000</option>
                 </select>
             </div>
 
@@ -60,6 +61,7 @@
                     <option value="1000000">$1.000.000</option>
                     <option value="3000000">$3.000.000</option>
                     <option value="5000000">$5.000.000</option>
+                    <option value="10000000">$10.000.000</option>
                 </select>
             </div>
 
@@ -110,126 +112,25 @@
             </div>
         </section>
 
-        <div class="sort-select">
-            <label>Ordenar por</label>
-            <select id="filtro-ordenar">
-                <option value="creado_en">Más Reciente</option>
-                <option value="precio_canon_asc">Menor Precio</option>
-                <option value="precio_canon_desc">Mayor Precio</option>
-                <option value="area_m2">Mayor Área</option>
-            </select>
-        </div>
+        <section class="listing-header-row">
+            <h2 class="dash-title">Listado de Propiedades</h2>
+            <div class="sort-controls-box">
+                <span>Cargando resultados...</span>
+                <div class="sort-select">
+                    <label>Ordenar por</label>
+                    <select id="filtro-ordenar">
+                        <option value="creado_en">Más Reciente</option>
+                        <option value="precio_canon_asc">Menor Precio</option>
+                        <option value="precio_canon_desc">Mayor Precio</option>
+                        <option value="area_m2">Mayor Área</option>
+                    </select>
+                </div>
+            </div>
+        </section>
 
         <section class="dashboard-section listing-grid">
             <div class="grid-3-cols">
-                <article class="prop-card-list">
-                    <div class="card-img-list">
-                        <span class="new-tag">Nuevos!</span>
-                        <img src="https://images.unsplash.com/photo-1549419192-333d1c255e4e?auto=format&fit=crop&w=400" alt="Apartamento Moderno">
-                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list">
-                        <div class="price-red">$575.000</div>
-                        <h3>4500 Rue Fulton #201</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 2</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 1250 sqft</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="prop-card-list">
-                    <div class="card-img-list">
-                        <span class="new-tag">Nuevos!</span>
-                        <img src="https://images.unsplash.com/photo-1550541748-038c1143c72b?auto=format&fit=crop&w=400" alt="Edificio de Lujo">
-                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list">
-                        <div class="price-red">$1.089.000</div>
-                        <h3>123 Av Park #105</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 3</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 2100 sqft</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="prop-card-list">
-                    <div class="card-img-list">
-                        <span class="new-tag">Nuevos!</span>
-                        <img src="https://images.unsplash.com/photo-1574362848537-0ac622830f60?auto=format&fit=crop&w=400" alt="Apartamento Pequeño">
-                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list">
-                        <div class="price-red">$525.000</div>
-                        <h3>33 Rue Berri #201</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 2</span>
-                            <span><i class="fa-solid fa-bath"></i> 1</span>
-                            <span><i class="fa-solid fa-maximize"></i> 1100 sqft</span>
-                        </div>
-                    </div>
-                </article>
-                
-                <article class="prop-card-list">
-                    <div class="card-img-list">
-                        <span class="new-tag">Nuevos!</span>
-                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3825e?auto=format&fit=crop&w=400" alt="Casa Grande">
-                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list">
-                        <div class="price-red">$998.000</div>
-                        <h3>1277 Rue St-Mathieu #310N</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 3</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 1850 sqft</span>
-                        </div>
-                    </div>
-                </article>
-                
-                <article class="prop-card-list">
-                    <div class="card-img-list">
-                        <span class="new-tag">Nuevos!</span>
-                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400" alt="Casa Pequeña">
-                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list">
-                        <div class="price-red">$499.000</div>
-                        <h3>987 Rue du Domicile #315</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 1</span>
-                            <span><i class="fa-solid fa-bath"></i> 1</span>
-                            <span><i class="fa-solid fa-maximize"></i> 850 sqft</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="prop-card-list">
-                    <div class="card-img-list">
-                        <span class="new-tag">Nuevos!</span>
-                        <img src="https://images.unsplash.com/photo-1627504383377-5114cc18e69d?auto=format&fit=crop&w=400" alt="Casa Moderna">
-                        <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list">
-                        <div class="price-red">$599.000</div>
-                        <h3>426 Côte St-Xavier</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Montreal, Quebec</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 2</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 1400 sqft</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
+               </div>
         </section>
     </div> 
     
