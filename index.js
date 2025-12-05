@@ -79,8 +79,7 @@ app.get("/dashboard-propietario", (_req, res) => {
 });
 
 app.get("/propiedades-detalles", (_req, res) => {
-  // Asegúrate de que el nombre del archivo coincida EXACTAMENTE con el que tienes en la carpeta public
-  res.sendFile(path.join(__dirname, "public", "propiedades-detalles.html"));
+  res.sendFile(path.join(__dirname, "public", "propiedades-detalle.html"));
 });
 
 // ------------------------------------------------------------
