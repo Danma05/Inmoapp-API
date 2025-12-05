@@ -101,7 +101,7 @@ router.get("/", async (req, res) => {
 
     const result = await dbQuery(query, params);
 
-    // Contar total
+    // Contar total (aplicar todos los mismos filtros)
     let countQuery = `SELECT COUNT(*) as total FROM public.propiedades p WHERE p.activa = TRUE`;
     const countParams = [];
     let countParamCount = 1;
@@ -114,6 +114,41 @@ router.get("/", async (req, res) => {
     if (operacion) {
       countQuery += ` AND p.operacion = $${countParamCount}`;
       countParams.push(operacion);
+      countParamCount++;
+    }
+    if (precioMin) {
+      countQuery += ` AND CAST(REPLACE(p.precio_canon, '$', '') AS NUMERIC) >= $${countParamCount}`;
+      countParams.push(Number(precioMin));
+      countParamCount++;
+    }
+    if (precioMax) {
+      countQuery += ` AND CAST(REPLACE(p.precio_canon, '$', '') AS NUMERIC) <= $${countParamCount}`;
+      countParams.push(Number(precioMax));
+      countParamCount++;
+    }
+    if (habitaciones) {
+      countQuery += ` AND p.habitaciones >= $${countParamCount}`;
+      countParams.push(Number(habitaciones));
+      countParamCount++;
+    }
+    if (banos) {
+      countQuery += ` AND p.banos >= $${countParamCount}`;
+      countParams.push(Number(banos));
+      countParamCount++;
+    }
+    if (areaMin) {
+      countQuery += ` AND p.area_m2 >= $${countParamCount}`;
+      countParams.push(Number(areaMin));
+      countParamCount++;
+    }
+    if (areaMax) {
+      countQuery += ` AND p.area_m2 <= $${countParamCount}`;
+      countParams.push(Number(areaMax));
+      countParamCount++;
+    }
+    if (direccion) {
+      countQuery += ` AND LOWER(p.direccion) LIKE LOWER($${countParamCount})`;
+      countParams.push(`%${direccion}%`);
       countParamCount++;
     }
 
