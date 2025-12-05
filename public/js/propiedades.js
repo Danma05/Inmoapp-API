@@ -41,36 +41,46 @@ export async function cargarPropiedades(filtros = {}) {
 // =========================
 const FAVORITOS_BASE = '/api/favoritos';
 
+// Enviar usuarioId en header X-Usuario-Id para mayor consistencia
 export async function addFavorite(usuarioId, propiedadId) {
   const resp = await fetch(FAVORITOS_BASE, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ usuarioId, propiedadId })
+    headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(usuarioId) },
+    body: JSON.stringify({ propiedadId })
   });
+  const data = await resp.json().catch(() => ({}));
   if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error || 'Error agregando favorito');
+    throw new Error(data.error || 'Error agregando favorito');
   }
-  return await resp.json();
+  // API devuelve { ok: true, favorito: {...} } o { ok: true, message: 'Ya estaba...' }
+  return data;
 }
 
 export async function removeFavorite(usuarioId, favoritoId) {
-  const resp = await fetch(`${FAVORITOS_BASE}/${favoritoId}?usuarioId=${usuarioId}`, {
-    method: 'DELETE'
+  const resp = await fetch(`${FAVORITOS_BASE}/${favoritoId}`, {
+    method: 'DELETE',
+    headers: { 'x-usuario-id': String(usuarioId) }
   });
+  const data = await resp.json().catch(() => ({}));
   if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error || 'Error eliminando favorito');
+    throw new Error(data.error || 'Error eliminando favorito');
   }
-  return await resp.json();
+  return data;
 }
 
 export async function loadFavorites() {
   const user = obtenerUsuario();
   if (!user) return { favoritos: [] };
-  const resp = await fetch(`${FAVORITOS_BASE}?usuarioId=${user.id}`);
-  if (!resp.ok) throw new Error('Error cargando favoritos');
-  return await resp.json();
+  const resp = await fetch(`${FAVORITOS_BASE}?usuarioId=${user.id}`, {
+    headers: { 'x-usuario-id': String(user.id) }
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || 'Error cargando favoritos');
+  }
+  const data = await resp.json();
+  // API now returns { ok: true, favoritos: [...] }
+  return data;
 }
 
 // Inicializar listeners delegados para botones de favorito
@@ -99,8 +109,10 @@ export function initFavButtons() {
         btn.style.color = '';
       } else {
         const res = await addFavorite(user.id, Number(propId));
-        // backend devuelve la fila insertada
-        const newId = res.id || res.favoritoId || res.favorito_id || res.id_favorito || (res.id || null);
+        // backend devuelve { ok: true, favorito: {...} } o { ok: true, message: 'Ya...' }
+        const favoritoObj = res.favorito || res.favorito || res.favorito || null;
+        // Puede venir la fila entera en res.favorito o res.favoritoId; buscar id en varias formas
+        const newId = favoritoObj?.id || favoritoObj?.favorito_id || res.favorito?.id || res.favorito?.favorito_id || res.favoritoId || res.id || null;
         if (newId) btn.setAttribute('data-favorito-id', newId);
         btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
         btn.style.color = 'var(--brand-red)';
