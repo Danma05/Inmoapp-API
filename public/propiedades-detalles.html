@@ -12,24 +12,56 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* Estilos Base */
         .prop-detail-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 1px solid #E5E7EB; }
         .prop-detail-actions { display: flex; gap: 10px; }
-        .btn-action-detail { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        .btn-postular { background-color: var(--brand-red); color: white; border: none; }
+        .btn-action-detail { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; border: none; font-size: 0.95rem; }
+        
+        /* Botones Colores */
+        .btn-postular { background-color: var(--brand-red); color: white; }
         .btn-postular:hover { background-color: #B91C1C; }
         .btn-secondary-action { background: white; color: #374151; border: 1px solid #D1D5DB; }
         .btn-secondary-action:hover { background: #F3F4F6; }
+        
+        /* Grilla y Diseño */
         .detail-info-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
         .detail-specs-list { display: flex; gap: 30px; margin-bottom: 30px; }
-        .detail-specs-list span { font-size: 1.1rem; color: #1F2937; }
-        .detail-specs-list i { color: var(--brand-red); margin-right: 5px; }
-        .agent-contact-box { background: #F3F4F6; padding: 20px; border-radius: 8px; text-align: center; }
-        .agent-contact-box img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; }
-        .gallery-image { width: 100%; height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 30px; background-color: #eee; }
+        .detail-specs-list span { font-size: 1.1rem; color: #1F2937; display: flex; align-items: center; gap: 8px;}
+        .detail-specs-list i { color: var(--brand-red); }
+        .agent-contact-box { background: #F3F4F6; padding: 25px; border-radius: 12px; text-align: center; }
+        .agent-contact-box img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .gallery-image { width: 100%; height: 450px; object-fit: cover; border-radius: 12px; margin-bottom: 30px; background-color: #eee; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         
+        /* --- ESTILOS DE LOS MODALES --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-box {
+            background: white; width: 90%; max-width: 500px;
+            padding: 30px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            position: relative; transform: translateY(20px); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-box { transform: translateY(0); }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { margin: 0; font-size: 1.4rem; color: #111827; }
+        .btn-close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6B7280; }
+        
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; color: #374151; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 8px; font-family: inherit; }
+        .form-actions { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
+
         @media (max-width: 768px) {
             .prop-detail-header { flex-direction: column; gap: 20px; align-items: flex-start; }
             .detail-info-grid { grid-template-columns: 1fr; }
+            .prop-detail-actions { width: 100%; flex-wrap: wrap; }
+            .btn-action-detail { flex: 1; text-align: center; }
         }
     </style>
 </head>
@@ -54,27 +86,36 @@
 
     <div class="container dashboard-body" style="padding-top: 30px;">
         
-        <div id="loading-msg" style="text-align: center; padding: 50px;">
-            <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
-            <p>Cargando información...</p>
+        <div id="loading-msg" style="text-align: center; padding: 80px;">
+            <i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color: var(--brand-red);"></i>
+            <p style="margin-top: 20px; color: #666;">Cargando información de la propiedad...</p>
         </div>
 
         <div id="propiedad-content" style="display: none;">
             
             <div class="prop-detail-header">
                 <div>
-                    <a href="/explorar-menu" class="btn-text-gray" style="margin-bottom: 10px; display: inline-block;"><i class="fa-solid fa-arrow-left"></i> Volver al listado</a>
-                    <h1 class="dash-title" style="margin-bottom: 5px;" id="prop-titulo">Cargando título...</h1>
-                    <p class="location-list" style="font-size: 1.1rem;"><i class="fa-solid fa-location-dot"></i> <span id="prop-ubicacion">Ubicación</span></p>
-                    <div class="price-red" style="font-size: 1.5rem; margin-top: 10px;" id="prop-precio">$0</div>
+                    <a href="/explorar-menu" class="btn-text-gray" style="margin-bottom: 10px; display: inline-block; text-decoration: none; color: #6B7280;">
+                        <i class="fa-solid fa-arrow-left"></i> Volver al listado
+                    </a>
+                    <h1 class="dash-title" style="margin-bottom: 5px;" id="prop-titulo">Cargando...</h1>
+                    <p class="location-list" style="font-size: 1.1rem; color: #4B5563;">
+                        <i class="fa-solid fa-location-dot"></i> <span id="prop-ubicacion">...</span>
+                    </p>
+                    <div class="price-red" style="font-size: 1.8rem; margin-top: 10px; font-weight: bold;" id="prop-precio">$0</div>
                 </div>
+                
                 <div class="prop-detail-actions">
-                    <button class="btn-action-detail btn-secondary-action" id="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                    <button class="btn-action-detail btn-postular"><i class="fa-solid fa-file-signature"></i> Postular Ahora</button>
+                    <button id="btn-agendar" class="btn-action-detail btn-secondary-action">
+                        <i class="fa-regular fa-calendar-check"></i> Agendar Visita
+                    </button>
+                    <button id="btn-postular" class="btn-action-detail btn-postular">
+                        <i class="fa-solid fa-file-signature"></i> Postular Ahora
+                    </button>
                 </div>
             </div>
 
-            <img id="prop-imagen" src="" alt="Imagen Propiedad" class="gallery-image" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200'">
+            <img id="prop-imagen" src="" alt="Imagen Propiedad" class="gallery-image" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200'">
 
             <div class="detail-info-grid">
                 
@@ -86,30 +127,86 @@
                         <span><i class="fa-solid fa-tag"></i> <span id="prop-operacion">Tipo</span></span>
                     </div>
 
-                    <h3>Descripción</h3>
-                    <p id="prop-descripcion" style="white-space: pre-line;">Sin descripción.</p>
+                    <h3 style="color: #111827; margin-bottom: 15px;">Descripción</h3>
+                    <p id="prop-descripcion" style="white-space: pre-line; line-height: 1.6; color: #4B5563;">
+                        Sin descripción disponible.
+                    </p>
 
-                    <h3 style="margin-top: 30px;">Características</h3>
-                    <ul style="color: #4B5563; margin-top: 10px;">
-                        <li>Tipo de Inmueble: <span id="prop-tipo">Apartamento</span></li>
-                        <li>Excelente ubicación y conectividad.</li>
+                    <h3 style="margin-top: 40px; color: #111827;">Características</h3>
+                    <ul style="color: #4B5563; margin-top: 15px; padding-left: 20px;">
+                        <li>Tipo de Inmueble: <strong id="prop-tipo">...</strong></li>
+                        <li>Excelente ubicación y zona segura.</li>
+                        <li>Gestión directa a través de InmoApp.</li>
                     </ul>
                 </div>
 
                 <div class="detail-sidebar">
                     <div class="agent-contact-box">
-                        <img src="https://ui-avatars.com/api/?name=Agente&background=random" alt="Agente" id="agent-img">
-                        <h4 id="agent-name">Propietario</h4>
-                        <p style="color: #6B7280; margin-bottom: 20px;">Contacto verificado InmoApp</p>
+                        <img src="" alt="Agente" id="agent-img">
+                        <h4 id="agent-name" style="color: #111827;">Propietario</h4>
+                        <p style="color: #6B7280; margin-bottom: 20px; font-size: 0.9rem;">Verificado por InmoApp</p>
                         
-                        <button class="btn btn-full btn-secondary-action" id="btn-email" style="margin-bottom: 10px;"><i class="fa-regular fa-envelope"></i> Enviar Correo</button>
+                        <button id="btn-whatsapp" class="btn-action-detail" style="width: 100%; margin-bottom: 10px; background: #25D366; color: white; border: none;">
+                            <i class="fa-brands fa-whatsapp"></i> Contactar WhatsApp
+                        </button>
+                        <button id="btn-email" class="btn-action-detail btn-secondary-action" style="width: 100%;">
+                            <i class="fa-regular fa-envelope"></i> Enviar Correo
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div> 
-    
+
+    <div id="modal-visita" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Agendar Visita</h3>
+                <button class="btn-close-modal" onclick="cerrarModal('modal-visita')">&times;</button>
+            </div>
+            <form id="form-visita">
+                <div class="form-group">
+                    <label>Fecha deseada</label>
+                    <input type="date" id="visita-fecha" required>
+                </div>
+                <div class="form-group">
+                    <label>Hora preferida</label>
+                    <input type="time" id="visita-hora" required>
+                </div>
+                <div class="form-group">
+                    <label>Notas adicionales (opcional)</label>
+                    <textarea id="visita-notas" rows="3" placeholder="Ej: Me gustaría ver también las zonas comunes..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-action-detail btn-secondary-action" onclick="cerrarModal('modal-visita')">Cancelar</button>
+                    <button type="submit" class="btn-action-detail btn-postular">Confirmar Visita</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-postulacion" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Postular al Inmueble</h3>
+                <button class="btn-close-modal" onclick="cerrarModal('modal-postulacion')">&times;</button>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">
+                Al postularte, el propietario recibirá tu perfil y podrá contactarte para iniciar el proceso de arrendamiento/compra.
+            </p>
+            <form id="form-postulacion">
+                <div class="form-group">
+                    <label>Mensaje para el propietario</label>
+                    <textarea id="postulacion-mensaje" rows="4" placeholder="Hola, estoy muy interesado en este inmueble porque..." required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-action-detail btn-secondary-action" onclick="cerrarModal('modal-postulacion')">Cancelar</button>
+                    <button type="submit" class="btn-action-detail btn-postular">Enviar Postulación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer class="dashboard-footer">
         <div class="container">
             <div class="footer-bottom-dark">
@@ -119,80 +216,173 @@
     </footer>   
 
     <script type="module" src="/js/app.js"></script>
-    
     <script type="module">
-        document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Obtener ID de la URL
-            const params = new URLSearchParams(window.location.search);
-            const propiedadId = params.get('id');
+        import { obtenerUsuario } from '/js/propiedades.js'; // Asegúrate que esta función exista o usa localStorage directo
 
-            if (!propiedadId) {
-                alert("Propiedad no especificada.");
+        let propiedadActualId = null;
+        let usuarioActual = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Verificar Usuario
+            const userStr = localStorage.getItem('inmoapp_user');
+            if (!userStr) {
+                alert("Debes iniciar sesión para ver detalles.");
+                window.location.href = '/';
+                return;
+            }
+            usuarioActual = JSON.parse(userStr);
+
+            // 2. Obtener ID URL
+            const params = new URLSearchParams(window.location.search);
+            propiedadActualId = params.get('id');
+
+            if (!propiedadActualId) {
                 window.location.href = '/explorar-menu';
                 return;
             }
 
             try {
-                // 2. Pedir datos al servidor
-                const response = await fetch(`/propiedades/${propiedadId}`);
-                if (!response.ok) throw new Error('Propiedad no encontrada');
-                
+                // 3. Cargar Datos
+                const response = await fetch(`/propiedades/${propiedadActualId}`);
+                if (!response.ok) throw new Error('Error al cargar');
                 const prop = await response.json();
 
-                // 3. Rellenar HTML con datos reales
-                document.getElementById('loading-msg').style.display = 'none';
-                document.getElementById('propiedad-content').style.display = 'block';
-
-                // Textos básicos
-                setText('prop-titulo', `${prop.tipo_inmueble} en ${prop.direccion}`);
-                setText('prop-ubicacion', prop.direccion); // O ciudad si la agregaste a la BD
-                setText('prop-precio', prop.precio_canon);
-                setText('prop-habs', prop.habitaciones);
-                setText('prop-banos', prop.banos);
-                setText('prop-area', prop.area_m2);
-                setText('prop-operacion', prop.operacion);
-                setText('prop-descripcion', prop.descripcion || "El propietario no ha agregado una descripción detallada.");
-                setText('prop-tipo', prop.tipo_inmueble);
-
-                // Imagen
-                const img = document.getElementById('prop-imagen');
-                if (prop.imagen_url) img.src = prop.imagen_url;
-
-                // Datos Propietario/Agente
-                setText('agent-name', prop.propietario_nombre || 'Usuario InmoApp');
-                const agentImg = document.getElementById('agent-img');
-                if(prop.propietario_nombre) {
-                    agentImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(prop.propietario_nombre)}&background=random`;
-                }
-
-                // Configurar Botones Contacto
-                const btnWs = document.getElementById('btn-whatsapp');
-                if (prop.propietario_telefono) {
-                    btnWs.onclick = () => {
-                        const msg = `Hola, estoy interesado en tu propiedad: ${prop.direccion}`;
-                        window.open(`https://wa.me/57${prop.propietario_telefono}?text=${encodeURIComponent(msg)}`, '_blank');
-                    };
-                } else {
-                    btnWs.style.display = 'none';
-                }
-
-                const btnEmail = document.getElementById('btn-email');
-                if (prop.propietario_correo) {
-                    btnEmail.onclick = () => {
-                        window.location.href = `mailto:${prop.propietario_correo}?subject=Interés en ${prop.direccion}`;
-                    };
-                }
+                renderizarPagina(prop);
+                configurarModales();
 
             } catch (error) {
                 console.error(error);
-                document.getElementById('loading-msg').innerHTML = `<p style="color:red">Error cargando propiedad.</p>`;
+                document.getElementById('loading-msg').innerHTML = `<p style="color:red">No se pudo cargar la propiedad.</p>`;
             }
         });
+
+        function renderizarPagina(prop) {
+            document.getElementById('loading-msg').style.display = 'none';
+            document.getElementById('propiedad-content').style.display = 'block';
+
+            // Textos
+            setText('prop-titulo', `${prop.tipo_inmueble} en ${prop.direccion}`);
+            setText('prop-ubicacion', prop.ciudad || prop.direccion);
+            setText('prop-precio', prop.precio_canon);
+            setText('prop-habs', prop.habitaciones);
+            setText('prop-banos', prop.banos);
+            setText('prop-area', prop.area_m2);
+            setText('prop-operacion', prop.operacion);
+            setText('prop-descripcion', prop.descripcion || "Sin descripción detallada.");
+            setText('prop-tipo', prop.tipo_inmueble);
+
+            // Imagen
+            const img = document.getElementById('prop-imagen');
+            if (prop.imagen_url) img.src = prop.imagen_url;
+
+            // Agente
+            setText('agent-name', prop.propietario_nombre || 'Usuario InmoApp');
+            const agentImg = document.getElementById('agent-img');
+            const nombre = prop.propietario_nombre || 'Agente';
+            agentImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=random&size=128`;
+
+            // Contacto Externo
+            const btnWs = document.getElementById('btn-whatsapp');
+            if (prop.propietario_telefono) {
+                btnWs.onclick = () => window.open(`https://wa.me/57${prop.propietario_telefono}?text=Hola, info sobre: ${prop.direccion}`, '_blank');
+            } else {
+                btnWs.style.display = 'none';
+            }
+            
+            const btnEmail = document.getElementById('btn-email');
+            if (prop.propietario_correo) {
+                btnEmail.onclick = () => window.location.href = `mailto:${prop.propietario_correo}?subject=Interés en ${prop.direccion}`;
+            }
+        }
+
+        // --- LÓGICA DE MODALES ---
+
+        function configurarModales() {
+            // Abrir Modales
+            document.getElementById('btn-agendar').addEventListener('click', () => abrirModal('modal-visita'));
+            document.getElementById('btn-postular').addEventListener('click', () => abrirModal('modal-postulacion'));
+
+            // Envío Formulario Visita
+            document.getElementById('form-visita').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fecha = document.getElementById('visita-fecha').value;
+                const hora = document.getElementById('visita-hora').value;
+                const notas = document.getElementById('visita-notas').value;
+
+                if (!fecha || !hora) return alert("Completa fecha y hora");
+
+                try {
+                    const res = await fetch('/visitas', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            usuarioId: usuarioActual.id,
+                            propiedadId: propiedadActualId,
+                            fechaVisita: fecha,
+                            horaVisita: hora,
+                            notas: notas
+                        })
+                    });
+
+                    if (res.ok) {
+                        alert("✅ ¡Visita agendada con éxito! El propietario será notificado.");
+                        cerrarModal('modal-visita');
+                    } else {
+                        alert("❌ Error al agendar la visita.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error de conexión");
+                }
+            });
+
+            // Envío Formulario Postulación
+            document.getElementById('form-postulacion').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const mensaje = document.getElementById('postulacion-mensaje').value;
+
+                try {
+                    const res = await fetch('/postulaciones', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            usuarioId: usuarioActual.id,
+                            propiedadId: propiedadActualId,
+                            mensaje: mensaje
+                        })
+                    });
+                    
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        alert("✅ ¡Postulación enviada! Puedes ver el estado en tu menú.");
+                        cerrarModal('modal-postulacion');
+                        document.getElementById('btn-postular').textContent = "Postulado ✅";
+                        document.getElementById('btn-postular').disabled = true;
+                        document.getElementById('btn-postular').style.background = "#059669";
+                    } else {
+                        alert("⚠️ " + (data.error || "Error al postular"));
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error de conexión");
+                }
+            });
+        }
 
         function setText(id, text) {
             const el = document.getElementById(id);
             if(el) el.textContent = text;
         }
+
+        // Hacer funciones globales para que funcionen en el onclick del HTML
+        window.abrirModal = (id) => {
+            document.getElementById(id).classList.add('active');
+        };
+
+        window.cerrarModal = (id) => {
+            document.getElementById(id).classList.remove('active');
+        };
     </script>
 </body>
 </html>
