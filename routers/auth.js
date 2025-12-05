@@ -141,18 +141,5 @@ router.post("/usuarios", async (req, res) => {
   }
 });
 
-// =======================================
-// GET USUARIOS (Listar)
-// =======================================
-router.get("/usuarios", async (req, res) => {
-  try {
-    const result = await dbQuery("SELECT * FROM usuarios ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (e) {
-    console.error("❌ Error GET /usuarios:", e);
-    res.status(500).json({ error: "Error consultando usuarios" });
-  }
-});
-
 export default router;
 

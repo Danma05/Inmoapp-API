@@ -5,6 +5,19 @@ import { dbQuery } from "../dbQuery.js";
 const router = express.Router();
 
 // =======================================
+// GET USUARIOS (Listar todos)
+// =======================================
+router.get("/", async (req, res) => {
+  try {
+    const result = await dbQuery("SELECT id, nombre_completo, correo, telefono, rol, activo, creado_en FROM public.usuarios ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (e) {
+    console.error("❌ Error GET /usuarios:", e);
+    res.status(500).json({ error: "Error consultando usuarios" });
+  }
+});
+
+// =======================================
 // GET Perfil del usuario
 // =======================================
 router.get("/perfil", async (req, res) => {
