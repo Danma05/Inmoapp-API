@@ -15,10 +15,22 @@ router.get("/", async (req, res) => {
       return res.status(400).json({ error: "usuarioId es obligatorio" });
     }
 
+    // CORRECCIÓN: Seleccionamos campos específicos para evitar que los IDs se sobrescriban
     let query = `
       SELECT 
-        v.*,
-        p.*,
+        v.id as visita_id,
+        v.fecha_visita,
+        v.hora_visita,
+        v.estado,
+        v.notas,
+        v.creado_en,
+        p.id as propiedad_id,
+        p.direccion,
+        p.ciudad,
+        p.precio_canon,
+        p.imagen_url,
+        p.thumbnail_url,
+        p.operacion,
         u.nombre_completo as propietario_nombre,
         u.correo as propietario_correo,
         u.telefono as propietario_telefono
@@ -53,7 +65,7 @@ router.post("/", async (req, res) => {
     const { usuarioId, propiedadId, fechaVisita, horaVisita, notas } = req.body;
 
     if (!usuarioId || !propiedadId || !fechaVisita || !horaVisita) {
-      return res.status(400).json({ error: "usuarioId, propiedadId, fechaVisita y horaVisita son obligatorios" });
+      return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
 
     const query = `
@@ -83,30 +95,18 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { estado, notas } = req.body;
+    const { estado } = req.body;
 
-    if (!estado || !["PENDIENTE", "CONFIRMADA", "CANCELADA", "COMPLETADA"].includes(estado)) {
-      return res.status(400).json({ error: "estado válido es obligatorio" });
-    }
-
-    const updateFields = [`estado = $1`, `actualizado_en = NOW()`];
-    const params = [estado];
-
-    if (notas !== undefined) {
-      updateFields.push(`notas = $${params.length + 1}`);
-      params.push(notas);
-    }
-
-    params.push(id);
+    if (!estado) return res.status(400).json({ error: "Estado obligatorio" });
 
     const query = `
       UPDATE public.visitas
-      SET ${updateFields.join(", ")}
-      WHERE id = $${params.length}
+      SET estado = $1, actualizado_en = NOW()
+      WHERE id = $2
       RETURNING *
     `;
 
-    const result = await dbQuery(query, params);
+    const result = await dbQuery(query, [estado, id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Visita no encontrada" });
@@ -120,4 +120,3 @@ router.put("/:id", async (req, res) => {
 });
 
 export default router;
-
