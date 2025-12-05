@@ -133,6 +133,32 @@ router.get("/", async (req, res) => {
 });
 
 // =======================================
+// GET MIS PROPIEDADES (Para propietario)
+// IMPORTANTE: Debe ir ANTES de /:id para evitar conflictos
+// =======================================
+router.get("/mis-propiedades", async (req, res) => {
+  try {
+    const { usuarioId } = req.query;
+
+    if (!usuarioId) {
+      return res.status(400).json({ error: "usuarioId es obligatorio" });
+    }
+
+    const query = `
+      SELECT * FROM public.propiedades
+      WHERE propietario_id = $1
+      ORDER BY creado_en DESC
+    `;
+
+    const result = await dbQuery(query, [usuarioId]);
+    res.json(result.rows);
+  } catch (e) {
+    console.error("❌ Error GET /propiedades/mis-propiedades:", e);
+    res.status(500).json({ error: "Error consultando propiedades" });
+  }
+});
+
+// =======================================
 // GET PROPIEDAD POR ID
 // =======================================
 router.get("/:id", async (req, res) => {
@@ -160,31 +186,6 @@ router.get("/:id", async (req, res) => {
   } catch (e) {
     console.error("❌ Error GET /propiedades/:id:", e);
     res.status(500).json({ error: "Error consultando propiedad" });
-  }
-});
-
-// =======================================
-// GET MIS PROPIEDADES (Para propietario)
-// =======================================
-router.get("/mis-propiedades", async (req, res) => {
-  try {
-    const { usuarioId } = req.query;
-
-    if (!usuarioId) {
-      return res.status(400).json({ error: "usuarioId es obligatorio" });
-    }
-
-    const query = `
-      SELECT * FROM public.propiedades
-      WHERE propietario_id = $1
-      ORDER BY creado_en DESC
-    `;
-
-    const result = await dbQuery(query, [usuarioId]);
-    res.json(result.rows);
-  } catch (e) {
-    console.error("❌ Error GET /propiedades/mis-propiedades:", e);
-    res.status(500).json({ error: "Error consultando propiedades" });
   }
 });
 
