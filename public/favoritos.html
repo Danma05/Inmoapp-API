@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/dashboard.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -22,19 +21,12 @@
             </a>
             <nav class="top-nav">
                 <a href="/explorar-menu">Explorar</a>
-                <a href="/favoritos" class="active">Favoritos</a> <a href="#">Visitas</a>
-                <a href="#">Postulaciones</a>
-                <a href="#">Mensajes</a>
+                <a href="/favoritos" class="active">Favoritos</a>
+                <a href="/visitas">Visitas</a>
+                <a href="/postulaciones">Postulaciones</a>
             </nav>
             <div class="user-controls">
-                <button class="icon-action"><i class="fa-solid fa-heart"></i></button>
-                <button class="icon-action notification">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge">2</span>
-                </button>
-                <div class="icon-action profile">
-                    <i class="fa-regular fa-user"></i>
-                </div>
+                <div class="icon-action profile"><i class="fa-regular fa-user"></i></div>
             </div>
         </div>
     </header>
@@ -43,236 +35,112 @@
         
         <section class="section-header-row" style="align-items: flex-start; flex-direction: column; gap: 5px;">
             <h2 class="dash-title">Mis Favoritos</h2>
-            <p style="color: #6B7280; font-size: 0.95rem;">Tienes 6 propiedades guardadas. Selecciona hasta 4 para comparar.</p>
+            <p style="color: #6B7280; font-size: 0.95rem;">Aquí están las propiedades que has guardado.</p>
         </section>
 
+        <div id="loading-msg" style="text-align: center; padding: 50px;">
+            <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+            <p>Cargando favoritos...</p>
+        </div>
+
         <section class="dashboard-section">
-            <div class="grid-3-cols" id="favorites-grid">
-                
-                <article class="prop-card-list" style="flex-direction: column; height: auto;">
-                    <div class="card-img-list" style="width: 100%; height: 220px;">
-                        <input type="checkbox" class="select-check" data-id="1">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400" alt="Propiedad">
-                        <button class="fav-btn" style="color: var(--brand-red);"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list" style="padding: 15px;">
-                        <div class="price-red">$450.000.000</div>
-                        <h3>Apartamento Moderno</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Providencia, Santiago</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 3</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 120 m²</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="prop-card-list" style="flex-direction: column; height: auto;">
-                    <div class="card-img-list" style="width: 100%; height: 220px;">
-                        <input type="checkbox" class="select-check" data-id="2">
-                        <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=400" alt="Propiedad">
-                        <button class="fav-btn" style="color: var(--brand-red);"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list" style="padding: 15px;">
-                        <div class="price-red">$780.000.000</div>
-                        <h3>Apartamento de Lujo</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Las Condes, Santiago</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 4</span>
-                            <span><i class="fa-solid fa-bath"></i> 3</span>
-                            <span><i class="fa-solid fa-maximize"></i> 180 m²</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="prop-card-list" style="flex-direction: column; height: auto;">
-                    <div class="card-img-list" style="width: 100%; height: 220px;">
-                        <input type="checkbox" class="select-check" data-id="3">
-                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400" alt="Propiedad">
-                        <button class="fav-btn" style="color: var(--brand-red);"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list" style="padding: 15px;">
-                        <div class="price-red">$320.000.000</div>
-                        <h3>Casa Acogedora</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Ñuñoa, Santiago</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 2</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 95 m²</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="prop-card-list" style="flex-direction: column; height: auto;">
-                    <div class="card-img-list" style="width: 100%; height: 220px;">
-                        <input type="checkbox" class="select-check" data-id="4">
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400" alt="Propiedad">
-                        <button class="fav-btn" style="color: var(--brand-red);"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list" style="padding: 15px;">
-                        <div class="price-red">$890.000.000</div>
-                        <h3>Penthouse de Lujo</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Centro, Santiago</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 3</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 120 m²</span>
-                        </div>
-                    </div>
-                </article>
-
-                 <article class="prop-card-list" style="flex-direction: column; height: auto;">
-                    <div class="card-img-list" style="width: 100%; height: 220px;">
-                        <input type="checkbox" class="select-check" data-id="5">
-                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800" alt="Propiedad">
-                        <button class="fav-btn" style="color: var(--brand-red);"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list" style="padding: 15px;">
-                        <div class="price-red">$650.000.000</div>
-                        <h3>Moderno Edificio</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Las Condes, Santiago</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 2</span>
-                            <span><i class="fa-solid fa-bath"></i> 2</span>
-                            <span><i class="fa-solid fa-maximize"></i> 95 m²</span>
-                        </div>
-                    </div>
-                </article>
-
-                 <article class="prop-card-list" style="flex-direction: column; height: auto;">
-                    <div class="card-img-list" style="width: 100%; height: 220px;">
-                        <input type="checkbox" class="select-check" data-id="6">
-                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800" alt="Propiedad">
-                        <button class="fav-btn" style="color: var(--brand-red);"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="card-info-list" style="padding: 15px;">
-                        <div class="price-red">$550.000.000</div>
-                        <h3>Suite con Vista</h3>
-                        <p class="location-list"><i class="fa-solid fa-location-dot"></i> Vitacura, Santiago</p>
-                        <div class="specs-list">
-                            <span><i class="fa-solid fa-bed"></i> 3</span>
-                            <span><i class="fa-solid fa-bath"></i> 3</span>
-                            <span><i class="fa-solid fa-maximize"></i> 140 m²</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
+            <div class="grid-3-cols" id="favorites-grid"></div>
         </section>
     </div> 
     
     <footer class="dashboard-footer">
         <div class="container">
-            <div class="footer-grid-dark">
-                <div class="footer-col">
-                    <h3 class="footer-heading">Contacto</h3>
-                    <ul class="contact-list">
-                        <li><i class="fa-solid fa-location-dot icon-red"></i> <span>Guadalajara de Buga</span></li>
-                        <li><i class="fa-solid fa-phone icon-red"></i> <span>+57 322 669 8741</span></li>
-                        <li><i class="fa-regular fa-envelope icon-red"></i> <span>info@inmoapp.com</span></li>
-                    </ul>
-                </div>
-                <div class="footer-col center-col">
-                    <h3 class="footer-heading">Síguenos</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col right-col">
-                    <h3 class="footer-heading">Enlaces</h3>
-                    <ul class="links-list">
-                        <li><a href="#">Política de Privacidad</a></li>
-                        <li><a href="#">Términos y Condiciones</a></li>
-                        <li><a href="#">Ayuda / Soporte</a></li>
-                    </ul>
-                </div>
-            </div>
             <div class="footer-bottom-dark">
                 <p>&copy; 2025 InmoApp. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <div id="compare-bar" class="compare-bar">
-        <span class="compare-info"><span id="selected-count">0</span> seleccionadas (máx 4)</span>
-        <button id="btn-compare-action" class="btn-compare">Comparar Propiedades</button>
-    </div>
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userStr = localStorage.getItem('inmoapp_user');
+            if (!userStr) {
+                window.location.href = '/';
+                return;
+            }
+            const usuario = JSON.parse(userStr);
+            const grid = document.getElementById('favorites-grid');
+            const loading = document.getElementById('loading-msg');
 
-    <div id="compare-modal" class="modal-overlay hidden">
-        <div class="modal-content modal-compare">
-            <button id="close-compare" class="close-btn">&times;</button>
-            
-            <div class="compare-header-title">
-                <h2>Comparación de Propiedades</h2>
-            </div>
+            try {
+                // 1. Cargar Favoritos
+                const res = await fetch(`/api/favoritos?usuarioId=${usuario.id}`);
+                const data = await res.json();
+                
+                loading.style.display = 'none';
 
-            <div class="compare-table-container">
-                <div class="compare-labels-col">
-                    <div class="row-header empty-header">Característica</div>
-                    <div class="row-item">Ubicación</div>
-                    <div class="row-item">Tipo</div>
-                    <div class="row-item">Habitaciones</div>
-                    <div class="row-item">Baños</div>
-                    <div class="row-item">Área</div>
-                    <div class="row-item">Año construcción</div>
-                    <div class="row-item">Estacionamientos</div>
-                    <div class="row-item row-amenities">Amenidades</div>
-                </div>
+                if (!data.favoritos || data.favoritos.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 50px; background: white; border-radius: 12px;">
+                            <i class="fa-regular fa-heart" style="font-size: 3rem; color: #d1d5db; margin-bottom: 15px;"></i>
+                            <h3>Aún no tienes favoritos</h3>
+                            <p style="color:#666;">Guarda las propiedades que te gusten mientras exploras.</p>
+                            <a href="/explorar-menu" class="btn-filter-action" style="display:inline-block; margin-top:15px; text-decoration:none;">Ir a Explorar</a>
+                        </div>`;
+                    return;
+                }
 
-                <div class="compare-prop-col">
-                    <div class="row-header">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400" alt="Propiedad">
-                        <div class="price-tag">$450.000.000</div>
-                        <h3>Apartamento Moderno</h3>
-                    </div>
-                    <div class="row-item"><i class="fa-solid fa-location-dot"></i> Providencia, Santiago</div>
-                    <div class="row-item"><span class="badge-pill">Apartamento</span></div>
-                    <div class="row-item"><i class="fa-solid fa-bed"></i> 3</div>
-                    <div class="row-item"><i class="fa-solid fa-bath"></i> 2</div>
-                    <div class="row-item"><i class="fa-solid fa-maximize"></i> 120 m²</div>
-                    <div class="row-item">2020</div>
-                    <div class="row-item">2</div>
-                    <div class="row-item row-amenities">
-                        <ul class="amenity-list">
-                            <li><i class="fa-solid fa-check"></i> Gimnasio</li>
-                            <li><i class="fa-solid fa-check"></i> Piscina</li>
-                            <li><i class="fa-solid fa-check"></i> Seguridad 24/7</li>
-                        </ul>
-                    </div>
-                </div>
+                // 2. Renderizar
+                grid.innerHTML = data.favoritos.map(item => {
+                    const img = item.thumbnail_url || item.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400';
+                    
+                    return `
+                    <article class="prop-card-list" style="flex-direction: column; height: auto;">
+                        <div class="card-img-list" style="width: 100%; height: 220px;">
+                            <img src="${img}" alt="${item.direccion}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400'">
+                            <button class="fav-btn" onclick="eliminarFavorito(${item.propiedad_id})" title="Quitar de favoritos" style="color: var(--brand-red); background: white;">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="card-info-list" style="padding: 15px;">
+                            <div class="price-red">${item.precio_canon}</div>
+                            <h3>${item.direccion}</h3>
+                            <p class="location-list" style="color: #666; font-size: 0.9rem;">${item.propietario_nombre || 'Agente'}</p>
+                            <div class="specs-list">
+                                <span><i class="fa-solid fa-bed"></i> ${item.habitaciones}</span>
+                                <span><i class="fa-solid fa-bath"></i> ${item.banos}</span>
+                                <span><i class="fa-solid fa-maximize"></i> ${item.area_m2} m²</span>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <a href="/propiedades-detalles?id=${item.propiedad_id}" style="display: block; text-align: center; background: #f3f4f6; color: #374151; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: 500;">
+                                    Ver Detalle
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    `;
+                }).join('');
 
-                <div class="compare-prop-col">
-                    <div class="row-header">
-                        <img src="https://images.unsplash.com/photo-1600596542815-22b84f501263?auto=format&fit=crop&w=400" alt="Propiedad">
-                        <div class="price-tag">$780.000.000</div>
-                        <h3>Apartamento de Lujo</h3>
-                    </div>
-                    <div class="row-item"><i class="fa-solid fa-location-dot"></i> Las Condes, Santiago</div>
-                    <div class="row-item"><span class="badge-pill">Penthouse</span></div>
-                    <div class="row-item"><i class="fa-solid fa-bed"></i> 4</div>
-                    <div class="row-item"><i class="fa-solid fa-bath"></i> 3</div>
-                    <div class="row-item"><i class="fa-solid fa-maximize"></i> 180 m²</div>
-                    <div class="row-item">2022</div>
-                    <div class="row-item">3</div>
-                    <div class="row-item row-amenities">
-                         <ul class="amenity-list">
-                            <li><i class="fa-solid fa-check"></i> Gimnasio</li>
-                            <li><i class="fa-solid fa-check"></i> Piscina</li>
-                            <li><i class="fa-solid fa-check"></i> Terraza</li>
-                            <li><i class="fa-solid fa-check"></i> Conserjería</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            } catch (error) {
+                console.error(error);
+                loading.innerHTML = '<p style="color:red">Error cargando favoritos.</p>';
+            }
 
-            <div class="compare-footer-action">
-                <button class="btn-compare-final">Cerrar</button>
-            </div>
-        </div>
-    </div>
+            // Función Global para eliminar
+            window.eliminarFavorito = async (propiedadId) => {
+                if(!confirm("¿Quitar de tus favoritos?")) return;
 
-    <script type="module" src="/js/app.js"></script>
+                try {
+                    const res = await fetch(`/api/favoritos/${propiedadId}?usuarioId=${usuario.id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (res.ok) {
+                        // Recargar página para actualizar lista
+                        window.location.reload();
+                    } else {
+                        alert("Error al eliminar");
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            };
+        });
+    </script>
 </body>
 </html>

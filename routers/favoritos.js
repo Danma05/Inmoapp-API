@@ -1,69 +1,46 @@
 // routers/favoritos.js - Gestión de favoritos
 import express from "express";
 import { dbQuery } from "../dbQuery.js";
-import { authenticate } from './authMiddleware.js';
 
 const router = express.Router();
-
-// Aplicar autenticación: si viene token válido, req.user estará disponible.
-router.use(authenticate);
 
 // =======================================
 // GET Favoritos del usuario
 // =======================================
 router.get("/", async (req, res) => {
   try {
-    // Preferir el usuario autenticado (req.user.id), sino fallback a query o header
-    const usuarioId = (req.user && req.user.id) || req.query?.usuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
+    const { usuarioId } = req.query;
 
-    if (!usuarioId) {
-      return res.status(401).json({ error: "Autenticación requerida: usuarioId no proporcionado" });
-    }
+    if (!usuarioId) return res.status(400).json({ error: "Falta usuarioId" });
 
+    // Consulta segura: Quitamos 'p.activa' para evitar errores si no existe la columna
     const query = `
       SELECT 
         f.id AS favorito_id,
-        f.creado_en AS favorito_creado_en,
+        f.creado_en,
         p.id AS propiedad_id,
         p.direccion,
         p.precio_canon,
         p.imagen_url,
+        p.thumbnail_url,
         p.habitaciones,
         p.banos,
         p.area_m2,
-        p.activa,
+        p.operacion,
         u.nombre_completo as propietario_nombre
       FROM public.favoritos f
       INNER JOIN public.propiedades p ON f.propiedad_id = p.id
       INNER JOIN public.usuarios u ON p.propietario_id = u.id
-      WHERE f.usuario_id = $1 AND p.activa = TRUE
+      WHERE f.usuario_id = $1
       ORDER BY f.creado_en DESC
     `;
 
-  const result = await dbQuery(query, [Number(usuarioId)]);
+    const result = await dbQuery(query, [usuarioId]);
+    res.json({ ok: true, favoritos: result.rows });
 
-    // Mapear resultado para devolver estructura clara: { favoritoId, propiedad: { ... } }
-    const mapped = result.rows.map(r => ({
-      favorito_id: r.favorito_id,
-      favoritoId: r.favorito_id,
-      creado_en: r.favorito_creado_en,
-      propiedad: {
-        id: r.propiedad_id,
-        direccion: r.direccion,
-        precio_canon: r.precio_canon,
-        imagen_url: r.imagen_url,
-        habitaciones: r.habitaciones,
-        banos: r.banos,
-        area_m2: r.area_m2,
-        activo: r.activa
-      },
-      propietario_nombre: r.propietario_nombre
-    }));
-
-    res.json({ ok: true, favoritos: mapped });
   } catch (e) {
-    console.error("❌ Error GET /favoritos:", e);
-    res.status(500).json({ error: "Error consultando favoritos" });
+    console.error("❌ Error GET /favoritos:", e.message);
+    res.status(500).json({ error: "Error al cargar favoritos" });
   }
 });
 
@@ -72,24 +49,20 @@ router.get("/", async (req, res) => {
 // =======================================
 router.post("/", async (req, res) => {
   try {
-    // Preferir usuario autenticado
-    const bodyUsuarioId = req.body?.usuarioId;
-    const usuarioId = (req.user && req.user.id) || bodyUsuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
-    const { propiedadId } = req.body;
+    const { usuarioId, propiedadId } = req.body;
 
     if (!usuarioId || !propiedadId) {
-      return res.status(401).json({ error: "Autenticación requerida: usuarioId y propiedadId son obligatorios" });
+      return res.status(400).json({ error: "Faltan datos" });
     }
 
-    // Verificar si ya existe (idempotente)
+    // Verificar si ya existe
     const existing = await dbQuery(
-      "SELECT * FROM public.favoritos WHERE usuario_id = $1 AND propiedad_id = $2",
-      [Number(usuarioId), Number(propiedadId)]
+      "SELECT id FROM public.favoritos WHERE usuario_id = $1 AND propiedad_id = $2",
+      [usuarioId, propiedadId]
     );
 
     if (existing.rows.length > 0) {
-      // devolver la fila existente en forma estandarizada
-      return res.status(200).json({ ok: true, favorito: existing.rows[0], message: 'Ya estaba en favoritos' });
+      return res.status(200).json({ ok: true, message: 'Ya estaba en favoritos' });
     }
 
     const query = `
@@ -98,47 +71,43 @@ router.post("/", async (req, res) => {
       RETURNING *
     `;
 
-    const result = await dbQuery(query, [Number(usuarioId), Number(propiedadId)]);
+    const result = await dbQuery(query, [usuarioId, propiedadId]);
     res.status(201).json({ ok: true, favorito: result.rows[0] });
+
   } catch (e) {
-    console.error("❌ Error POST /favoritos:", e);
-    res.status(500).json({ error: "Error agregando a favoritos" });
+    console.error("❌ Error POST /favoritos:", e.message);
+    res.status(500).json({ error: "Error al guardar favorito" });
   }
 });
 
 // =======================================
-// DELETE Quitar de favoritos
+// DELETE Quitar de favoritos (Por Propiedad ID y Usuario)
 // =======================================
-router.delete("/:id", async (req, res) => {
+router.delete("/:propiedadId", async (req, res) => {
   try {
-    const { id } = req.params;
-    // aceptar usuarioId desde query, body o cabecera para mayor compatibilidad
-    // Preferir usuario autenticado
-    const usuarioId = (req.user && req.user.id) || (req.query && req.query.usuarioId) || (req.body && req.body.usuarioId) || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
+    const { propiedadId } = req.params;
+    const { usuarioId } = req.query; // Lo recibimos por query para simplificar
 
-    if (!usuarioId) {
-      return res.status(401).json({ error: "Autenticación requerida: se requiere usuarioId" });
-    }
+    if (!usuarioId) return res.status(400).json({ error: "Falta usuarioId" });
 
     const query = `
       DELETE FROM public.favoritos
-      WHERE id = $1 AND usuario_id = $2
+      WHERE propiedad_id = $1 AND usuario_id = $2
       RETURNING *
     `;
 
-    const result = await dbQuery(query, [id, usuarioId]);
+    const result = await dbQuery(query, [propiedadId, usuarioId]);
 
     if (result.rows.length === 0) {
-      // Puede que no exista el id o no pertenezca al usuario
-      return res.status(404).json({ error: "Favorito no encontrado o no pertenece al usuario" });
+      return res.status(404).json({ error: "No encontrado" });
     }
 
-    res.json({ ok: true, message: "Favorito eliminado correctamente", eliminado: result.rows[0] });
+    res.json({ ok: true, message: "Eliminado" });
+
   } catch (e) {
-    console.error("❌ Error DELETE /favoritos/:id:", e);
-    res.status(500).json({ error: "Error eliminando favorito" });
+    console.error("❌ Error DELETE /favoritos:", e.message);
+    res.status(500).json({ error: "Error al eliminar" });
   }
 });
 
 export default router;
-
