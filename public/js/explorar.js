@@ -137,6 +137,7 @@ function obtenerFiltrosDesdeHTML() {
 
 function crearCardPropiedad(prop, favoritosList) {
   // Verificamos si la propiedad está en la lista de favoritos del usuario
+  // Convertimos a string para asegurar comparación correcta
   const isFavorite = favoritosList.includes(prop.id.toString()); 
   
   const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400';
@@ -184,16 +185,24 @@ function crearCardPropiedad(prop, favoritosList) {
   `;
 }
 
+// ============================================
+// FUNCIÓN CORREGIDA
+// ============================================
 async function toggleFavorito(propiedadId, buttonElement) {
-    const isCurrentlyFavorite = buttonElement.querySelector('.fa-solid').classList.contains('fa-heart');
+    // 1. Seleccionamos el icono 'i' directamente para evitar el error de null
+    const icon = buttonElement.querySelector('i'); 
+    
+    // 2. Verificamos si es favorito mirando si tiene la clase 'fa-solid'
+    // Esto evita buscar un elemento que podría no existir
+    const isCurrentlyFavorite = icon.classList.contains('fa-solid');
     
     // Si ya es favorito, eliminamos. Si no, agregamos.
+    // Importante: Agregada la barra '/' antes del ID para DELETE
     const url = `/api/favoritos${isCurrentlyFavorite ? '/' + propiedadId : ''}?usuarioId=${usuarioActual.id}`;
     
-    // 1. Optimistic UI update (para que se sienta rápido)
-    const icon = buttonElement.querySelector('i');
+    // 3. Actualización Optimista de la UI (Cambio visual inmediato)
     buttonElement.style.color = isCurrentlyFavorite ? '' : 'var(--brand-red)';
-    icon.classList.toggle('fa-solid');
+    icon.classList.toggle('fa-solid'); 
     icon.classList.toggle('fa-regular');
 
     try {
@@ -207,26 +216,23 @@ async function toggleFavorito(propiedadId, buttonElement) {
         });
 
         if (!res.ok) {
-            // Revertir la UI si la API falla
-            alert(`Error al ${isCurrentlyFavorite ? 'quitar' : 'agregar'} de favoritos.`);
-            buttonElement.style.color = isCurrentlyFavorite ? 'var(--brand-red)' : '';
-            icon.classList.toggle('fa-solid');
-            icon.classList.toggle('fa-regular');
-            return;
+            throw new Error('Error en la respuesta del servidor');
         }
 
-        // 3. Actualizar el estado global de la lista de IDs (para recargas y consistencia)
+        // 4. Actualizar la lista global de favoritos en memoria
         if (isCurrentlyFavorite) {
-            favoritosActuales = favoritosActuales.filter(id => id !== propiedadId);
+            // Lo quitamos de la lista
+            favoritosActuales = favoritosActuales.filter(id => id !== propiedadId.toString());
         } else {
-            favoritosActuales.push(propiedadId);
+            // Lo agregamos a la lista
+            favoritosActuales.push(propiedadId.toString());
         }
 
     } catch (e) {
         console.error(e);
-        alert("Error de conexión al servidor.");
+        alert("Error de conexión al servidor. Se revertirá el cambio.");
         
-        // Revertir UI en caso de error de conexión
+        // REVERTIR UI en caso de error (Volver al estado anterior)
         buttonElement.style.color = isCurrentlyFavorite ? 'var(--brand-red)' : '';
         icon.classList.toggle('fa-solid');
         icon.classList.toggle('fa-regular');
