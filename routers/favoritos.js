@@ -1,19 +1,23 @@
 // routers/favoritos.js - Gestión de favoritos
 import express from "express";
 import { dbQuery } from "../dbQuery.js";
+import { authenticate } from './authMiddleware.js';
 
 const router = express.Router();
+
+// Aplicar autenticación: si viene token válido, req.user estará disponible.
+router.use(authenticate);
 
 // =======================================
 // GET Favoritos del usuario
 // =======================================
 router.get("/", async (req, res) => {
   try {
-    // aceptar usuarioId desde query o header
-    const usuarioId = req.query?.usuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
+    // Preferir el usuario autenticado (req.user.id), sino fallback a query o header
+    const usuarioId = (req.user && req.user.id) || req.query?.usuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
 
     if (!usuarioId) {
-      return res.status(400).json({ error: "usuarioId es obligatorio (query o header)" });
+      return res.status(401).json({ error: "Autenticación requerida: usuarioId no proporcionado" });
     }
 
     const query = `
@@ -68,13 +72,13 @@ router.get("/", async (req, res) => {
 // =======================================
 router.post("/", async (req, res) => {
   try {
-    // aceptar usuarioId desde body o header
+    // Preferir usuario autenticado
     const bodyUsuarioId = req.body?.usuarioId;
-    const usuarioId = bodyUsuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
+    const usuarioId = (req.user && req.user.id) || bodyUsuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
     const { propiedadId } = req.body;
 
     if (!usuarioId || !propiedadId) {
-      return res.status(400).json({ error: "usuarioId y propiedadId son obligatorios (body o header)" });
+      return res.status(401).json({ error: "Autenticación requerida: usuarioId y propiedadId son obligatorios" });
     }
 
     // Verificar si ya existe (idempotente)
@@ -109,15 +113,11 @@ router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     // aceptar usuarioId desde query, body o cabecera para mayor compatibilidad
-    const usuarioId =
-      req.query && req.query.usuarioId
-        ? req.query.usuarioId
-        : req.body && req.body.usuarioId
-        ? req.body.usuarioId
-        : req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
+    // Preferir usuario autenticado
+    const usuarioId = (req.user && req.user.id) || (req.query && req.query.usuarioId) || (req.body && req.body.usuarioId) || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
 
     if (!usuarioId) {
-      return res.status(400).json({ error: "Se requiere usuarioId (query, body o header)" });
+      return res.status(401).json({ error: "Autenticación requerida: se requiere usuarioId" });
     }
 
     const query = `

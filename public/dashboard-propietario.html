@@ -373,9 +373,13 @@
 
                             // enviar autoPublish=true para publicar inmediatamente
                             fd.append('autoPublish', 'true');
+                            const token = localStorage.getItem('inmoapp_token');
+                            const headers = {};
+                            if (token) headers['Authorization'] = `Bearer ${token}`;
+                            else headers['x-usuario-id'] = String(currentUser.id);
                             resp = await fetch('/propiedades', {
                                 method: 'POST',
-                                headers: { 'x-usuario-id': String(currentUser.id) },
+                                headers,
                                 body: fd
                             });
                             data = await resp.json();
@@ -383,9 +387,13 @@
                             // enviar JSON como antes
                             // enviar autoPublish=true por defecto desde dashboard propietario
                             payloadObj.autoPublish = true;
+                            const token = localStorage.getItem('inmoapp_token');
+                            const headers = { 'Content-Type': 'application/json' };
+                            if (token) headers['Authorization'] = `Bearer ${token}`;
+                            else headers['x-usuario-id'] = String(currentUser.id);
                             resp = await fetch('/propiedades', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(currentUser.id) },
+                                headers,
                                 body: JSON.stringify(payloadObj)
                             });
                             data = await resp.json();

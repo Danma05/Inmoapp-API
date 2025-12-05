@@ -4,6 +4,7 @@ import { dbQuery } from "../dbQuery.js";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { authenticate } from './authMiddleware.js';
 
 const router = express.Router();
 
@@ -174,12 +175,12 @@ router.get("/", async (req, res) => {
 // GET MIS PROPIEDADES (Para propietario)
 // IMPORTANTE: Debe ir ANTES de /:id para evitar conflictos
 // =======================================
-router.get("/mis-propiedades", async (req, res) => {
+router.get("/mis-propiedades", authenticate, async (req, res) => {
   try {
-    const { usuarioId } = req.query;
+    const usuarioId = req.user && req.user.id;
 
     if (!usuarioId) {
-      return res.status(400).json({ error: "usuarioId es obligatorio" });
+      return res.status(401).json({ error: "Autenticación requerida" });
     }
 
     const query = `
@@ -248,7 +249,7 @@ const upload = multer({ storage });
 // =======================================
 // POST CREAR PROPIEDAD (soporta multipart/form-data con campo 'imagen')
 // =======================================
-router.post("/", upload.single('imagen'), async (req, res) => {
+router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
   try {
     const {
       correoPropietario,
@@ -265,9 +266,9 @@ router.post("/", upload.single('imagen'), async (req, res) => {
       autoPublish: bodyAutoPublish
     } = req.body;
 
-    // Aceptar usuarioId desde header o body para autenticación ligera
-    const headerUsuarioId = req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
-    const usuarioId = headerUsuarioId || bodyUsuarioId;
+  // Preferir usuario autenticado (req.user.id), sino fallback a header/body para compatibilidad
+  const headerUsuarioId = req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
+  const usuarioId = (req.user && req.user.id) || headerUsuarioId || bodyUsuarioId;
 
     if (!direccion || !precioCanon) {
       return res.status(400).json({ error: "Dirección y precio son obligatorios." });
@@ -358,7 +359,7 @@ router.post("/", upload.single('imagen'), async (req, res) => {
 // =======================================
 // PUT ACTUALIZAR PROPIEDAD
 // =======================================
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticate, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -379,6 +380,12 @@ router.put("/:id", async (req, res) => {
 
     if (checkResult.rows.length === 0) {
       return res.status(404).json({ error: "Propiedad no encontrada" });
+    }
+
+    // Verificar propiedad pertenece al usuario autenticado
+    const propietarioId = checkResult.rows[0].propietario_id;
+    if (req.user && Number(req.user.id) !== Number(propietarioId)) {
+      return res.status(403).json({ error: 'No autorizado: no eres el propietario' });
     }
 
     const updateFields = [];
@@ -451,9 +458,16 @@ router.put("/:id", async (req, res) => {
 // =======================================
 // DELETE ELIMINAR PROPIEDAD (Soft delete)
 // =======================================
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticate, async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Verificar el propietario antes de soft-delete
+    const check = await dbQuery('SELECT propietario_id FROM public.propiedades WHERE id = $1 LIMIT 1', [id]);
+    if (check.rows.length === 0) return res.status(404).json({ error: 'Propiedad no encontrada' });
+    if (req.user && Number(req.user.id) !== Number(check.rows[0].propietario_id)) {
+      return res.status(403).json({ error: 'No autorizado: no eres el propietario' });
+    }
 
     const query = `
       UPDATE public.propiedades
@@ -479,15 +493,14 @@ router.delete("/:id", async (req, res) => {
 // POST Publicar propiedad (cambiar estado a PUBLICADO)
 // Requiere X-Usuario-Id header o usuarioId en body y que el usuario sea propietario de la propiedad
 // =======================================
-router.post("/:id/publish", async (req, res) => {
+router.post("/:id/publish", authenticate, async (req, res) => {
   try {
     const { id } = req.params;
-    const headerUsuarioId = req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
-    const bodyUsuarioId = req.body && req.body.usuarioId;
-    const usuarioId = headerUsuarioId || bodyUsuarioId;
+    // Preferir usuario autenticado
+    const usuarioId = (req.user && req.user.id) || (req.body && req.body.usuarioId) || req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
 
     if (!usuarioId) {
-      return res.status(400).json({ error: 'Se requiere usuarioId en header (X-Usuario-Id) o body' });
+      return res.status(401).json({ error: 'Autenticación requerida' });
     }
 
     // Verificar existencia y propiedad

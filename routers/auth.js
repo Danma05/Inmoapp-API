@@ -1,6 +1,7 @@
 // routers/auth.js - Autenticación y registro
 import express from "express";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken';
 import { dbQuery } from "../dbQuery.js";
 
 const router = express.Router();
@@ -53,8 +54,13 @@ router.post("/login", async (req, res) => {
       [user.id]
     );
 
+    // Generar token JWT
+    const secret = process.env.JWT_SECRET || 'dev_secret_change_me';
+    const token = jwt.sign({ id: user.id, correo: user.correo, rol: user.rol }, secret, { expiresIn: '7d' });
+
     return res.json({
       ok: true,
+      token,
       usuario: {
         id: user.id,
         nombre_completo: user.nombre_completo,
@@ -131,9 +137,15 @@ router.post("/usuarios", async (req, res) => {
       true
     ]);
 
+    // Generar token para el usuario creado
+    const created = result.rows[0];
+    const secret = process.env.JWT_SECRET || 'dev_secret_change_me';
+    const token = jwt.sign({ id: created.id, correo: created.correo, rol: created.rol }, secret, { expiresIn: '7d' });
+
     return res.status(201).json({
       message: "Usuario registrado correctamente.",
-      usuario: result.rows[0]
+      token,
+      usuario: created
     });
 
   } catch (e) {

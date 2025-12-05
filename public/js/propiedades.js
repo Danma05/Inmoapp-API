@@ -43,9 +43,15 @@ const FAVORITOS_BASE = '/api/favoritos';
 
 // Enviar usuarioId en header X-Usuario-Id para mayor consistencia
 export async function addFavorite(usuarioId, propiedadId) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = obtenerToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  // legacy header for compatibility if token not present
+  if (!token) headers['x-usuario-id'] = String(usuarioId);
+
   const resp = await fetch(FAVORITOS_BASE, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(usuarioId) },
+    headers,
     body: JSON.stringify({ propiedadId })
   });
   const data = await resp.json().catch(() => ({}));
@@ -57,9 +63,14 @@ export async function addFavorite(usuarioId, propiedadId) {
 }
 
 export async function removeFavorite(usuarioId, favoritoId) {
+  const headers = {};
+  const token = obtenerToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (!token) headers['x-usuario-id'] = String(usuarioId);
+
   const resp = await fetch(`${FAVORITOS_BASE}/${favoritoId}`, {
     method: 'DELETE',
-    headers: { 'x-usuario-id': String(usuarioId) }
+    headers
   });
   const data = await resp.json().catch(() => ({}));
   if (!resp.ok) {
@@ -71,8 +82,12 @@ export async function removeFavorite(usuarioId, favoritoId) {
 export async function loadFavorites() {
   const user = obtenerUsuario();
   if (!user) return { favoritos: [] };
+  const token = obtenerToken();
+  const headers = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  // keep query for compatibility
   const resp = await fetch(`${FAVORITOS_BASE}?usuarioId=${user.id}`, {
-    headers: { 'x-usuario-id': String(user.id) }
+    headers: token ? headers : { 'x-usuario-id': String(user.id) }
   });
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
@@ -300,7 +315,10 @@ function crearCardPropiedadFila(prop) {
  */
 export async function cargarMisPropiedades(usuarioId) {
   try {
-    const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`);
+    const token = obtenerToken();
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`/propiedades/mis-propiedades`, { headers });
     
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -324,6 +342,15 @@ export function obtenerUsuario() {
     return JSON.parse(userStr);
   } catch (e) {
     console.error('Error parseando usuario:', e);
+    return null;
+  }
+}
+
+/** Obtener token JWT guardado en localStorage */
+export function obtenerToken() {
+  try {
+    return localStorage.getItem('inmoapp_token') || null;
+  } catch (e) {
     return null;
   }
 }

@@ -176,8 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     return showLoginError(data.error || "Correo o contraseña incorrectos.");
                 }
 
-                // 🔥 GUARDAR USUARIO EN SESIÓN
-                localStorage.setItem('inmoapp_user', JSON.stringify(data.usuario));
+                // 🔥 GUARDAR TOKEN + USUARIO EN SESIÓN
+                if (data.token) {
+                    try { localStorage.setItem('inmoapp_token', data.token); } catch (e) { console.warn('No se pudo guardar token:', e); }
+                }
+                if (data.usuario) {
+                    try { localStorage.setItem('inmoapp_user', JSON.stringify(data.usuario)); } catch (e) { console.warn('No se pudo guardar usuario:', e); }
+                }
 
                 const rol = (data.usuario?.rol || '').toUpperCase();
                 if (rol === 'PROPIETARIO') {
@@ -307,12 +312,13 @@ if (telInput && telError) {
                 return showError(data.error || "Error registrando usuario.");
             }
 
-            // ÉXITO → Guardar usuario registrado en localStorage y seguir flujo
+            // ÉXITO → Guardar token y usuario registrado en localStorage y seguir flujo
             // Guardamos el usuario devuelto por el servidor para que la app no siga
             // usando una sesión previa almacenada (evita que aparezca otro usuario).
             if (data && data.usuario) {
                 try {
                     localStorage.setItem('inmoapp_user', JSON.stringify(data.usuario));
+                    if (data.token) localStorage.setItem('inmoapp_token', data.token);
                 } catch (e) {
                     console.warn('No se pudo guardar usuario en localStorage:', e);
                 }
