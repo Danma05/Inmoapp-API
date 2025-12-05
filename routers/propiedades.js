@@ -4,6 +4,7 @@ import { dbQuery } from "../dbQuery.js";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import sharp from 'sharp';
 import { authenticate } from './authMiddleware.js';
 
 const router = express.Router();
@@ -293,8 +294,21 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
 
     // Si llegó un archivo multipart, definir imagenUrl a la ruta pública
     let finalImagenUrl = imagenUrl || null;
+    let finalThumbnailUrl = null;
     if (req.file && req.file.filename) {
       finalImagenUrl = `/uploads/${req.file.filename}`;
+      try {
+        // generar miniatura 400x300
+        const thumbName = `thumb-${req.file.filename}`;
+        const thumbPath = path.join(uploadsDir, thumbName);
+        await sharp(req.file.path)
+          .resize(400, 300, { fit: 'cover' })
+          .toFile(thumbPath);
+        finalThumbnailUrl = `/uploads/${thumbName}`;
+      } catch (thumbErr) {
+        console.warn('No se pudo generar thumbnail:', thumbErr && thumbErr.message ? thumbErr.message : thumbErr);
+        // no bloquear creación si thumbnail falla
+      }
     }
 
     // autoPublish puede venir en body o en header 'x-auto-publish'
@@ -340,9 +354,10 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
         descripcion,
         precio_canon,
         imagen_url,
+        thumbnail_url,
         estado_publicacion
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
       RETURNING *;
     `;
 
@@ -357,6 +372,7 @@ router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
       descripcion || null,
       precioCanon,
       finalImagenUrl || null,
+      finalThumbnailUrl || null,
       estadoPublicacion
     ]);
 
