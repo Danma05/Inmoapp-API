@@ -21,7 +21,7 @@ export async function cargarPropiedades(filtros = {}) {
     const queryString = params.toString();
     const url = `/propiedades${queryString ? '?' + queryString : ''}`;
     
-    console.log(`📡 Consultando API: ${url}`); // Log útil para depuración
+    // console.log(`📡 Consultando API: ${url}`); // Log útil para depuración
 
     const response = await fetch(url);
     
@@ -63,6 +63,8 @@ export function renderizarPropiedades(propiedades, contenedorId, tipoVista = 'gr
   } else if (tipoVista === 'list') {
     contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadLista(prop)).join('');
   } else if (tipoVista === 'row') {
+    // Nota: La vista 'row' suele usarse en el dashboard de propietario con botones de edición
+    // Si prefieres centralizarla aquí, puedes hacerlo, pero a veces se maneja en el script específico
     contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadFila(prop)).join('');
   }
 }
@@ -81,14 +83,16 @@ function crearCardPropiedad(prop) {
   
   // Etiqueta de Venta o Arriendo
   const operacionTag = prop.operacion === 'VENTA' ? 'Venta' : 'Arriendo';
-  const tagColorClass = prop.operacion === 'VENTA' ? 'bg-blue-600' : 'new-tag'; // Podrías tener estilos diferentes
+  const tagColorClass = prop.operacion === 'VENTA' ? 'bg-blue-600' : 'new-tag'; 
+  // Estilo inline por si la clase CSS no existe
+  const tagStyle = prop.operacion === 'VENTA' ? 'background-color:#2563EB;' : '';
 
   return `
     <article class="prop-card-list">
       <div class="card-img-list">
-        <span class="${tagColorClass}">${operacionTag}</span>
+        <span class="${tagColorClass}" style="${tagStyle}">${operacionTag}</span>
         <img src="${imagen}" alt="${direccion}" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400'">
-        <button class="fav-btn" data-propiedad-id="${prop.id}" onclick="toggleFavorito(${prop.id})">
+        <button class="fav-btn" data-propiedad-id="${prop.id}">
           <i class="fa-regular fa-heart"></i>
         </button>
       </div>
@@ -104,7 +108,7 @@ function crearCardPropiedad(prop) {
           <span><i class="fa-solid fa-maximize"></i> ${area} m²</span>
         </div>
         <div style="margin-top: 15px; text-align: center;">
-            <a href="/propiedad.html?id=${prop.id}" class="btn-ver-detalle" style="display:inline-block; width:100%; padding: 8px; background: #f3f4f6; color: #374151; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Ver Detalle</a>
+            <a href="/propiedades-detalles?id=${prop.id}" class="btn-ver-detalle" style="display:inline-block; width:100%; padding: 8px; background: #f3f4f6; color: #374151; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Ver Detalle</a>
         </div>
       </div>
     </article>
@@ -115,31 +119,7 @@ function crearCardPropiedad(prop) {
  * Crear card de propiedad para lista (Dashboard)
  */
 function crearCardPropiedadLista(prop) {
-  // Misma lógica de fallback
-  const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800';
-  
-  return `
-    <article class="prop-card-list">
-      <div class="card-img-list">
-        <img src="${imagen}" alt="${prop.direccion}" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400'">
-        <button class="fav-btn" data-propiedad-id="${prop.id}">
-          <i class="fa-regular fa-heart"></i>
-        </button>
-      </div>
-      <div class="card-info-list">
-        <div class="price-red">${prop.precio_canon}</div>
-        <h3>${prop.direccion}</h3>
-        <p class="location-list">
-          <i class="fa-solid fa-location-dot"></i> ${prop.direccion}
-        </p>
-        <div class="specs-list">
-          <span><i class="fa-solid fa-bed"></i> ${prop.habitaciones}</span>
-          <span><i class="fa-solid fa-bath"></i> ${prop.banos}</span>
-          <span><i class="fa-solid fa-maximize"></i> ${prop.area_m2} m²</span>
-        </div>
-      </div>
-    </article>
-  `;
+  return crearCardPropiedad(prop); // Reutilizamos la misma card por ahora
 }
 
 /**
@@ -171,10 +151,10 @@ function crearCardPropiedadFila(prop) {
         </div>
       </div>
       <div class="row-actions">
-        <button class="btn-icon" title="Editar" onclick="window.location.href='/editar-propiedad.html?id=${prop.id}'">
+        <button class="btn-icon" title="Editar" onclick="alert('Editar propiedad ${prop.id}')">
           <i class="fa-solid fa-pen"></i>
         </button>
-        <button class="btn-icon delete" title="Eliminar" onclick="eliminarPropiedad(${prop.id})">
+        <button class="btn-icon delete btn-delete-prop" data-id="${prop.id}" title="Eliminar">
           <i class="fa-regular fa-trash-can"></i>
         </button>
       </div>
@@ -184,12 +164,32 @@ function crearCardPropiedadFila(prop) {
 
 /**
  * Cargar mis propiedades (para propietario)
+ * CORREGIDO: Ahora incluye el token de autorización
  */
 export async function cargarMisPropiedades(usuarioId) {
   try {
-    const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`);
+    // 1. Obtener el token guardado
+    const token = localStorage.getItem('inmoapp_token');
+    
+    // 2. Preparar headers con el token
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // 3. Hacer la petición incluyendo headers
+    const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`, {
+        method: 'GET',
+        headers: headers
+    });
     
     if (!response.ok) {
+      if (response.status === 401) {
+          console.warn("Sesión no válida o expirada.");
+          // Opcional: window.location.href = '/'; 
+      }
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
     
