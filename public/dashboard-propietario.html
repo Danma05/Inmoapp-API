@@ -249,6 +249,10 @@
                             <label>Imagen principal (URL)</label>
                             <input type="url" class="input-style" id="prop-imagen-url" placeholder="https://...">
                         </div>
+                        <div class="form-group">
+                            <label>O subir imagen</label>
+                            <input type="file" class="input-style" id="prop-imagen-file" accept="image/*">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -335,7 +339,8 @@
                 submitNewPropBtn.addEventListener('click', async (e) => {
                     e.preventDefault();
 
-                    const payload = {
+                    // Preparar datos del formulario
+                    const payloadObj = {
                         correoPropietario: currentUser.correo,
                         tipoInmueble:   tipoInput.value,
                         operacion:      operacionInput.value,
@@ -348,7 +353,7 @@
                         imagenUrl:      imgUrlInput.value.trim()
                     };
 
-                    if (!payload.direccion || !payload.precioCanon) {
+                    if (!payloadObj.direccion || !payloadObj.precioCanon) {
                         alert('La dirección y el precio son obligatorios.');
                         return;
                     }
@@ -356,14 +361,31 @@
                     submitNewPropBtn.disabled = true;
                     submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
 
-                        try {
-                        // Enviar X-Usuario-Id en header para identificar al propietario de forma fiable
-                        const resp = await fetch('/propiedades', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(currentUser.id) },
-                            body: JSON.stringify(payload)
-                        });
-                        const data = await resp.json();
+                    try {
+                        // Si el usuario seleccionó un archivo, enviar FormData con 'imagen'
+                        const fileInput = document.getElementById('prop-imagen-file');
+                        let resp, data;
+                        if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                            const fd = new FormData();
+                            // agregar campos del formulario
+                            Object.keys(payloadObj).forEach(k => fd.append(k, payloadObj[k]));
+                            fd.append('imagen', fileInput.files[0]);
+
+                            resp = await fetch('/propiedades', {
+                                method: 'POST',
+                                headers: { 'x-usuario-id': String(currentUser.id) },
+                                body: fd
+                            });
+                            data = await resp.json();
+                        } else {
+                            // enviar JSON como antes
+                            resp = await fetch('/propiedades', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'x-usuario-id': String(currentUser.id) },
+                                body: JSON.stringify(payloadObj)
+                            });
+                            data = await resp.json();
+                        }
 
                         if (!resp.ok) {
                             console.error('Error al crear propiedad:', data);

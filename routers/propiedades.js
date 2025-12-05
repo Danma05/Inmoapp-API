@@ -1,6 +1,9 @@
 // routers/propiedades.js - Gestión de propiedades
 import express from "express";
 import { dbQuery } from "../dbQuery.js";
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -225,9 +228,27 @@ router.get("/:id", async (req, res) => {
 });
 
 // =======================================
-// POST CREAR PROPIEDAD
+// CONFIGURACIÓN UPLOAD (multer)
 // =======================================
-router.post("/", async (req, res) => {
+const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch (e) { /* ignore */ }
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    const safeName = Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    cb(null, safeName);
+  }
+});
+
+const upload = multer({ storage });
+
+// =======================================
+// POST CREAR PROPIEDAD (soporta multipart/form-data con campo 'imagen')
+// =======================================
+router.post("/", upload.single('imagen'), async (req, res) => {
   try {
     const {
       correoPropietario,
@@ -252,6 +273,12 @@ router.post("/", async (req, res) => {
     }
 
     let propietarioId = null;
+
+    // Si llegó un archivo multipart, definir imagenUrl a la ruta pública
+    let finalImagenUrl = imagenUrl || null;
+    if (req.file && req.file.filename) {
+      finalImagenUrl = `/uploads/${req.file.filename}`;
+    }
 
     if (usuarioId) {
       // Validar que el usuario exista y sea propietario activo
@@ -306,7 +333,7 @@ router.post("/", async (req, res) => {
       Number(areaM2 || 0),
       descripcion || null,
       precioCanon,
-      imagenUrl || null
+      finalImagenUrl || null
     ]);
 
     return res.status(201).json({
