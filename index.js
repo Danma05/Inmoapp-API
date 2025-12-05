@@ -1,7 +1,9 @@
 // index.js - Servidor Principal InmoApp
+import 'dotenv/config';
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from 'cors';
 
 // --- BASE DE DATOS CONECTADA ---
 import { dbQuery } from "./dbQuery.js";
@@ -19,6 +21,8 @@ import passportRouter from "./routers/passport.js";
 
 const app = express();
 app.use(express.json());
+// Habilitar CORS (ajusta el origen según tu entorno de despliegue)
+app.use(cors({ origin: true, credentials: true }));
 
 // ------------------------------------------------------------
 // CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS Y RUTAS DE PÁGINAS
@@ -135,4 +139,11 @@ const server = app.listen(PORT, () => {
 process.on("SIGINT", () => {
   console.log("\n👋 Cerrando servidor...");
   server.close(() => process.exit(0));
+});
+
+// Handler global de errores (captura errores no manejados en middlewares)
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ error: 'Error interno del servidor' });
 });
