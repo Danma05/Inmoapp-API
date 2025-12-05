@@ -11,11 +11,13 @@ router.get("/", async (req, res) => {
   try {
     const { usuarioId, estado } = req.query;
 
+    console.log(`📡 Consultando visitas para usuario: ${usuarioId}`); // LOG PARA DEPURAR
+
     if (!usuarioId) {
       return res.status(400).json({ error: "usuarioId es obligatorio" });
     }
 
-    // CORRECCIÓN: Seleccionamos campos específicos para evitar que los IDs se sobrescriban
+    // He quitado 'p.thumbnail_url' por si acaso no existe en tu BD
     let query = `
       SELECT 
         v.id as visita_id,
@@ -23,13 +25,11 @@ router.get("/", async (req, res) => {
         v.hora_visita,
         v.estado,
         v.notas,
-        v.creado_en,
         p.id as propiedad_id,
         p.direccion,
         p.ciudad,
         p.precio_canon,
         p.imagen_url,
-        p.thumbnail_url,
         p.operacion,
         u.nombre_completo as propietario_nombre,
         u.correo as propietario_correo,
@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
 
     const params = [usuarioId];
 
-    if (estado) {
+    if (estado && estado !== 'TODAS') {
       query += ` AND v.estado = $2`;
       params.push(estado);
     }
@@ -50,19 +50,23 @@ router.get("/", async (req, res) => {
     query += ` ORDER BY v.fecha_visita DESC`;
 
     const result = await dbQuery(query, params);
+    console.log(`✅ Se encontraron ${result.rows.length} visitas`);
+    
     res.json(result.rows);
   } catch (e) {
-    console.error("❌ Error GET /visitas:", e);
-    res.status(500).json({ error: "Error consultando visitas" });
+    console.error("❌ Error CRÍTICO en GET /visitas:", e.message); // ESTE MENSAJE ES EL IMPORTANTE
+    res.status(500).json({ error: "Error interno del servidor: " + e.message });
   }
 });
 
 // =======================================
-// POST Crear visita
+// POST Crear visita (Agendar)
 // =======================================
 router.post("/", async (req, res) => {
   try {
     const { usuarioId, propiedadId, fechaVisita, horaVisita, notas } = req.body;
+
+    console.log("📝 Intentando crear visita:", req.body);
 
     if (!usuarioId || !propiedadId || !fechaVisita || !horaVisita) {
       return res.status(400).json({ error: "Faltan datos obligatorios" });
@@ -84,18 +88,20 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (e) {
-    console.error("❌ Error POST /visitas:", e);
-    res.status(500).json({ error: "Error creando visita" });
+    console.error("❌ Error creando visita:", e.message);
+    res.status(500).json({ error: "Error al agendar: " + e.message });
   }
 });
 
 // =======================================
-// PUT Actualizar visita (confirmar/cancelar)
+// PUT Actualizar visita (Cancelar/Confirmar)
 // =======================================
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
+
+    console.log(`🔄 Actualizando visita ${id} a estado: ${estado}`);
 
     if (!estado) return res.status(400).json({ error: "Estado obligatorio" });
 
@@ -114,8 +120,8 @@ router.put("/:id", async (req, res) => {
 
     res.json(result.rows[0]);
   } catch (e) {
-    console.error("❌ Error PUT /visitas/:id:", e);
-    res.status(500).json({ error: "Error actualizando visita" });
+    console.error("❌ Error actualizando visita:", e);
+    res.status(500).json({ error: "Error al actualizar" });
   }
 });
 
