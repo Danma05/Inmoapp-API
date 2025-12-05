@@ -9,10 +9,11 @@ const router = express.Router();
 // =======================================
 router.get("/", async (req, res) => {
   try {
-    const { usuarioId } = req.query;
+    // aceptar usuarioId desde query o header
+    const usuarioId = req.query?.usuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
 
     if (!usuarioId) {
-      return res.status(400).json({ error: "usuarioId es obligatorio" });
+      return res.status(400).json({ error: "usuarioId es obligatorio (query o header)" });
     }
 
     const query = `
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
       ORDER BY f.creado_en DESC
     `;
 
-    const result = await dbQuery(query, [usuarioId]);
+  const result = await dbQuery(query, [Number(usuarioId)]);
 
     // Mapear resultado para devolver estructura clara: { favoritoId, propiedad: { ... } }
     const mapped = result.rows.map(r => ({
@@ -55,7 +56,7 @@ router.get("/", async (req, res) => {
       propietario_nombre: r.propietario_nombre
     }));
 
-    res.json({ favoritos: mapped });
+    res.json({ ok: true, favoritos: mapped });
   } catch (e) {
     console.error("❌ Error GET /favoritos:", e);
     res.status(500).json({ error: "Error consultando favoritos" });
@@ -67,20 +68,24 @@ router.get("/", async (req, res) => {
 // =======================================
 router.post("/", async (req, res) => {
   try {
-    const { usuarioId, propiedadId } = req.body;
+    // aceptar usuarioId desde body o header
+    const bodyUsuarioId = req.body?.usuarioId;
+    const usuarioId = bodyUsuarioId || req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
+    const { propiedadId } = req.body;
 
     if (!usuarioId || !propiedadId) {
-      return res.status(400).json({ error: "usuarioId y propiedadId son obligatorios" });
+      return res.status(400).json({ error: "usuarioId y propiedadId son obligatorios (body o header)" });
     }
 
-    // Verificar si ya existe
+    // Verificar si ya existe (idempotente)
     const existing = await dbQuery(
-      "SELECT id FROM public.favoritos WHERE usuario_id = $1 AND propiedad_id = $2",
-      [usuarioId, propiedadId]
+      "SELECT * FROM public.favoritos WHERE usuario_id = $1 AND propiedad_id = $2",
+      [Number(usuarioId), Number(propiedadId)]
     );
 
     if (existing.rows.length > 0) {
-      return res.status(400).json({ error: "La propiedad ya está en favoritos" });
+      // devolver la fila existente en forma estandarizada
+      return res.status(200).json({ ok: true, favorito: existing.rows[0], message: 'Ya estaba en favoritos' });
     }
 
     const query = `
@@ -89,8 +94,8 @@ router.post("/", async (req, res) => {
       RETURNING *
     `;
 
-    const result = await dbQuery(query, [usuarioId, propiedadId]);
-    res.status(201).json(result.rows[0]);
+    const result = await dbQuery(query, [Number(usuarioId), Number(propiedadId)]);
+    res.status(201).json({ ok: true, favorito: result.rows[0] });
   } catch (e) {
     console.error("❌ Error POST /favoritos:", e);
     res.status(500).json({ error: "Error agregando a favoritos" });
