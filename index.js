@@ -79,7 +79,7 @@ app.get("/dashboard-propietario", (_req, res) => {
 });
 
 app.get("/propiedades-detalles", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "propiedades-detalle.html"));
+  res.sendFile(path.join(__dirname, "public", "propiedades-detalles.html"));
 });
 
 // ------------------------------------------------------------
