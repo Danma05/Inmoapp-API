@@ -239,12 +239,27 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename: function (req, file, cb) {
-    const safeName = Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const rnd = Math.floor(Math.random() * 1e9);
+    const safeOrig = file.originalname.replace(/[^a-zA-Z0-9.\-_\.]/g, '_');
+    const safeName = `${Date.now()}-${rnd}-${safeOrig}`;
     cb(null, safeName);
   }
 });
 
-const upload = multer({ storage });
+// Valid mime types and limits
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_FILE_BYTES },
+  fileFilter: function (req, file, cb) {
+    if (ALLOWED_MIMES.includes(file.mimetype)) return cb(null, true);
+    const err = new Error('Tipo de archivo no permitido. Solo se aceptan: jpeg, png, webp.');
+    err.code = 'LIMIT_FILE_TYPE';
+    return cb(err);
+  }
+});
 
 // =======================================
 // POST CREAR PROPIEDAD (soporta multipart/form-data con campo 'imagen')
@@ -487,6 +502,20 @@ router.delete("/:id", authenticate, async (req, res) => {
     console.error("❌ Error DELETE /propiedades/:id:", e);
     res.status(500).json({ error: "Error eliminando propiedad" });
   }
+});
+
+// Manejar errores de multer/archivo y devolver mensajes amigables
+router.use((err, req, res, next) => {
+  if (!err) return next();
+  console.error('Router error handler:', err && err.message ? err.message : err);
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ error: `El archivo excede el tamaño máximo de ${MAX_FILE_BYTES / (1024 * 1024)}MB.` });
+  }
+  if (err.code === 'LIMIT_FILE_TYPE') {
+    return res.status(400).json({ error: err.message || 'Tipo de archivo no permitido.' });
+  }
+  // Pasar al handler global si no es un error que manejemos aquí
+  return next(err);
 });
 
 // =======================================
