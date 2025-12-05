@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ======================================================
 
     // Inicializar favoritos (delegado)
-    try { initFavButtons(); } catch (e) { console.warn('No se pudo inicializar favoritos:', e); }
+    //try { initFavButtons(); } catch (e) { console.warn('No se pudo inicializar favoritos:', e); }
 
     // Si estamos en la página de Favoritos -> cargar favoritos reales
     const favGrid = document.getElementById('favorites-grid');
