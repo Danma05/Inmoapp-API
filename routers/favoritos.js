@@ -103,10 +103,16 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { usuarioId } = req.query;
+    // aceptar usuarioId desde query, body o cabecera para mayor compatibilidad
+    const usuarioId =
+      req.query && req.query.usuarioId
+        ? req.query.usuarioId
+        : req.body && req.body.usuarioId
+        ? req.body.usuarioId
+        : req.headers["x-usuario-id"] || req.headers["x-usuarioid"];
 
     if (!usuarioId) {
-      return res.status(400).json({ error: "usuarioId es obligatorio" });
+      return res.status(400).json({ error: "Se requiere usuarioId (query, body o header)" });
     }
 
     const query = `
@@ -118,10 +124,11 @@ router.delete("/:id", async (req, res) => {
     const result = await dbQuery(query, [id, usuarioId]);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Favorito no encontrado" });
+      // Puede que no exista el id o no pertenezca al usuario
+      return res.status(404).json({ error: "Favorito no encontrado o no pertenece al usuario" });
     }
 
-    res.json({ message: "Favorito eliminado correctamente" });
+    res.json({ ok: true, message: "Favorito eliminado correctamente", eliminado: result.rows[0] });
   } catch (e) {
     console.error("❌ Error DELETE /favoritos/:id:", e);
     res.status(500).json({ error: "Error eliminando favorito" });
