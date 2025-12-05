@@ -45,44 +45,80 @@
         <section class="filter-bar-full">
             <div class="filter-group-item">
                 <label>Precio Mínimo</label>
-                <select><option>Cualquiera</option><option>$50.000</option></select>
+                <select id="filtro-precio-min">
+                    <option value="">Cualquiera</option>
+                    <option value="500000">$500.000</option>
+                    <option value="1000000">$1.000.000</option>
+                    <option value="2000000">$2.000.000</option>
+                </select>
             </div>
+
             <div class="filter-group-item">
                 <label>Precio Máximo</label>
-                <select><option>Cualquiera</option><option>$1.000.000</option></select>
+                <select id="filtro-precio-max">
+                    <option value="">Cualquiera</option>
+                    <option value="1000000">$1.000.000</option>
+                    <option value="3000000">$3.000.000</option>
+                    <option value="5000000">$5.000.000</option>
+                </select>
             </div>
+
             <div class="filter-group-item">
                 <label>Dormitorios</label>
-                <select><option>Cualquiera</option><option>2</option></select>
+                <select id="filtro-habitaciones">
+                    <option value="">Cualquiera</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                </select>
             </div>
+
             <div class="filter-group-item">
                 <label>Baños</label>
-                <select><option>Cualquiera</option><option>1</option></select>
+                <select id="filtro-banos">
+                    <option value="">Cualquiera</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                </select>
             </div>
+
             <div class="filter-group-item">
                 <label>Operación</label>
-                <select><option>Comprar</option></select>
+                <select id="filtro-operacion">
+                    <option value="">Todas</option>
+                    <option value="ARRIENDO">Arriendo</option>
+                    <option value="VENTA">Venta</option>
+                </select>
             </div>
+
             <div class="filter-group-item">
                 <label>Tipo Inmueble</label>
-                <select><option>Cualquiera</option><option>Apartamento</option></select>
+                <select id="filtro-tipo">
+                    <option value="">Cualquiera</option>
+                    <option value="APARTAMENTO">Apartamento</option>
+                    <option value="CASA">Casa</option>
+                    <option value="OFICINA">Oficina</option>
+                    <option value="LOCAL">Local</option>
+                </select>
             </div>
+
             <div class="filter-group-item filter-actions">
-                <button class="btn-filter-action"><i class="fa-solid fa-filter"></i> Filtros</button>
+                <button id="btn-aplicar-filtros" class="btn-filter-action"><i class="fa-solid fa-filter"></i> Aplicar Filtros</button>
                 <button class="btn-save-search-action">Guardar Búsqueda</button>
             </div>
         </section>
 
-        <section class="listing-header-row">
-            <h2 class="dash-title">Listado de Propiedades</h2>
-            <div class="sort-controls-box">
-                <span>Resultados: 8 Propiedades</span>
-                <div class="sort-select">
-                    <label>Ordenar por</label>
-                    <select><option>Más Reciente</option></select>
-                </div>
-            </div>
-        </section>
+        <div class="sort-select">
+            <label>Ordenar por</label>
+            <select id="filtro-ordenar">
+                <option value="creado_en">Más Reciente</option>
+                <option value="precio_canon_asc">Menor Precio</option>
+                <option value="precio_canon_desc">Mayor Precio</option>
+                <option value="area_m2">Mayor Área</option>
+            </select>
+        </div>
 
         <section class="dashboard-section listing-grid">
             <div class="grid-3-cols">

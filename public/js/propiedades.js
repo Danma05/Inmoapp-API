@@ -1,529 +1,216 @@
-// routers/propiedades.js - Gestión de propiedades
-import express from "express";
-import { dbQuery } from "../dbQuery.js";
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { authenticate } from './authMiddleware.js';
+// public/js/propiedades.js - Funciones para cargar y mostrar propiedades
 
-const router = express.Router();
-
-// =======================================
-// GET PROPIEDADES (Listar con filtros)
-// =======================================
-router.get("/", async (req, res) => {
+/**
+ * Cargar propiedades desde la API (Versión Optimizada)
+ * Convierte automáticamente cualquier filtro que reciba en parámetros URL
+ */
+export async function cargarPropiedades(filtros = {}) {
   try {
-    const {
-      tipoInmueble,
-      operacion,
-      precioMin,
-      precioMax,
-      habitaciones,
-      banos,
-      areaMin,
-      areaMax,
-      direccion,
-      limit = 50,
-      offset = 0,
-      ordenar = "creado_en",
-      orden = "DESC"
-    } = req.query;
-
-    let query = `
-      SELECT 
-        p.*,
-        u.nombre_completo as propietario_nombre,
-        u.correo as propietario_correo,
-        u.telefono as propietario_telefono
-      FROM public.propiedades p
-      INNER JOIN public.usuarios u ON p.propietario_id = u.id
-      WHERE p.activa = TRUE
-    `;
-    const params = [];
-    let paramCount = 1;
-
-    if (tipoInmueble) {
-      query += ` AND p.tipo_inmueble = $${paramCount}`;
-      params.push(tipoInmueble);
-      paramCount++;
-    }
-
-    if (operacion) {
-      query += ` AND p.operacion = $${paramCount}`;
-      params.push(operacion);
-      paramCount++;
-    }
-
-    if (precioMin) {
-      query += ` AND CAST(REPLACE(p.precio_canon, '$', '') AS NUMERIC) >= $${paramCount}`;
-      params.push(Number(precioMin));
-      paramCount++;
-    }
-
-    if (precioMax) {
-      query += ` AND CAST(REPLACE(p.precio_canon, '$', '') AS NUMERIC) <= $${paramCount}`;
-      params.push(Number(precioMax));
-      paramCount++;
-    }
-
-    if (habitaciones) {
-      query += ` AND p.habitaciones >= $${paramCount}`;
-      params.push(Number(habitaciones));
-      paramCount++;
-    }
-
-    if (banos) {
-      query += ` AND p.banos >= $${paramCount}`;
-      params.push(Number(banos));
-      paramCount++;
-    }
-
-    if (areaMin) {
-      query += ` AND p.area_m2 >= $${paramCount}`;
-      params.push(Number(areaMin));
-      paramCount++;
-    }
-
-    if (areaMax) {
-      query += ` AND p.area_m2 <= $${paramCount}`;
-      params.push(Number(areaMax));
-      paramCount++;
-    }
-
-    if (direccion) {
-      query += ` AND LOWER(p.direccion) LIKE LOWER($${paramCount})`;
-      params.push(`%${direccion}%`);
-      paramCount++;
-    }
-
-    const ordenValido = ["creado_en", "precio_canon", "area_m2"].includes(ordenar) ? ordenar : "creado_en";
-    const ordenValidoDir = orden.toUpperCase() === "ASC" ? "ASC" : "DESC";
-    query += ` ORDER BY p.${ordenValido} ${ordenValidoDir}`;
-
-    query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(Number(limit), Number(offset));
-
-    const result = await dbQuery(query, params);
-
-    // Contar total (aplicar todos los mismos filtros)
-    let countQuery = `SELECT COUNT(*) as total FROM public.propiedades p WHERE p.activa = TRUE`;
-    const countParams = [];
-    let countParamCount = 1;
-
-    if (tipoInmueble) {
-      countQuery += ` AND p.tipo_inmueble = $${countParamCount}`;
-      countParams.push(tipoInmueble);
-      countParamCount++;
-    }
-    if (operacion) {
-      countQuery += ` AND p.operacion = $${countParamCount}`;
-      countParams.push(operacion);
-      countParamCount++;
-    }
-    if (precioMin) {
-      countQuery += ` AND CAST(REPLACE(p.precio_canon, '$', '') AS NUMERIC) >= $${countParamCount}`;
-      countParams.push(Number(precioMin));
-      countParamCount++;
-    }
-    if (precioMax) {
-      countQuery += ` AND CAST(REPLACE(p.precio_canon, '$', '') AS NUMERIC) <= $${countParamCount}`;
-      countParams.push(Number(precioMax));
-      countParamCount++;
-    }
-    if (habitaciones) {
-      countQuery += ` AND p.habitaciones >= $${countParamCount}`;
-      countParams.push(Number(habitaciones));
-      countParamCount++;
-    }
-    if (banos) {
-      countQuery += ` AND p.banos >= $${countParamCount}`;
-      countParams.push(Number(banos));
-      countParamCount++;
-    }
-    if (areaMin) {
-      countQuery += ` AND p.area_m2 >= $${countParamCount}`;
-      countParams.push(Number(areaMin));
-      countParamCount++;
-    }
-    if (areaMax) {
-      countQuery += ` AND p.area_m2 <= $${countParamCount}`;
-      countParams.push(Number(areaMax));
-      countParamCount++;
-    }
-    if (direccion) {
-      countQuery += ` AND LOWER(p.direccion) LIKE LOWER($${countParamCount})`;
-      countParams.push(`%${direccion}%`);
-      countParamCount++;
-    }
-
-    const countResult = await dbQuery(countQuery, countParams);
-    const total = Number(countResult.rows[0].total);
-
-    res.json({
-      propiedades: result.rows,
-      total,
-      limit: Number(limit),
-      offset: Number(offset)
-    });
-  } catch (e) {
-    console.error("❌ Error GET /propiedades:", e);
-    res.status(500).json({ error: "Error consultando propiedades" });
-  }
-});
-
-// =======================================
-// GET MIS PROPIEDADES (Para propietario)
-// IMPORTANTE: Debe ir ANTES de /:id para evitar conflictos
-// =======================================
-router.get("/mis-propiedades", authenticate, async (req, res) => {
-  try {
-    const usuarioId = req.user && req.user.id;
-
-    if (!usuarioId) {
-      return res.status(401).json({ error: "Autenticación requerida" });
-    }
-
-    const query = `
-      SELECT * FROM public.propiedades
-      WHERE propietario_id = $1
-      ORDER BY creado_en DESC
-    `;
-
-    const result = await dbQuery(query, [usuarioId]);
-    res.json(result.rows);
-  } catch (e) {
-    console.error("❌ Error GET /propiedades/mis-propiedades:", e);
-    res.status(500).json({ error: "Error consultando propiedades" });
-  }
-});
-
-// =======================================
-// GET PROPIEDAD POR ID
-// =======================================
-router.get("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const query = `
-      SELECT 
-        p.*,
-        u.nombre_completo as propietario_nombre,
-        u.correo as propietario_correo,
-        u.telefono as propietario_telefono
-      FROM public.propiedades p
-      INNER JOIN public.usuarios u ON p.propietario_id = u.id
-      WHERE p.id = $1 AND p.activa = TRUE
-    `;
-
-    const result = await dbQuery(query, [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Propiedad no encontrada" });
-    }
-
-    res.json(result.rows[0]);
-  } catch (e) {
-    console.error("❌ Error GET /propiedades/:id:", e);
-    res.status(500).json({ error: "Error consultando propiedad" });
-  }
-});
-
-// =======================================
-// CONFIGURACIÓN UPLOAD (multer)
-// =======================================
-const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch (e) { /* ignore */ }
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function (req, file, cb) {
-    const safeName = Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-    cb(null, safeName);
-  }
-});
-
-const upload = multer({ storage });
-
-// =======================================
-// POST CREAR PROPIEDAD (soporta multipart/form-data con campo 'imagen')
-// =======================================
-router.post("/", upload.single('imagen'), authenticate, async (req, res) => {
-  try {
-    const {
-      correoPropietario,
-      tipoInmueble,
-      operacion,
-      direccion,
-      habitaciones,
-      banos,
-      areaM2,
-      descripcion,
-      precioCanon,
-      imagenUrl,
-      usuarioId: bodyUsuarioId,
-      autoPublish: bodyAutoPublish
-    } = req.body;
-
-  // Preferir usuario autenticado (req.user.id), sino fallback a header/body para compatibilidad
-  const headerUsuarioId = req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
-  const usuarioId = (req.user && req.user.id) || headerUsuarioId || bodyUsuarioId;
-
-    if (!direccion || !precioCanon) {
-      return res.status(400).json({ error: "Dirección y precio son obligatorios." });
-    }
-
-    let propietarioId = null;
-
-    // Si llegó un archivo multipart, definir imagenUrl a la ruta pública
-    let finalImagenUrl = imagenUrl || null;
-    if (req.file && req.file.filename) {
-      finalImagenUrl = `/uploads/${req.file.filename}`;
-    }
-
-    // autoPublish puede venir en body o en header 'x-auto-publish'
-    const headerAuto = req.headers['x-auto-publish'];
-    const autoPublish = (typeof bodyAutoPublish !== 'undefined') ? (bodyAutoPublish === 'true' || bodyAutoPublish === true) : (headerAuto === 'true' || headerAuto === true);
-    const estadoPublicacion = autoPublish ? 'PUBLICADO' : 'EN_REVISION';
-
-    if (usuarioId) {
-      // Validar que el usuario exista y sea propietario activo
-      const uRes = await dbQuery(
-        `SELECT id, rol, activo FROM public.usuarios WHERE id = $1 LIMIT 1`,
-        [usuarioId]
-      );
-      if (uRes.rows.length === 0 || uRes.rows[0].rol !== 'PROPIETARIO' || uRes.rows[0].activo !== true) {
-        return res.status(400).json({ error: "Usuario propietario no válido o inactivo." });
+    const params = new URLSearchParams();
+    
+    // Bucle dinámico: Recorre todas las llaves del objeto filtros
+    Object.keys(filtros).forEach(key => {
+      const valor = filtros[key];
+      // Solo agrega el parámetro si tiene un valor real (no null, no undefined, no vacío)
+      if (valor !== null && valor !== undefined && valor !== '') {
+        params.append(key, valor);
       }
-      propietarioId = uRes.rows[0].id;
-    } else if (correoPropietario) {
-      // Mantener compatibilidad: buscar por correoPropietario
-      const uRes = await dbQuery(
-        `SELECT id FROM public.usuarios 
-         WHERE correo = $1 AND rol = 'PROPIETARIO' AND activo = TRUE
-         LIMIT 1`,
-        [correoPropietario]
-      );
-      if (uRes.rows.length === 0) {
-        return res.status(400).json({ error: "Propietario no válido o inactivo." });
-      }
-      propietarioId = uRes.rows[0].id;
-    } else {
-      return res.status(400).json({ error: "Se requiere usuarioId (header/body) o correoPropietario." });
-    }
-
-    const insertQuery = `
-      INSERT INTO public.propiedades (
-        propietario_id,
-        tipo_inmueble,
-        operacion,
-        direccion,
-        habitaciones,
-        banos,
-        area_m2,
-        descripcion,
-        precio_canon,
-        imagen_url,
-        estado_publicacion
-      )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-      RETURNING *;
-    `;
-
-    const result = await dbQuery(insertQuery, [
-      propietarioId,
-      tipoInmueble || 'APARTAMENTO',
-      operacion || 'ARRIENDO',
-      direccion,
-      Number(habitaciones || 0),
-      Number(banos || 0),
-      Number(areaM2 || 0),
-      descripcion || null,
-      precioCanon,
-      finalImagenUrl || null,
-      estadoPublicacion
-    ]);
-
-    return res.status(201).json({
-      message: "Propiedad registrada correctamente.",
-      propiedad: result.rows[0]
     });
 
-  } catch (e) {
-    console.error("❌ Error POST /propiedades:", e);
-    return res.status(500).json({ error: "Error registrando propiedad." });
-  }
-});
+    // Construir URL final
+    const queryString = params.toString();
+    const url = `/propiedades${queryString ? '?' + queryString : ''}`;
+    
+    console.log(`📡 Consultando API: ${url}`); // Log útil para depuración
 
-// =======================================
-// PUT ACTUALIZAR PROPIEDAD
-// =======================================
-router.put("/:id", authenticate, async (req, res) => {
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('❌ Error cargando propiedades:', error);
+    // Retornamos estructura vacía para evitar romper el frontend si falla la API
+    return { propiedades: [], total: 0 };
+  }
+}
+
+/**
+ * Renderizar propiedades en un contenedor
+ */
+export function renderizarPropiedades(propiedades, contenedorId, tipoVista = 'grid') {
+  const contenedor = document.getElementById(contenedorId) || document.querySelector(`.${contenedorId}`);
+  
+  if (!contenedor) {
+    console.warn(`⚠️ No se encontró el contenedor: ${contenedorId}`);
+    return;
+  }
+
+  if (!propiedades || propiedades.length === 0) {
+    contenedor.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #6B7280;">
+        <i class="fa-regular fa-folder-open" style="font-size: 2em; margin-bottom: 10px;"></i>
+        <p>No se encontraron propiedades con estos filtros.</p>
+      </div>`;
+    return;
+  }
+
+  if (tipoVista === 'grid') {
+    contenedor.innerHTML = propiedades.map(prop => crearCardPropiedad(prop)).join('');
+  } else if (tipoVista === 'list') {
+    contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadLista(prop)).join('');
+  } else if (tipoVista === 'row') {
+    contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadFila(prop)).join('');
+  }
+}
+
+/**
+ * Crear card de propiedad para grid
+ */
+function crearCardPropiedad(prop) {
+  // Asegurar fallback de imagen si viene null
+  const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800';
+  const precio = prop.precio_canon || '$0';
+  const direccion = prop.direccion || 'Dirección no disponible';
+  const habitaciones = prop.habitaciones || 0;
+  const banos = prop.banos || 0;
+  const area = prop.area_m2 || 0;
+  
+  // Etiqueta de Venta o Arriendo
+  const operacionTag = prop.operacion === 'VENTA' ? 'Venta' : 'Arriendo';
+  const tagColorClass = prop.operacion === 'VENTA' ? 'bg-blue-600' : 'new-tag'; // Podrías tener estilos diferentes
+
+  return `
+    <article class="prop-card-list">
+      <div class="card-img-list">
+        <span class="${tagColorClass}">${operacionTag}</span>
+        <img src="${imagen}" alt="${direccion}" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400'">
+        <button class="fav-btn" data-propiedad-id="${prop.id}" onclick="toggleFavorito(${prop.id})">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+      </div>
+      <div class="card-info-list">
+        <div class="price-red">${precio}</div>
+        <h3>${direccion}</h3>
+        <p class="location-list">
+          <i class="fa-solid fa-location-dot"></i> ${prop.ciudad || 'Buga, Valle'}
+        </p>
+        <div class="specs-list">
+          <span><i class="fa-solid fa-bed"></i> ${habitaciones}</span>
+          <span><i class="fa-solid fa-bath"></i> ${banos}</span>
+          <span><i class="fa-solid fa-maximize"></i> ${area} m²</span>
+        </div>
+        <div style="margin-top: 15px; text-align: center;">
+            <a href="/propiedad.html?id=${prop.id}" class="btn-ver-detalle" style="display:inline-block; width:100%; padding: 8px; background: #f3f4f6; color: #374151; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Ver Detalle</a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/**
+ * Crear card de propiedad para lista (Dashboard)
+ */
+function crearCardPropiedadLista(prop) {
+  // Misma lógica de fallback
+  const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800';
+  
+  return `
+    <article class="prop-card-list">
+      <div class="card-img-list">
+        <img src="${imagen}" alt="${prop.direccion}" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400'">
+        <button class="fav-btn" data-propiedad-id="${prop.id}">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+      </div>
+      <div class="card-info-list">
+        <div class="price-red">${prop.precio_canon}</div>
+        <h3>${prop.direccion}</h3>
+        <p class="location-list">
+          <i class="fa-solid fa-location-dot"></i> ${prop.direccion}
+        </p>
+        <div class="specs-list">
+          <span><i class="fa-solid fa-bed"></i> ${prop.habitaciones}</span>
+          <span><i class="fa-solid fa-bath"></i> ${prop.banos}</span>
+          <span><i class="fa-solid fa-maximize"></i> ${prop.area_m2} m²</span>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/**
+ * Crear card de propiedad para fila (Dashboard Propietario)
+ */
+function crearCardPropiedadFila(prop) {
+  const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200';
+  const estado = prop.estado_publicacion === 'PUBLICADO' ? 'published' : 'review';
+  const estadoTexto = prop.estado_publicacion === 'PUBLICADO' ? 'Publicado' : 'En Revisión';
+  
+  // Clase de color según estado
+  const badgeClass = prop.estado_publicacion === 'PUBLICADO' ? 'status-badge published' : 'status-badge review';
+
+  return `
+    <div class="property-row-card">
+      <img src="${imagen}" class="row-img" alt="${prop.direccion}" onerror="this.src='https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200'">
+      <div class="row-info">
+        <div class="row-header">
+          <h3>${prop.direccion}</h3>
+          <span class="${badgeClass}">${estadoTexto}</span>
+        </div>
+        <p class="row-address">
+          <i class="fa-solid fa-location-dot"></i> ${prop.direccion}
+        </p>
+        <div class="row-stats">
+          <span><i class="fa-solid fa-bed"></i> ${prop.habitaciones} Hab</span>
+          <span><i class="fa-solid fa-ruler"></i> ${prop.area_m2} m²</span>
+          <span class="price">${prop.precio_canon}</span>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button class="btn-icon" title="Editar" onclick="window.location.href='/editar-propiedad.html?id=${prop.id}'">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+        <button class="btn-icon delete" title="Eliminar" onclick="eliminarPropiedad(${prop.id})">
+          <i class="fa-regular fa-trash-can"></i>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Cargar mis propiedades (para propietario)
+ */
+export async function cargarMisPropiedades(usuarioId) {
   try {
-    const { id } = req.params;
-    const {
-      tipoInmueble,
-      operacion,
-      direccion,
-      habitaciones,
-      banos,
-      areaM2,
-      descripcion,
-      precioCanon,
-      imagenUrl,
-      activa
-    } = req.body;
-
-    const checkQuery = `SELECT propietario_id FROM public.propiedades WHERE id = $1`;
-    const checkResult = await dbQuery(checkQuery, [id]);
-
-    if (checkResult.rows.length === 0) {
-      return res.status(404).json({ error: "Propiedad no encontrada" });
+    const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`);
+    
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
-
-    // Verificar propiedad pertenece al usuario autenticado
-    const propietarioId = checkResult.rows[0].propietario_id;
-    if (req.user && Number(req.user.id) !== Number(propietarioId)) {
-      return res.status(403).json({ error: 'No autorizado: no eres el propietario' });
-    }
-
-    const updateFields = [];
-    const params = [];
-    let paramCount = 1;
-
-    if (tipoInmueble !== undefined) {
-      updateFields.push(`tipo_inmueble = $${paramCount++}`);
-      params.push(tipoInmueble);
-    }
-    if (operacion !== undefined) {
-      updateFields.push(`operacion = $${paramCount++}`);
-      params.push(operacion);
-    }
-    if (direccion !== undefined) {
-      updateFields.push(`direccion = $${paramCount++}`);
-      params.push(direccion);
-    }
-    if (habitaciones !== undefined) {
-      updateFields.push(`habitaciones = $${paramCount++}`);
-      params.push(Number(habitaciones));
-    }
-    if (banos !== undefined) {
-      updateFields.push(`banos = $${paramCount++}`);
-      params.push(Number(banos));
-    }
-    if (areaM2 !== undefined) {
-      updateFields.push(`area_m2 = $${paramCount++}`);
-      params.push(Number(areaM2));
-    }
-    if (descripcion !== undefined) {
-      updateFields.push(`descripcion = $${paramCount++}`);
-      params.push(descripcion);
-    }
-    if (precioCanon !== undefined) {
-      updateFields.push(`precio_canon = $${paramCount++}`);
-      params.push(precioCanon);
-    }
-    if (imagenUrl !== undefined) {
-      updateFields.push(`imagen_url = $${paramCount++}`);
-      params.push(imagenUrl);
-    }
-    if (activa !== undefined) {
-      updateFields.push(`activa = $${paramCount++}`);
-      params.push(activa);
-    }
-
-    if (updateFields.length === 0) {
-      return res.status(400).json({ error: "No hay campos para actualizar" });
-    }
-
-    updateFields.push(`actualizado_en = NOW()`);
-    params.push(id);
-
-    const updateQuery = `
-      UPDATE public.propiedades
-      SET ${updateFields.join(", ")}
-      WHERE id = $${paramCount}
-      RETURNING *
-    `;
-
-    const result = await dbQuery(updateQuery, params);
-    res.json(result.rows[0]);
-  } catch (e) {
-    console.error("❌ Error PUT /propiedades/:id:", e);
-    res.status(500).json({ error: "Error actualizando propiedad" });
+    
+    const propiedades = await response.json();
+    return propiedades;
+  } catch (error) {
+    console.error('❌ Error cargando mis propiedades:', error);
+    return [];
   }
-});
+}
 
-// =======================================
-// DELETE ELIMINAR PROPIEDAD (Soft delete)
-// =======================================
-router.delete("/:id", authenticate, async (req, res) => {
+/**
+ * Obtener usuario del localStorage
+ */
+export function obtenerUsuario() {
+  const userStr = localStorage.getItem('inmoapp_user');
+  if (!userStr) return null;
   try {
-    const { id } = req.params;
-
-    // Verificar el propietario antes de soft-delete
-    const check = await dbQuery('SELECT propietario_id FROM public.propiedades WHERE id = $1 LIMIT 1', [id]);
-    if (check.rows.length === 0) return res.status(404).json({ error: 'Propiedad no encontrada' });
-    if (req.user && Number(req.user.id) !== Number(check.rows[0].propietario_id)) {
-      return res.status(403).json({ error: 'No autorizado: no eres el propietario' });
-    }
-
-    const query = `
-      UPDATE public.propiedades
-      SET activa = FALSE, actualizado_en = NOW()
-      WHERE id = $1
-      RETURNING *
-    `;
-
-    const result = await dbQuery(query, [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Propiedad no encontrada" });
-    }
-
-    res.json({ message: "Propiedad eliminada correctamente", propiedad: result.rows[0] });
+    return JSON.parse(userStr);
   } catch (e) {
-    console.error("❌ Error DELETE /propiedades/:id:", e);
-    res.status(500).json({ error: "Error eliminando propiedad" });
+    console.error('Error parseando usuario:', e);
+    return null;
   }
-});
-
-// =======================================
-// POST Publicar propiedad (cambiar estado a PUBLICADO)
-// Requiere X-Usuario-Id header o usuarioId en body y que el usuario sea propietario de la propiedad
-// =======================================
-router.post("/:id/publish", authenticate, async (req, res) => {
-  try {
-    const { id } = req.params;
-    // Preferir usuario autenticado
-    const usuarioId = (req.user && req.user.id) || (req.body && req.body.usuarioId) || req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
-
-    if (!usuarioId) {
-      return res.status(401).json({ error: 'Autenticación requerida' });
-    }
-
-    // Verificar existencia y propiedad
-    const check = await dbQuery('SELECT id, propietario_id FROM public.propiedades WHERE id = $1 LIMIT 1', [id]);
-    if (check.rows.length === 0) {
-      return res.status(404).json({ error: 'Propiedad no encontrada' });
-    }
-
-    const prop = check.rows[0];
-    if (Number(prop.propietario_id) !== Number(usuarioId)) {
-      return res.status(403).json({ error: 'No autorizado: no eres el propietario de esta propiedad' });
-    }
-
-    const upd = await dbQuery(
-      `UPDATE public.propiedades SET estado_publicacion = 'PUBLICADO', activa = TRUE, actualizado_en = NOW() WHERE id = $1 RETURNING *`,
-      [id]
-    );
-
-    res.json({ ok: true, message: 'Propiedad publicada', propiedad: upd.rows[0] });
-  } catch (e) {
-    console.error('❌ Error POST /propiedades/:id/publish:', e);
-    res.status(500).json({ error: 'Error publicando propiedad' });
-  }
-});
-
-export default router;
+}
