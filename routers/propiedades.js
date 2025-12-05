@@ -239,25 +239,45 @@ router.post("/", async (req, res) => {
       areaM2,
       descripcion,
       precioCanon,
-      imagenUrl
+      imagenUrl,
+      usuarioId: bodyUsuarioId
     } = req.body;
 
-    if (!correoPropietario || !direccion || !precioCanon) {
-      return res.status(400).json({ error: "Correo, dirección y precio son obligatorios." });
+    // Aceptar usuarioId desde header o body para autenticación ligera
+    const headerUsuarioId = req.headers['x-usuario-id'] || req.headers['x-usuarioid'];
+    const usuarioId = headerUsuarioId || bodyUsuarioId;
+
+    if (!direccion || !precioCanon) {
+      return res.status(400).json({ error: "Dirección y precio son obligatorios." });
     }
 
-    const uRes = await dbQuery(
-      `SELECT id FROM public.usuarios 
-       WHERE correo = $1 AND rol = 'PROPIETARIO' AND activo = TRUE
-       LIMIT 1`,
-      [correoPropietario]
-    );
+    let propietarioId = null;
 
-    if (uRes.rows.length === 0) {
-      return res.status(400).json({ error: "Propietario no válido o inactivo." });
+    if (usuarioId) {
+      // Validar que el usuario exista y sea propietario activo
+      const uRes = await dbQuery(
+        `SELECT id, rol, activo FROM public.usuarios WHERE id = $1 LIMIT 1`,
+        [usuarioId]
+      );
+      if (uRes.rows.length === 0 || uRes.rows[0].rol !== 'PROPIETARIO' || uRes.rows[0].activo !== true) {
+        return res.status(400).json({ error: "Usuario propietario no válido o inactivo." });
+      }
+      propietarioId = uRes.rows[0].id;
+    } else if (correoPropietario) {
+      // Mantener compatibilidad: buscar por correoPropietario
+      const uRes = await dbQuery(
+        `SELECT id FROM public.usuarios 
+         WHERE correo = $1 AND rol = 'PROPIETARIO' AND activo = TRUE
+         LIMIT 1`,
+        [correoPropietario]
+      );
+      if (uRes.rows.length === 0) {
+        return res.status(400).json({ error: "Propietario no válido o inactivo." });
+      }
+      propietarioId = uRes.rows[0].id;
+    } else {
+      return res.status(400).json({ error: "Se requiere usuarioId (header/body) o correoPropietario." });
     }
-
-    const propietarioId = uRes.rows[0].id;
 
     const insertQuery = `
       INSERT INTO public.propiedades (
