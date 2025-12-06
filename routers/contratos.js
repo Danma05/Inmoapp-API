@@ -1,7 +1,7 @@
 // routers/contratos.js
 import express from "express";
 import { dbQuery } from "../dbQuery.js";
-import PDFDocument from "pdfkit"; // <--- IMPORTANTE: Nueva librería
+import PDFDocument from "pdfkit"; 
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 
     let query = `
       SELECT 
-        c.id, c.fecha_inicio, c.fecha_fin, c.monto_mensual, c.estado,
+        c.id, c.fecha_inicio, c.fecha_fin, c.monto_mensual, c.estado, c.documento_url,
         p.direccion, p.imagen_url,
         u_inq.nombre_completo as inquilino_nombre,
         u_prop.nombre_completo as propietario_nombre
@@ -38,22 +38,23 @@ router.get("/", async (req, res) => {
     const result = await dbQuery(query, params);
     res.json(result.rows);
   } catch (e) {
+    console.error("❌ Error GET /contratos:", e);
     res.status(500).json({ error: "Error al cargar contratos" });
   }
 });
 
 // =======================================
-// GET DESCARGAR PDF (¡NUEVO!)
+// GET DESCARGAR PDF (Corregido)
 // =======================================
 router.get("/:id/pdf", async (req, res) => {
     try {
         const { id } = req.params;
 
-        // 1. Buscar datos del contrato
+        // 1. Buscar datos del contrato (SIN p.ciudad)
         const query = `
             SELECT 
                 c.*, 
-                p.direccion, p.ciudad, p.tipo_inmueble,
+                p.direccion, p.tipo_inmueble,
                 u_inq.nombre_completo as inq_nombre, u_inq.correo as inq_correo,
                 u_prop.nombre_completo as prop_nombre, u_prop.correo as prop_correo
             FROM public.contratos c
@@ -85,8 +86,9 @@ router.get("/:id/pdf", async (req, res) => {
         doc.moveDown(2);
 
         // Cuerpo
+        // Usamos una ubicación genérica o extraemos la ciudad de la dirección si es posible
         const texto = `
-En la ciudad de Buga, a fecha de ${new Date().toLocaleDateString()}, comparecen por una parte:
+En la fecha de ${new Date().toLocaleDateString()}, comparecen por una parte:
 
 EL ARRENDADOR: ${datos.prop_nombre}, con correo ${datos.prop_correo}.
 
@@ -119,7 +121,7 @@ CUARTA - ESTADO: El inmueble se entrega en buen estado y el arrendatario se comp
         doc.end(); // Finalizar PDF
 
     } catch (e) {
-        console.error("Error PDF:", e);
+        console.error("❌ Error PDF:", e); // Ver el error exacto en la consola del servidor
         res.status(500).send("Error generando PDF");
     }
 });
