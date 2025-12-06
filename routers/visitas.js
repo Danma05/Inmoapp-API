@@ -1,4 +1,11 @@
-// routers/visitas.js (GET actualizado)
+import express from "express";
+import { dbQuery } from "../dbQuery.js";
+
+const router = express.Router();
+
+// =======================================
+// GET Visitas (Filtrado para Usuario o Propietario)
+// =======================================
 router.get("/", async (req, res) => {
   try {
     const { usuarioId, propietarioId } = req.query;
@@ -57,3 +64,67 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Error interno: " + e.message });
   }
 });
+
+// =======================================
+// POST Crear visita
+// =======================================
+router.post("/", async (req, res) => {
+  try {
+    const { usuarioId, propiedadId, fechaVisita, horaVisita, notas } = req.body;
+
+    if (!usuarioId || !propiedadId || !fechaVisita || !horaVisita) {
+      return res.status(400).json({ error: "Faltan datos obligatorios" });
+    }
+
+    const query = `
+      INSERT INTO public.visitas (usuario_id, propiedad_id, fecha_visita, hora_visita, notas, estado)
+      VALUES ($1, $2, $3, $4, $5, 'PENDIENTE')
+      RETURNING *
+    `;
+
+    const result = await dbQuery(query, [
+      usuarioId,
+      propiedadId,
+      fechaVisita,
+      horaVisita,
+      notas || null
+    ]);
+
+    res.status(201).json(result.rows[0]);
+  } catch (e) {
+    console.error("❌ Error creando visita:", e.message);
+    res.status(500).json({ error: "Error al agendar: " + e.message });
+  }
+});
+
+// =======================================
+// PUT Actualizar visita
+// =======================================
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    if (!estado) return res.status(400).json({ error: "Estado obligatorio" });
+
+    const query = `
+      UPDATE public.visitas
+      SET estado = $1, actualizado_en = NOW()
+      WHERE id = $2
+      RETURNING *
+    `;
+
+    const result = await dbQuery(query, [estado, id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Visita no encontrada" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (e) {
+    console.error("❌ Error actualizando visita:", e);
+    res.status(500).json({ error: "Error al actualizar" });
+  }
+});
+
+export default router; // <--- ¡ESTA LÍNEA ES LA QUE FALTABA!
