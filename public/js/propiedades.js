@@ -1,4 +1,7 @@
-// public/js/propiedades.js - Funciones para cargar y mostrar propiedades
+// public/js/propiedades.js
+
+// Definimos la URL base por si se necesita (aunque tus funciones actuales usan rutas relativas)
+const API_URL = 'https://inmoapp-api.onrender.com';
 
 /**
  * Cargar propiedades desde la API (Pública - Listado General)
@@ -177,6 +180,8 @@ export async function cargarMisPropiedades(usuarioId) {
     }
 
     // 4. Hacer la petición CON los headers
+    // Nota: Usamos API_URL si estás usando CORS, o ruta relativa si tienes proxy
+    // Para asegurar compatibilidad con tu código actual, uso ruta relativa:
     const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`, {
       method: 'GET',
       headers: headers
@@ -210,4 +215,44 @@ export function obtenerUsuario() {
     console.error('Error parseando usuario:', e);
     return null;
   }
+}
+
+/**
+ * ✅ NUEVA FUNCIÓN: Crear una propiedad (POST)
+ * Esta es la función que te faltaba y causaba el error de SyntaxError.
+ */
+export async function crearPropiedad(datosPropiedad) {
+    try {
+        const token = localStorage.getItem('inmoapp_token');
+        
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Agregar autenticación
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        // Realizar la petición POST
+        // Usamos la API_URL absoluta para asegurar que llegue al backend correcto
+        const response = await fetch(`${API_URL}/propiedades`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(datosPropiedad)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al crear la propiedad');
+        }
+
+        const data = await response.json();
+        return true; // Retornamos éxito
+
+    } catch (error) {
+        console.error("❌ Error en crearPropiedad:", error);
+        alert(`Error al publicar: ${error.message}`);
+        return false;
+    }
 }
