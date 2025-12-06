@@ -49,7 +49,9 @@ export async function cargarContratosInquilino(usuarioId) {
                 </div>
 
                 <div class="contract-footer-card" style="border-top:1px dashed #E5E7EB; padding-top:15px;">
-                    <button class="btn-download" style="width:100%; padding:10px; background:#1F2937; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <button onclick="window.open('/api/contratos/${c.id}/pdf', '_blank')" 
+                        class="btn-download" 
+                        style="width:100%; padding:10px; background:#1F2937; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px;">
                         <i class="fa-solid fa-download"></i> Descargar PDF
                     </button>
                 </div>
