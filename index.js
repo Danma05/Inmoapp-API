@@ -18,6 +18,7 @@ import mensajesRouter from "./routers/mensajes.js";
 import usuariosRouter from "./routers/usuarios.js";
 import notificacionesRouter from "./routers/notificaciones.js";
 import passportRouter from "./routers/passport.js";
+import contratosRouter from "./routers/contratos.js";
 
 
 const app = express();
@@ -61,6 +62,11 @@ app.get("/visitas", (_req, res) => {
 // ruta postulaciones
 app.get("/postulaciones", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "postulaciones.html"));
+});
+
+//  ruta contratos
+app.get("/contratos", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "contratos.html")); 
 });
 
 //  ruta mensajes
@@ -120,6 +126,9 @@ app.use('/api/postulaciones', postulacionesRouter);
 
 // Mensajes
 app.use("/api/mensajes", mensajesRouter);
+
+// Contratos
+app.use("/api/contratos", contratosRouter);
 
 // Usuarios y perfil
 app.use("/usuarios", usuariosRouter);

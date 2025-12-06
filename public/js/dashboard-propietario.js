@@ -1,6 +1,7 @@
 import { cargarMisPropiedades, obtenerUsuario } from './propiedades.js';
 import { cargarSolicitudesPropietario } from './solicitudes-owner.js';
 import { initMensajesOwner } from './mensajes-owner.js';
+import { cargarContratosOwner } from './contratos-owner.js';
 let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -158,6 +159,9 @@ function configurarEventosGlobales() {
             }
             if (target === 'mensajes' && currentUser) {
                 initMensajesOwner(currentUser.id);
+            }
+            if (target === 'contratos' && currentUser) {
+                cargarContratosOwner(currentUser.id);
             }
         };
     });
