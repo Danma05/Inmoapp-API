@@ -129,6 +129,12 @@ const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5M
 // =======================================
 router.post("/", authenticate, async (req, res) => {
   try {
+    // 🛡️ 1. VALIDACIÓN DE SEGURIDAD (¡NUEVO!)
+    // Esto evita que el servidor explote si la petición llega sin usuario
+    if (!req.user) {
+      return res.status(401).json({ error: "No estás autorizado. Inicia sesión nuevamente." });
+    }
+
     // Manejo de Multipart (Imágenes)
     const contentType = req.headers['content-type'] || '';
     if (contentType.startsWith('multipart/form-data')) {
@@ -138,7 +144,9 @@ router.post("/", authenticate, async (req, res) => {
     }
 
     const { tipoInmueble, operacion, direccion, habitaciones, banos, areaM2, descripcion, precioCanon, imagenUrl } = req.body;
-    const usuarioId = req.user.id; // Del token
+    
+    // Ahora es seguro leer el ID porque ya validamos req.user arriba
+    const usuarioId = req.user.id; 
 
     if (!direccion || !precioCanon) return res.status(400).json({ error: "Dirección y precio obligatorios" });
 
@@ -154,13 +162,10 @@ router.post("/", authenticate, async (req, res) => {
       } catch (e) { console.warn("No se pudo crear thumbnail"); }
     }
 
-    // 🔥 CAMBIO CLAVE: SIEMPRE 'PUBLICADO' Y SIEMPRE ACTIVA 🔥
+    // 🔥 SIEMPRE 'PUBLICADO' Y SIEMPRE ACTIVA
     const estadoPublicacion = 'PUBLICADO';
     const activa = true;
 
-    // Verificar si existe la columna 'estado_publicacion' en tu BD antes de insertar
-    // Si tu tabla NO tiene esa columna, elimina la línea correspondiente en el INSERT.
-    // Asumimos que sí existe por tu código anterior.
     const query = `
       INSERT INTO public.propiedades (
         propietario_id, tipo_inmueble, operacion, direccion, habitaciones, banos, area_m2, 

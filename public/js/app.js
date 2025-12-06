@@ -735,6 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =======================================
     // ENVÍO REAL DE PUBLICACIÓN A LA BASE DE DATOS
     // =======================================
+    /*
     if (submitNewPropBtn && formNewProp) {
         submitNewPropBtn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -791,6 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+        */
 
 
     // ======================================================
