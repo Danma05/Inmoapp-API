@@ -15,7 +15,11 @@ async function cargarConversaciones() {
     listaContainer.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i></div>';
 
     try {
-        const res = await fetch(`/mensajes/conversaciones?usuarioId=${usuarioLogueadoId}`);
+        // 🔥 CORRECCIÓN: Agregado /api/ al inicio
+        const res = await fetch(`/api/mensajes/conversaciones?usuarioId=${usuarioLogueadoId}`);
+        
+        if (!res.ok) throw new Error('Error en la petición');
+
         const conversaciones = await res.json();
 
         if (conversaciones.length === 0) {
@@ -25,7 +29,12 @@ async function cargarConversaciones() {
 
         listaContainer.innerHTML = conversaciones.map(c => {
             const fecha = new Date(c.fecha_ultimo).toLocaleDateString();
-            const activeClass = (currentChat && currentChat.otroUsuarioId === c.otro_usuario_id && currentChat.propiedadId === c.propiedad_id) ? 'active' : '';
+            // Verificar si este chat es el que está abierto actualmente
+            const isCurrent = currentChat && 
+                              currentChat.otroUsuarioId == c.otro_usuario_id && 
+                              currentChat.propiedadId == c.propiedad_id;
+            
+            const activeClass = isCurrent ? 'active' : '';
             
             return `
             <div class="msg-item ${activeClass} ${c.no_leidos > 0 ? 'unread' : ''}" 
@@ -62,7 +71,7 @@ window.abrirChat = async (otroId, propId, nombre, tituloProp) => {
     document.getElementById('chat-header-prop').textContent = tituloProp || 'Consulta General';
     document.getElementById('chat-header-avatar').textContent = nombre.charAt(0);
 
-    // Recargar lista para actualizar estado "activo"
+    // Recargar lista para actualizar la clase "active" visualmente
     cargarConversaciones(); 
     
     // Cargar Mensajes
@@ -70,14 +79,21 @@ window.abrirChat = async (otroId, propId, nombre, tituloProp) => {
     chatBody.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
 
     try {
-        const url = `/mensajes?usuarioId=${usuarioLogueadoId}&otroUsuarioId=${otroId}` + (propId ? `&propiedadId=${propId}` : '');
+        // 🔥 CORRECCIÓN: Agregado /api/ al inicio
+        const url = `/api/mensajes?usuarioId=${usuarioLogueadoId}&otroUsuarioId=${otroId}` + (propId ? `&propiedadId=${propId}` : '');
         const res = await fetch(url);
+        
+        if (!res.ok) throw new Error('Error al cargar mensajes');
+
         const mensajes = await res.json();
 
         chatBody.innerHTML = mensajes.map(m => {
+            // Identificar si el mensaje es mío (sent) o del otro (received)
+            const estilo = m.remitente_id == usuarioLogueadoId ? 'sent' : 'received';
             const hora = new Date(m.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
             return `
-                <div class="message-bubble ${m.tipo}">
+                <div class="message-bubble ${estilo}">
                     ${m.mensaje}
                     <span class="msg-time-stamp">${hora}</span>
                 </div>
@@ -113,7 +129,8 @@ window.enviarMensajeChat = async () => {
     input.value = '';
 
     try {
-        const res = await fetch('/mensajes', {
+        // 🔥 CORRECCIÓN: Agregado /api/ al inicio
+        const res = await fetch('/api/mensajes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -125,11 +142,13 @@ window.enviarMensajeChat = async () => {
         });
 
         if (res.ok) {
-            // Recargar chat real para confirmar
+            // Recargar chat real para confirmar y quitar el "Enviando..."
             window.abrirChat(currentChat.otroUsuarioId, currentChat.propiedadId, currentChat.nombreUsuario, currentChat.tituloPropiedad);
+        } else {
+            alert("Error al enviar mensaje");
         }
     } catch (e) {
-        alert("Error al enviar mensaje");
+        alert("Error de conexión al enviar");
     }
 };
 
