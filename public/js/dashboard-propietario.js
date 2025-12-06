@@ -41,7 +41,12 @@ async function actualizarListaPropiedades() {
         if (propiedades.length > 0) {
             contenedor.innerHTML = propiedades.map(p => `
                 <div class="property-row-card">
-                    <img src="${p.thumbnail_url || p.imagen_url || 'https://via.placeholder.com/200'}" class="row-img" style="object-fit:cover;">
+                    <img 
+                        src="${p.thumbnail_url || p.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400'}" 
+                        class="row-img" 
+                        style="object-fit:cover;"
+                        onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400'"
+                    >
                     <div class="row-info">
                         <div class="row-header">
                             <h3>${p.tipo_inmueble} - ${p.operacion}</h3>
