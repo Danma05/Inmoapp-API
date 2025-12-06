@@ -1,6 +1,6 @@
 import { cargarMisPropiedades, obtenerUsuario } from './propiedades.js';
 import { cargarSolicitudesPropietario } from './solicitudes-owner.js';
-
+import { initMensajesOwner } from './mensajes-owner.js';
 let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -155,6 +155,9 @@ function configurarEventosGlobales() {
             // 🔥 AGREGAR ESTO: Si la pestaña es 'solicitudes', cargar datos
             if (target === 'solicitudes' && currentUser) {
                 cargarSolicitudesPropietario(currentUser.id);
+            }
+            if (target === 'mensajes' && currentUser) {
+                initMensajesOwner(currentUser.id);
             }
         };
     });

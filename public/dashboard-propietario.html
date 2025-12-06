@@ -147,7 +147,55 @@
             </div>
         </section>
         <section id="view-contratos" class="dashboard-view hidden"><div class="empty-state-panel"><i class="fa-solid fa-file-contract"></i><h3>No tienes contratos activos</h3></div></section>
-        <section id="view-mensajes" class="dashboard-view hidden"><div class="content-card"><h3>Mensajes</h3><p>Bandeja de entrada vacía.</p></div></section>
+        <section id="view-mensajes" class="dashboard-view hidden" style="height: calc(100vh - 180px); min-height: 500px;">
+            <div class="messages-container" style="height: 100%;">
+                
+                <div class="msg-sidebar">
+                    <div class="msg-search-box">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Buscar conversación...">
+                        </div>
+                    </div>
+                    <div id="chat-list-container" class="msg-list">
+                        </div>
+                </div>
+
+                <div class="chat-window">
+                    
+                    <div id="empty-state-chat" style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#9CA3AF;">
+                        <i class="fa-regular fa-comments" style="font-size:4rem; margin-bottom:20px;"></i>
+                        <h3>Selecciona una conversación</h3>
+                        <p>Elige un chat de la izquierda para responder.</p>
+                    </div>
+
+                    <div id="active-chat-interface" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+                        
+                        <div class="chat-header">
+                            <div class="chat-user-info">
+                                <div id="chat-header-avatar" class="chat-avatar-sm">U</div>
+                                <div class="chat-details">
+                                    <h3 id="chat-header-name">Usuario</h3>
+                                    <span id="chat-header-prop" style="font-size:0.8rem; color:#6B7280;">Propiedad</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="chat-body-scroll" class="chat-body">
+                            </div>
+
+                        <div class="chat-input-area">
+                            <button class="btn-attach"><i class="fa-solid fa-paperclip"></i></button>
+                            <input type="text" id="message-input-owner" class="chat-input-field" placeholder="Escribe un mensaje...">
+                            <button onclick="window.enviarMensajeChat()" class="btn-send-msg">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
 
     </main>
 
