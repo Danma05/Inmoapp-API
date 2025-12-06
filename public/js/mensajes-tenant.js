@@ -7,14 +7,31 @@ let usuarioLogueadoId = null;
 document.addEventListener('DOMContentLoaded', async () => {
     const user = obtenerUsuario();
     if (!user) {
-        window.location.href = '/'; // Si no hay sesión, fuera
+        window.location.href = '/'; 
         return;
     }
     usuarioLogueadoId = user.id;
     
+    // 1. Cargar lista de conversaciones existentes
     await cargarConversaciones();
     
-    // Configurar envío con Enter
+    // 2. 🔥 VERIFICAR SI VENIMOS DE "CONTACTAR" (URL Params)
+    const params = new URLSearchParams(window.location.search);
+    const propId = params.get('propiedadId');
+    const ownerId = params.get('propietarioId');
+    
+    if (propId && ownerId) {
+        const ownerName = params.get('nombre') || 'Propietario';
+        const propTitle = params.get('titulo') || 'Propiedad';
+        
+        // Abrir el chat inmediatamente
+        seleccionarChat(ownerId, propId, ownerName, propTitle);
+        
+        // Limpiar URL para que no se reabra al recargar
+        window.history.replaceState({}, document.title, "/mensajes");
+    }
+
+    // Configurar envío
     const input = document.getElementById('message-input');
     if(input) {
         input.addEventListener('keypress', (e) => {
@@ -22,7 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    // Botón enviar
     const btnSend = document.getElementById('btn-send-message');
     if(btnSend) {
         btnSend.addEventListener('click', enviarMensajeTenant);
@@ -30,8 +46,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function cargarConversaciones() {
-    const listaContainer = document.querySelector('.msg-list');
-    if (!listaContainer) return;
+    const listaContainer = document.getElementById('chat-list-container');
+    if (!listaContainer) return; // Asegurarse que el elemento existe (id corregido según tu HTML anterior)
 
     listaContainer.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
 
@@ -43,19 +59,18 @@ async function cargarConversaciones() {
             listaContainer.innerHTML = `
                 <div style="text-align:center; padding:30px; color:#6B7280;">
                     <p>No tienes mensajes.</p>
-                    <small>Contacta un propietario desde el botón "Contactar" en los detalles de una propiedad.</small>
                 </div>`;
             return;
         }
 
         listaContainer.innerHTML = conversaciones.map(c => {
             const fecha = new Date(c.fecha_ultimo).toLocaleDateString();
-            const activeClass = (currentChat && currentChat.otroUsuarioId === c.otro_usuario_id && currentChat.propiedadId === c.propiedad_id) ? 'active' : '';
+            const activeClass = (currentChat && currentChat.otroUsuarioId == c.otro_usuario_id && currentChat.propiedadId == c.propiedad_id) ? 'active' : '';
             const nombreMostrar = c.otro_usuario_nombre || 'Usuario';
             
             return `
             <div class="msg-item ${activeClass} ${c.no_leidos > 0 ? 'unread' : ''}" 
-                 onclick="seleccionarChat(${c.otro_usuario_id}, ${c.propiedad_id}, '${nombreMostrar}', '${c.propiedad_titulo}')">
+                 onclick="window.seleccionarChat(${c.otro_usuario_id}, ${c.propiedad_id}, '${nombreMostrar}', '${c.propiedad_titulo}')">
                 <div class="msg-avatar">${nombreMostrar.charAt(0)}</div>
                 <div class="msg-info">
                     <div class="msg-header">
@@ -75,18 +90,24 @@ async function cargarConversaciones() {
     }
 }
 
-// Hacer la función global para el onclick del HTML generado
+// Hacer la función global para el onclick
 window.seleccionarChat = async (otroId, propId, nombre, tituloProp) => {
     currentChat = { otroUsuarioId: otroId, propiedadId: propId };
     
-    // UI Header
-    document.getElementById('chat-header-name').textContent = nombre;
-    document.getElementById('chat-header-prop').textContent = tituloProp || 'Propiedad';
-    document.getElementById('chat-header-avatar').textContent = nombre.charAt(0);
+    // Actualizar Header del Chat
+    const headerName = document.getElementById('chat-header-name');
+    const headerProp = document.getElementById('chat-header-prop');
+    const headerAvatar = document.getElementById('chat-header-avatar');
+
+    if(headerName) headerName.textContent = nombre;
+    if(headerProp) headerProp.textContent = tituloProp || 'Propiedad';
+    if(headerAvatar) headerAvatar.textContent = nombre.charAt(0);
 
     // Mostrar interfaz
-    document.getElementById('empty-state').classList.add('hidden');
-    document.getElementById('chat-interface').classList.remove('hidden');
+    const emptyState = document.getElementById('empty-state');
+    const chatInterface = document.getElementById('chat-interface');
+    if(emptyState) emptyState.classList.add('hidden');
+    if(chatInterface) chatInterface.classList.remove('hidden');
 
     // Cargar Mensajes
     const chatBody = document.getElementById('chat-body-scroll');
@@ -97,23 +118,29 @@ window.seleccionarChat = async (otroId, propId, nombre, tituloProp) => {
         const res = await fetch(url);
         const mensajes = await res.json();
 
-        chatBody.innerHTML = mensajes.map(m => {
-            const estilo = m.remitente_id === usuarioLogueadoId ? 'sent' : 'received';
-            const hora = new Date(m.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            return `
-                <div class="message-bubble ${estilo}">
-                    ${m.mensaje}
-                    <span class="msg-time-stamp">${hora}</span>
-                </div>
-            `;
-        }).join('');
+        if (mensajes.length === 0) {
+            chatBody.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Inicia la conversación...</div>';
+        } else {
+            chatBody.innerHTML = mensajes.map(m => {
+                const estilo = m.remitente_id == usuarioLogueadoId ? 'sent' : 'received';
+                const hora = new Date(m.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                return `
+                    <div class="message-bubble ${estilo}">
+                        ${m.mensaje}
+                        <span class="msg-time-stamp">${hora}</span>
+                    </div>
+                `;
+            }).join('');
+        }
 
         chatBody.scrollTop = chatBody.scrollHeight;
-        cargarConversaciones(); // Actualizar lista (quitar no leídos)
+        // Recargar lista lateral para quitar "no leídos" si corresponde
+        // cargarConversaciones(); 
 
     } catch (e) {
         console.error(e);
+        chatBody.innerHTML = '<p style="color:red; text-align:center;">Error al cargar mensajes.</p>';
     }
 };
 
@@ -125,6 +152,10 @@ window.enviarMensajeTenant = async () => {
     // UI Optimista
     const chatBody = document.getElementById('chat-body-scroll');
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    // Si estaba vacío el chat, limpiar mensaje de "Inicia conversación"
+    if (chatBody.innerHTML.includes('Inicia la conversación')) chatBody.innerHTML = '';
+
     chatBody.insertAdjacentHTML('beforeend', `
         <div class="message-bubble sent" style="opacity:0.7">
             ${texto}<span class="msg-time-stamp">${now}...</span>
@@ -134,7 +165,7 @@ window.enviarMensajeTenant = async () => {
     input.value = '';
 
     try {
-        await fetch('/mensajes', {
+        const res = await fetch('/mensajes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -144,7 +175,15 @@ window.enviarMensajeTenant = async () => {
                 mensaje: texto
             })
         });
-        // Recargar para confirmar
-        window.seleccionarChat(currentChat.otroUsuarioId, currentChat.propiedadId, document.getElementById('chat-header-name').textContent, document.getElementById('chat-header-prop').textContent);
-    } catch (e) { alert("Error al enviar"); }
+
+        if (res.ok) {
+            // Recargar para confirmar y actualizar lista lateral
+            const nombre = document.getElementById('chat-header-name').textContent;
+            const titulo = document.getElementById('chat-header-prop').textContent;
+            window.seleccionarChat(currentChat.otroUsuarioId, currentChat.propiedadId, nombre, titulo);
+            cargarConversaciones();
+        }
+    } catch (e) { 
+        alert("Error al enviar"); 
+    }
 };

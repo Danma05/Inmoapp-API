@@ -10,6 +10,45 @@
     <link rel="stylesheet" href="/css/dashboard.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- Solicitudes --- */
+        .request-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .request-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .req-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #F3F4F6; padding-bottom: 5px; }
+        .req-actions { display: flex; gap: 10px; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #E5E7EB; }
+        .btn-accept { background: #10B981; color: white; flex: 1; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
+        .btn-reject { background: white; border: 1px solid #EF4444; color: #EF4444; flex: 1; padding: 8px; border-radius: 4px; cursor: pointer; }
+        
+        /* --- Chat Layout --- */
+        .messages-container { display: flex; background: white; border: 1px solid #E5E7EB; border-radius: 12px; height: 100%; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .msg-sidebar { width: 320px; border-right: 1px solid #E5E7EB; display: flex; flex-direction: column; background: #F9FAFB; }
+        .msg-list { flex: 1; overflow-y: auto; }
+        .msg-item { padding: 15px; border-bottom: 1px solid #E5E7EB; cursor: pointer; display: flex; gap: 10px; align-items: center; transition: background 0.2s; }
+        .msg-item:hover, .msg-item.active { background: white; }
+        .msg-item.unread { background: #FEF2F2; border-left: 3px solid var(--brand-red); }
+        .msg-avatar { width: 40px; height: 40px; background: #E5E7EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #6B7280; flex-shrink: 0;}
+        .msg-info { flex: 1; overflow: hidden; }
+        .msg-name { font-weight: 600; font-size: 0.9rem; display: block; }
+        .msg-preview { font-size: 0.8rem; color: #6B7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .chat-window { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        .chat-header { padding: 15px; border-bottom: 1px solid #E5E7EB; background: white; display: flex; align-items: center; gap: 10px; }
+        .chat-body { flex: 1; background: #F3F4F6; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-input-area { padding: 15px; background: white; border-top: 1px solid #E5E7EB; display: flex; gap: 10px; align-items: center; }
+        
+        .message-bubble { max-width: 70%; padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; position: relative; }
+        .message-bubble.sent { align-self: flex-end; background: var(--brand-red); color: white; border-bottom-right-radius: 2px; }
+        .message-bubble.received { align-self: flex-start; background: white; color: #1F2937; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .msg-time-stamp { display: block; font-size: 0.7rem; margin-top: 4px; opacity: 0.7; text-align: right; }
+        
+        .chat-input-field { flex: 1; padding: 10px; border: 1px solid #D1D5DB; border-radius: 20px; outline: none; }
+        .btn-send-msg { width: 40px; height: 40px; background: var(--brand-red); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    </style>
 </head>
 <body>
 
@@ -25,17 +64,16 @@
                 <a href="#" class="nav-link" data-tab="propiedades">Mis Propiedades</a>
                 <a href="#" class="nav-link" data-tab="solicitudes">Solicitudes</a>
                 <a href="#" class="nav-link" data-tab="contratos">Contratos</a>
-                <a href="#" class="nav-link" data-tab="mensajes">Mensajes <span class="nav-badge-sm"></span></a>
+                <a href="#" class="nav-link" data-tab="mensajes">Mensajes</a>
             </nav>
 
             <div class="header-user-actions">
-                
                 <div class="notification-wrapper" style="position: relative;">
                     <button id="btn-bell" class="icon-btn-white notification-btn">
                         <i class="fa-regular fa-bell"></i>
                         <span class="badge-dot-white"></span>
                     </button>
-                    <div id="notif-menu" class="notif-dropdown hidden">
+                    <div id="notif-window" class="notif-dropdown hidden">
                         <div class="notif-header">
                             <h3>Notificaciones</h3>
                             <span class="mark-read">Marcar leídas</span>
@@ -44,13 +82,12 @@
                             <div class="notif-item unread">
                                 <div class="notif-icon green"><i class="fa-solid fa-check"></i></div>
                                 <div class="notif-text">
-                                    <strong>Inmueble Aprobado</strong>
-                                    <p>Tu "Apartamento Santa Mónica" ya es público.</p>
-                                    <span class="time">Hace 2 horas</span>
+                                    <strong>Sistema Listo</strong>
+                                    <p>Bienvenido a tu panel de control.</p>
+                                    <span class="time">Ahora</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="notif-footer"><a href="#">Ver todas</a></div>
                     </div>
                 </div>
 
@@ -68,7 +105,6 @@
                         </a>
                     </div>
                 </div>
-
             </div>
         </div>
     </header>
@@ -124,7 +160,6 @@
                 <h3 class="card-title">Gestión de Solicitudes</h3>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
-                    
                     <div>
                         <h4 style="margin-bottom:15px; color:#4B5563; border-bottom:2px solid #F3F4F6; padding-bottom:10px;">
                             <i class="fa-regular fa-calendar"></i> Visitas Recibidas
@@ -142,13 +177,19 @@
                             <p style="color:#999; font-style:italic;">Cargando postulaciones...</p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
-        <section id="view-contratos" class="dashboard-view hidden"><div class="empty-state-panel"><i class="fa-solid fa-file-contract"></i><h3>No tienes contratos activos</h3></div></section>
+
+        <section id="view-contratos" class="dashboard-view hidden">
+            <div class="empty-state-panel">
+                <i class="fa-solid fa-file-contract"></i>
+                <h3>No tienes contratos activos</h3>
+            </div>
+        </section>
+
         <section id="view-mensajes" class="dashboard-view hidden" style="height: calc(100vh - 180px); min-height: 500px;">
-            <div class="messages-container" style="height: 100%;">
+            <div class="messages-container">
                 
                 <div class="msg-sidebar">
                     <div class="msg-search-box">
@@ -170,7 +211,6 @@
                     </div>
 
                     <div id="active-chat-interface" class="hidden" style="display:flex; flex-direction:column; height:100%;">
-                        
                         <div class="chat-header">
                             <div class="chat-user-info">
                                 <div id="chat-header-avatar" class="chat-avatar-sm">U</div>
