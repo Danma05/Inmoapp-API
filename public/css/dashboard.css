@@ -2059,3 +2059,95 @@
     .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
     .metrics-grid { grid-template-columns: 1fr; }
 }
+/* --- Estilos para Tarjetas de Solicitudes (Dashboard Propietario) --- */
+.request-card {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+.request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.req-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.req-type {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.req-type.visita { color: #EA580C; }      /* Naranja */
+.req-type.postulacion { color: #2563EB; } /* Azul */
+
+.req-body h4 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    color: #111827;
+}
+.req-body p {
+    margin: 0 0 4px;
+    font-size: 0.9rem;
+    color: #4B5563;
+}
+.req-price {
+    color: var(--brand-red);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.req-note, .req-msg {
+    background: #F9FAFB;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: #6B7280;
+    margin-top: 10px !important;
+    border-left: 3px solid #E5E7EB;
+}
+
+.req-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #E5E7EB;
+}
+
+.btn-accept, .btn-reject {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+}
+
+.btn-accept {
+    background-color: #10B981; /* Verde */
+    color: white;
+}
+.btn-accept:hover { background-color: #059669; }
+
+.btn-reject {
+    background-color: white;
+    border: 1px solid #EF4444;
+    color: #EF4444;
+}
+.btn-reject:hover { background-color: #FEF2F2; }

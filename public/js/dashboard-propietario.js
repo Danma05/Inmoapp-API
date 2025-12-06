@@ -1,4 +1,5 @@
 import { cargarMisPropiedades, obtenerUsuario } from './propiedades.js';
+import { cargarSolicitudesPropietario } from './solicitudes-owner.js';
 
 let currentUser = null;
 
@@ -150,6 +151,11 @@ function configurarEventosGlobales() {
             const target = link.getAttribute('data-tab');
             document.getElementById('view-'+target).classList.remove('hidden');
             link.classList.add('active');
+
+            // 🔥 AGREGAR ESTO: Si la pestaña es 'solicitudes', cargar datos
+            if (target === 'solicitudes' && currentUser) {
+                cargarSolicitudesPropietario(currentUser.id);
+            }
         };
     });
 

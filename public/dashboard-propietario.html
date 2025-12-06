@@ -119,7 +119,33 @@
             </div>
         </section>
 
-        <section id="view-solicitudes" class="dashboard-view hidden"><div class="content-card"><h3>Solicitudes</h3><p>No tienes solicitudes pendientes.</p></div></section>
+        <section id="view-solicitudes" class="dashboard-view hidden">
+            <div class="content-card">
+                <h3 class="card-title">Gestión de Solicitudes</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+                    
+                    <div>
+                        <h4 style="margin-bottom:15px; color:#4B5563; border-bottom:2px solid #F3F4F6; padding-bottom:10px;">
+                            <i class="fa-regular fa-calendar"></i> Visitas Recibidas
+                        </h4>
+                        <div id="lista-visitas-owner">
+                            <p style="color:#999; font-style:italic;">Cargando visitas...</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="margin-bottom:15px; color:#4B5563; border-bottom:2px solid #F3F4F6; padding-bottom:10px;">
+                            <i class="fa-solid fa-users"></i> Postulaciones
+                        </h4>
+                        <div id="lista-postulaciones-owner">
+                            <p style="color:#999; font-style:italic;">Cargando postulaciones...</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
         <section id="view-contratos" class="dashboard-view hidden"><div class="empty-state-panel"><i class="fa-solid fa-file-contract"></i><h3>No tienes contratos activos</h3></div></section>
         <section id="view-mensajes" class="dashboard-view hidden"><div class="content-card"><h3>Mensajes</h3><p>Bandeja de entrada vacía.</p></div></section>
 
