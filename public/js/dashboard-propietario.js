@@ -39,9 +39,13 @@ async function actualizarListaPropiedades() {
         if (metricProps) metricProps.textContent = propiedades.length;
 
         if (propiedades.length > 0) {
-            contenedor.innerHTML = propiedades.map(p => `
+            contenedor.innerHTML = propiedades.map(p => {
+                // ✅ CORRECCIÓN DE IMAGEN: Usamos Unsplash para evitar el error de "placeholder"
+                const imagen = p.thumbnail_url || p.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=200';
+                
+                return `
                 <div class="property-row-card">
-                    <img src="${p.thumbnail_url || p.imagen_url || 'https://via.placeholder.com/200'}" class="row-img" style="object-fit:cover;">
+                    <img src="${imagen}" class="row-img" style="object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=200'">
                     <div class="row-info">
                         <div class="row-header">
                             <h3>${p.tipo_inmueble} - ${p.operacion}</h3>
@@ -60,7 +64,7 @@ async function actualizarListaPropiedades() {
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         } else {
             contenedor.innerHTML = '<p style="text-align:center; padding:40px;">No tienes propiedades publicadas aún.</p>';
         }
@@ -105,7 +109,7 @@ function configurarModalCrear() {
             btnSubmit.disabled = true;
 
             const formData = new FormData(form);
-            // El backend ya lo pone en PUBLICADO por defecto, no necesitamos enviar nada extra
+            // El backend ya lo pone en PUBLICADO por defecto
 
             try {
                 const token = localStorage.getItem('inmoapp_token');

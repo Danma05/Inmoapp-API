@@ -1,7 +1,7 @@
 // public/js/propiedades.js - Funciones para cargar y mostrar propiedades
 
 /**
- * Cargar propiedades desde la API (Versión Optimizada)
+ * Cargar propiedades desde la API (Pública - Listado General)
  * Convierte automáticamente cualquier filtro que reciba en parámetros URL
  */
 export async function cargarPropiedades(filtros = {}) {
@@ -21,7 +21,7 @@ export async function cargarPropiedades(filtros = {}) {
     const queryString = params.toString();
     const url = `/propiedades${queryString ? '?' + queryString : ''}`;
     
-    // console.log(`📡 Consultando API: ${url}`); // Log útil para depuración
+    // console.log(`📡 Consultando API: ${url}`); 
 
     const response = await fetch(url);
     
@@ -63,17 +63,15 @@ export function renderizarPropiedades(propiedades, contenedorId, tipoVista = 'gr
   } else if (tipoVista === 'list') {
     contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadLista(prop)).join('');
   } else if (tipoVista === 'row') {
-    // Nota: La vista 'row' suele usarse en el dashboard de propietario con botones de edición
-    // Si prefieres centralizarla aquí, puedes hacerlo, pero a veces se maneja en el script específico
     contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadFila(prop)).join('');
   }
 }
 
 /**
- * Crear card de propiedad para grid
+ * Crear card de propiedad para GRID (Vista principal)
  */
 function crearCardPropiedad(prop) {
-  // Asegurar fallback de imagen si viene null
+  // Fallback de imagen seguro
   const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800';
   const precio = prop.precio_canon || '$0';
   const direccion = prop.direccion || 'Dirección no disponible';
@@ -84,7 +82,6 @@ function crearCardPropiedad(prop) {
   // Etiqueta de Venta o Arriendo
   const operacionTag = prop.operacion === 'VENTA' ? 'Venta' : 'Arriendo';
   const tagColorClass = prop.operacion === 'VENTA' ? 'bg-blue-600' : 'new-tag'; 
-  // Estilo inline por si la clase CSS no existe
   const tagStyle = prop.operacion === 'VENTA' ? 'background-color:#2563EB;' : '';
 
   return `
@@ -116,21 +113,19 @@ function crearCardPropiedad(prop) {
 }
 
 /**
- * Crear card de propiedad para lista (Dashboard)
+ * Crear card de propiedad para LISTA (Dashboard)
  */
 function crearCardPropiedadLista(prop) {
-  return crearCardPropiedad(prop); // Reutilizamos la misma card por ahora
+  return crearCardPropiedad(prop); // Reutilizamos el diseño de grid por ahora
 }
 
 /**
- * Crear card de propiedad para fila (Dashboard Propietario)
+ * Crear card de propiedad para FILA (Tabla/Dashboard Propietario)
  */
 function crearCardPropiedadFila(prop) {
   const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200';
   const estado = prop.estado_publicacion === 'PUBLICADO' ? 'published' : 'review';
   const estadoTexto = prop.estado_publicacion === 'PUBLICADO' ? 'Publicado' : 'En Revisión';
-  
-  // Clase de color según estado
   const badgeClass = prop.estado_publicacion === 'PUBLICADO' ? 'status-badge published' : 'status-badge review';
 
   return `
@@ -163,38 +158,40 @@ function crearCardPropiedadFila(prop) {
 }
 
 /**
- * Cargar mis propiedades (para propietario)
- * CORREGIDO: Ahora incluye el token de autorización
+ * Cargar MIS propiedades (Privada - Requiere Token)
+ * ✅ Esta función incluye la autorización JWT necesaria para el backend.
  */
 export async function cargarMisPropiedades(usuarioId) {
   try {
-    // 1. Obtener el token guardado
+    // 1. Obtener el token guardado en el login
     const token = localStorage.getItem('inmoapp_token');
     
-    // 2. Preparar headers con el token
+    // 2. Preparar encabezados
     const headers = {
       'Content-Type': 'application/json'
     };
+    
+    // 3. Si hay token, agregarlo como Bearer
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // 3. Hacer la petición incluyendo headers
+    // 4. Hacer la petición CON los headers
     const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`, {
-        method: 'GET',
-        headers: headers
+      method: 'GET',
+      headers: headers
     });
     
     if (!response.ok) {
       if (response.status === 401) {
-          console.warn("Sesión no válida o expirada.");
-          // Opcional: window.location.href = '/'; 
+        console.warn("Sesión expirada o inválida.");
       }
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
     
     const propiedades = await response.json();
     return propiedades;
+
   } catch (error) {
     console.error('❌ Error cargando mis propiedades:', error);
     return [];
