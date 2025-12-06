@@ -146,6 +146,10 @@
                         <h4 id="agent-name" style="color: #111827;">Propietario</h4>
                         <p style="color: #6B7280; margin-bottom: 20px; font-size: 0.9rem;">Verificado por InmoApp</p>
                         
+                        <button id="btn-chat-interno" class="btn-action-detail" style="width: 100%; margin-bottom: 10px; background: #2563EB; color: white; border: none;">
+                            <i class="fa-regular fa-comments"></i> Chat con Propietario
+                        </button>
+
                         <button id="btn-whatsapp" class="btn-action-detail" style="width: 100%; margin-bottom: 10px; background: #25D366; color: white; border: none;">
                             <i class="fa-brands fa-whatsapp"></i> Contactar WhatsApp
                         </button>
@@ -226,11 +230,11 @@
             // 1. Verificar Usuario
             const userStr = localStorage.getItem('inmoapp_user');
             if (!userStr) {
-                alert("Debes iniciar sesión para ver detalles.");
-                window.location.href = '/';
-                return;
+                // Si no hay usuario, permitimos ver pero restringiremos acciones
+                usuarioActual = null;
+            } else {
+                usuarioActual = JSON.parse(userStr);
             }
-            usuarioActual = JSON.parse(userStr);
 
             // 2. Obtener ID URL
             const params = new URLSearchParams(window.location.search);
@@ -281,6 +285,31 @@
             const nombre = prop.propietario_nombre || 'Agente';
             agentImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=random&size=128`;
 
+            // LÓGICA DEL BOTÓN CHAT INTERNO (NUEVO)
+            const btnChat = document.getElementById('btn-chat-interno');
+            if (btnChat) {
+                btnChat.onclick = () => {
+                    if (!usuarioActual) {
+                        alert("Debes iniciar sesión para iniciar un chat.");
+                        // Opcional: Redirigir al login o abrir modal
+                        return;
+                    }
+                    if (usuarioActual.id === prop.propietario_id) {
+                        alert("No puedes iniciar un chat contigo mismo.");
+                        return;
+                    }
+
+                    // Redirigir a /mensajes enviando los datos por URL
+                    const url = `/mensajes?` + 
+                        `propiedadId=${prop.id}&` + 
+                        `propietarioId=${prop.propietario_id}&` + 
+                        `nombre=${encodeURIComponent(prop.propietario_nombre)}&` + 
+                        `titulo=${encodeURIComponent(prop.direccion)}`;
+                    
+                    window.location.href = url;
+                };
+            }
+
             // Contacto Externo
             const btnWs = document.getElementById('btn-whatsapp');
             if (prop.propietario_telefono) {
@@ -299,8 +328,14 @@
 
         function configurarModales() {
             // Abrir Modales
-            document.getElementById('btn-agendar').addEventListener('click', () => abrirModal('modal-visita'));
-            document.getElementById('btn-postular').addEventListener('click', () => abrirModal('modal-postulacion'));
+            document.getElementById('btn-agendar').addEventListener('click', () => {
+                if(!usuarioActual) return alert("Debes iniciar sesión.");
+                abrirModal('modal-visita');
+            });
+            document.getElementById('btn-postular').addEventListener('click', () => {
+                if(!usuarioActual) return alert("Debes iniciar sesión.");
+                abrirModal('modal-postulacion');
+            });
 
             // Envío Formulario Visita
             document.getElementById('form-visita').addEventListener('submit', async (e) => {
