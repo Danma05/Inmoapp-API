@@ -1,172 +1,203 @@
-import { cargarMisPropiedades, obtenerUsuario } from './propiedades.js';
+import { cargarMisPropiedades, crearPropiedad } from './propiedades.js';
+import { initSolicitudes } from './solicitudes.js';
 
-let currentUser = null;
+// --- CONFIGURACIÓN Y ESTADO ---
+const USUARIO_ID = 53; // ID fijo para pruebas (en producción vendría del login/token)
+const API_URL = 'https://inmoapp-api.onrender.com';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 Dashboard Propietario cargando...');
-
-    // 1. Verificar Sesión
-    currentUser = obtenerUsuario();
-    if (!currentUser || !currentUser.id) {
-        window.location.href = '/';
-        return;
-    }
-
-    // Poner nombre en el header
-    const headerName = document.getElementById('header-username');
-    if (headerName) headerName.textContent = currentUser.nombre_completo.split(' ')[0];
-
-    // 2. Cargar Propiedades
-    await actualizarListaPropiedades();
-
-    // 3. Configurar Modal de Nueva Propiedad
-    configurarModalCrear();
-
-    // 4. Configurar Logout y Tabs
-    configurarEventosGlobales();
+document.addEventListener('DOMContentLoaded', () => {
+    initDashboard();
 });
 
-async function actualizarListaPropiedades() {
-    const contenedor = document.getElementById('lista-mis-propiedades');
-    const metricProps = document.getElementById('metric-props');
-    if(!contenedor) return;
+function initDashboard() {
+    console.log('Iniciando Dashboard Propietario...');
+    
+    // 1. Cargar datos iniciales (Resumen)
+    cargarResumen();
 
-    contenedor.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
+    // 2. Configurar Navegación (Tabs)
+    setupTabs();
 
-    try {
-        const propiedades = await cargarMisPropiedades(currentUser.id);
-        
-        if (metricProps) metricProps.textContent = propiedades.length;
+    // 3. Configurar Modal de Nueva Propiedad
+    setupModalPropiedad();
 
-        if (propiedades.length > 0) {
-            contenedor.innerHTML = propiedades.map(p => {
-                // ✅ CORRECCIÓN DE IMAGEN: Usamos Unsplash para evitar el error de "placeholder"
-                const imagen = p.thumbnail_url || p.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=200';
-                
-                return `
-                <div class="property-row-card">
-                    <img src="${imagen}" class="row-img" style="object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=200'">
-                    <div class="row-info">
-                        <div class="row-header">
-                            <h3>${p.tipo_inmueble} - ${p.operacion}</h3>
-                            <span class="status-badge published">PUBLICADO</span>
-                        </div>
-                        <p class="row-address"><i class="fa-solid fa-location-dot"></i> ${p.direccion}</p>
-                        <div class="row-stats">
-                            <span><i class="fa-solid fa-bed"></i> ${p.habitaciones}</span>
-                            <span><i class="fa-solid fa-ruler"></i> ${p.area_m2} m²</span>
-                            <span class="price">${p.precio_canon}</span>
-                        </div>
-                    </div>
-                    <div class="row-actions">
-                        <button class="btn-icon delete" onclick="eliminarPropiedad(${p.id})">
-                            <i class="fa-regular fa-trash-can" style="color:red;"></i>
-                        </button>
-                    </div>
-                </div>
-            `}).join('');
-        } else {
-            contenedor.innerHTML = '<p style="text-align:center; padding:40px;">No tienes propiedades publicadas aún.</p>';
-        }
-    } catch (error) {
-        console.error(error);
-        contenedor.innerHTML = '<p style="color:red; text-align:center;">Error al cargar propiedades. (Revisa tu conexión)</p>';
-    }
+    // 4. Configurar Menús del Header (Notificaciones y Usuario)
+    setupHeaderDropdowns();
 }
 
-// Función Global para Eliminar
-window.eliminarPropiedad = async (id) => {
-    if(!confirm("¿Borrar esta propiedad permanentemente?")) return;
-    try {
-        const token = localStorage.getItem('inmoapp_token');
-        const res = await fetch(`/propiedades/${id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if(res.ok) {
-            alert("Eliminada correctamente");
-            actualizarListaPropiedades();
-        } else {
-            alert("No se pudo eliminar");
-        }
-    } catch(e) { console.error(e); }
-};
+// ==========================================
+// 1. LÓGICA DE NAVEGACIÓN (TABS)
+// ==========================================
+function setupTabs() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.dashboard-view');
+    const pageTitle = document.getElementById('page-title');
 
-function configurarModalCrear() {
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // 1. UI: Actualizar clases active
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            // 2. UI: Mostrar sección correspondiente
+            const tabId = link.dataset.tab;
+            sections.forEach(s => s.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // 3. LÓGICA: Cargar datos según la pestaña
+            switch(tabId) {
+                case 'resumen':
+                    pageTitle.textContent = 'Panel de Control';
+                    cargarResumen();
+                    break;
+                case 'propiedades':
+                    pageTitle.textContent = 'Mis Propiedades';
+                    cargarMisPropiedades(USUARIO_ID);
+                    break;
+                case 'solicitudes':
+                    pageTitle.textContent = 'Gestión de Solicitudes';
+                    initSolicitudes(USUARIO_ID);
+                    break;
+                case 'contratos':
+                    pageTitle.textContent = 'Mis Contratos';
+                    // cargarContratos(USUARIO_ID); // Futura implementación
+                    break;
+                case 'mensajes':
+                    pageTitle.textContent = 'Mensajería';
+                    // cargarMensajes(USUARIO_ID); // Futura implementación
+                    break;
+            }
+        });
+    });
+}
+
+// ==========================================
+// 2. LÓGICA DEL MODAL (NUEVA PROPIEDAD)
+// ==========================================
+function setupModalPropiedad() {
     const modal = document.getElementById('new-property-modal');
     const btnOpen = document.getElementById('btn-new-property-main');
+    const btnClose = document.getElementById('close-new-prop');
+    const btnCancel = document.getElementById('cancel-new-prop');
     const form = document.getElementById('form-new-property');
-    const closeBtns = document.querySelectorAll('#close-new-prop, #cancel-new-prop');
 
-    if(btnOpen) btnOpen.onclick = () => modal.classList.remove('hidden');
-    closeBtns.forEach(b => b.onclick = () => modal.classList.add('hidden'));
+    // Abrir
+    btnOpen.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
 
-    if(form) {
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            const btnSubmit = document.getElementById('submit-new-prop');
-            btnSubmit.innerHTML = 'Publicando...';
-            btnSubmit.disabled = true;
+    // Cerrar
+    const cerrarModal = () => {
+        modal.classList.add('hidden');
+        form.reset(); // Limpiar formulario al cerrar
+    };
 
-            const formData = new FormData(form);
-            // El backend ya lo pone en PUBLICADO por defecto
+    btnClose.addEventListener('click', cerrarModal);
+    btnCancel.addEventListener('click', cerrarModal);
 
-            try {
-                const token = localStorage.getItem('inmoapp_token');
-                const res = await fetch('/propiedades', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
+    // Cerrar al hacer clic fuera del contenido
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) cerrarModal();
+    });
 
-                if(res.ok) {
-                    alert("✅ ¡Propiedad publicada exitosamente!");
-                    form.reset();
-                    modal.classList.add('hidden');
-                    actualizarListaPropiedades();
-                } else {
-                    const err = await res.json();
-                    alert("Error: " + err.error);
-                }
-            } catch(e) {
-                alert("Error de conexión");
-            } finally {
-                btnSubmit.innerHTML = 'Publicar';
-                btnSubmit.disabled = false;
-            }
+    // Enviar Formulario
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Recopilar datos del formulario
+        const formData = new FormData(form);
+        const nuevaPropiedad = {
+            propietarioId: USUARIO_ID,
+            titulo: `${formData.get('tipoInmueble')} en ${formData.get('direccion')}`, // Generamos un título automático
+            tipo: formData.get('tipoInmueble'),
+            operacion: formData.get('operacion'),
+            direccion: formData.get('direccion'),
+            habitaciones: parseInt(formData.get('habitaciones')) || 0,
+            banos: parseInt(formData.get('banos')) || 0,
+            area: parseInt(formData.get('areaM2')) || 0,
+            descripcion: formData.get('descripcion'),
+            precio: parseFloat(formData.get('precioCanon').replace(/[^0-9.]/g, '')) || 0, // Limpiar símbolo $ si el usuario lo pone
+            imagen: formData.get('imagenUrl') || 'https://via.placeholder.com/300x200?text=Sin+Imagen'
         };
-    }
+
+        // Enviar a la API (usando la función importada de propiedades.js)
+        const exito = await crearPropiedad(nuevaPropiedad);
+
+        if (exito) {
+            cerrarModal();
+            // Si estamos en la vista de propiedades, recargar
+            const activeTab = document.querySelector('.nav-link.active').dataset.tab;
+            if (activeTab === 'propiedades') {
+                cargarMisPropiedades(USUARIO_ID);
+            } else {
+                alert('Propiedad publicada correctamente.');
+            }
+            // Actualizar métricas del resumen
+            cargarResumen();
+        }
+    });
 }
 
-function configurarEventosGlobales() {
-    // Tabs
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.onclick = (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.dashboard-view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
-            const target = link.getAttribute('data-tab');
-            document.getElementById('view-'+target).classList.remove('hidden');
-            link.classList.add('active');
-        };
+// ==========================================
+// 3. HEADER INTERACTIVO
+// ==========================================
+function setupHeaderDropdowns() {
+    // Notificaciones
+    const btnBell = document.getElementById('btn-bell');
+    const notifMenu = document.getElementById('notif-menu');
+    
+    btnBell.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notifMenu.classList.toggle('hidden');
+        userDropdown.classList.add('hidden'); // Cerrar el otro si está abierto
+    });
+
+    // Usuario
+    const btnUser = document.getElementById('user-profile-btn');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    btnUser.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('hidden');
+        notifMenu.classList.add('hidden'); // Cerrar el otro si está abierto
     });
 
     // Logout
-    const btnLogout = document.getElementById('btn-logout');
-    if(btnLogout) {
-        btnLogout.onclick = () => {
-            localStorage.removeItem('inmoapp_user');
-            localStorage.removeItem('inmoapp_token');
-            window.location.href = '/';
-        };
-    }
-    
-    // Perfil Dropdown
-    const btnProfile = document.getElementById('user-profile-btn');
-    if(btnProfile) {
-        btnProfile.onclick = () => {
-            document.getElementById('user-dropdown').classList.toggle('hidden');
+    document.getElementById('btn-logout').addEventListener('click', (e) => {
+        e.preventDefault();
+        if(confirm('¿Cerrar sesión?')) {
+            window.location.href = '/login.html'; // Redirigir
         }
+    });
+
+    // Cerrar menús al hacer clic fuera
+    document.addEventListener('click', () => {
+        notifMenu.classList.add('hidden');
+        userDropdown.classList.add('hidden');
+    });
+}
+
+// ==========================================
+// 4. DATOS DE RESUMEN (MÉTRICAS)
+// ==========================================
+async function cargarResumen() {
+    // Aquí actualizamos los números de las tarjetas del Dashboard
+    const metricProps = document.getElementById('metric-props');
+    
+    try {
+        // Obtenemos las propiedades para contar cuántas hay
+        const res = await fetch(`${API_URL}/propiedades?propietarioId=${USUARIO_ID}`);
+        if(res.ok) {
+            const props = await res.json();
+            metricProps.textContent = props.length;
+        }
+    } catch (error) {
+        console.error("Error cargando métricas resumen:", error);
+        metricProps.textContent = "-";
     }
+
+    // Nota: Para "Ingresos Mes" y "Pendientes", necesitarías endpoints específicos
+    // o calcularlos sumando datos en el frontend.
 }
