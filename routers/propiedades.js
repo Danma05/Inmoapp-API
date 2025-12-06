@@ -129,8 +129,8 @@ const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5M
 // =======================================
 router.post("/", authenticate, async (req, res) => {
   try {
-    // 🛡️ 1. VALIDACIÓN DE SEGURIDAD (¡NUEVO!)
-    // Esto evita que el servidor explote si la petición llega sin usuario
+    // 🛡️ VALIDACIÓN DE SEGURIDAD (AGREGAR ESTO)
+    // Esto evita que el servidor se caiga (Error 500) si llega una petición sin usuario
     if (!req.user) {
       return res.status(401).json({ error: "No estás autorizado. Inicia sesión nuevamente." });
     }

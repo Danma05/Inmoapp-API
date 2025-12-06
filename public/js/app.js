@@ -735,64 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =======================================
     // ENVÍO REAL DE PUBLICACIÓN A LA BASE DE DATOS
     // =======================================
-    /*
-    if (submitNewPropBtn && formNewProp) {
-        submitNewPropBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            // 1️⃣ Obtener usuario logueado
-            const storedUser = localStorage.getItem('inmoapp_user');
-            if (!storedUser) return alert("Debes iniciar sesión.");
-            const user = JSON.parse(storedUser);
-
-            // 2️⃣ Capturar datos del formulario
-            const payload = {
-                correoPropietario: user.correo,
-                tipoInmueble: document.getElementById('prop-tipo')?.value,
-                operacion: document.getElementById('prop-operacion')?.value,
-                direccion: document.getElementById('prop-direccion')?.value.trim(),
-                habitaciones: Number(document.getElementById('prop-habitaciones')?.value || 0),
-                banos: Number(document.getElementById('prop-banos')?.value || 0),
-                areaM2: Number(document.getElementById('prop-area')?.value || 0),
-                descripcion: document.getElementById('prop-descripcion')?.value.trim(),
-                precioCanon: document.getElementById('prop-precio')?.value.trim(),
-                imagenUrl: document.getElementById('prop-imagen-url')?.value.trim()
-            };
-
-            if (!payload.direccion || !payload.precioCanon) {
-                return alert("La dirección y el precio son obligatorios.");
-            }
-
-            submitNewPropBtn.disabled = true;
-            submitNewPropBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
-
-            try {
-                const resp = await fetch('/propiedades', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await resp.json();
-
-                if (!resp.ok) {
-                    alert(data.error || "Error registrando propiedad.");
-                } else {
-                    alert("Inmueble enviado a revisión.");
-                    modalNewProp.classList.add('hidden');
-                    formNewProp.reset();
-                }
-
-            } catch (err) {
-                console.error("❌ Error publicando propiedad:", err);
-                alert("No se pudo conectar con el servidor.");
-            } finally {
-                submitNewPropBtn.disabled = false;
-                submitNewPropBtn.innerHTML = 'Enviar a Revisión';
-            }
-        });
-    }
-        */
+    
 
 
     // ======================================================
