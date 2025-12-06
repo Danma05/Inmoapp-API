@@ -1,10 +1,7 @@
-// public/js/propiedades.js
-
-// Definimos la URL base por si se necesita (aunque tus funciones actuales usan rutas relativas)
-const API_URL = 'https://inmoapp-api.onrender.com';
+// public/js/propiedades.js - Funciones para cargar y mostrar propiedades
 
 /**
- * Cargar propiedades desde la API (Pública - Listado General)
+ * Cargar propiedades desde la API (Versión Optimizada)
  * Convierte automáticamente cualquier filtro que reciba en parámetros URL
  */
 export async function cargarPropiedades(filtros = {}) {
@@ -24,7 +21,7 @@ export async function cargarPropiedades(filtros = {}) {
     const queryString = params.toString();
     const url = `/propiedades${queryString ? '?' + queryString : ''}`;
     
-    // console.log(`📡 Consultando API: ${url}`); 
+    // console.log(`📡 Consultando API: ${url}`); // Log útil para depuración
 
     const response = await fetch(url);
     
@@ -66,15 +63,17 @@ export function renderizarPropiedades(propiedades, contenedorId, tipoVista = 'gr
   } else if (tipoVista === 'list') {
     contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadLista(prop)).join('');
   } else if (tipoVista === 'row') {
+    // Nota: La vista 'row' suele usarse en el dashboard de propietario con botones de edición
+    // Si prefieres centralizarla aquí, puedes hacerlo, pero a veces se maneja en el script específico
     contenedor.innerHTML = propiedades.map(prop => crearCardPropiedadFila(prop)).join('');
   }
 }
 
 /**
- * Crear card de propiedad para GRID (Vista principal)
+ * Crear card de propiedad para grid
  */
 function crearCardPropiedad(prop) {
-  // Fallback de imagen seguro
+  // Asegurar fallback de imagen si viene null
   const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800';
   const precio = prop.precio_canon || '$0';
   const direccion = prop.direccion || 'Dirección no disponible';
@@ -85,6 +84,7 @@ function crearCardPropiedad(prop) {
   // Etiqueta de Venta o Arriendo
   const operacionTag = prop.operacion === 'VENTA' ? 'Venta' : 'Arriendo';
   const tagColorClass = prop.operacion === 'VENTA' ? 'bg-blue-600' : 'new-tag'; 
+  // Estilo inline por si la clase CSS no existe
   const tagStyle = prop.operacion === 'VENTA' ? 'background-color:#2563EB;' : '';
 
   return `
@@ -116,19 +116,21 @@ function crearCardPropiedad(prop) {
 }
 
 /**
- * Crear card de propiedad para LISTA (Dashboard)
+ * Crear card de propiedad para lista (Dashboard)
  */
 function crearCardPropiedadLista(prop) {
-  return crearCardPropiedad(prop); // Reutilizamos el diseño de grid por ahora
+  return crearCardPropiedad(prop); // Reutilizamos la misma card por ahora
 }
 
 /**
- * Crear card de propiedad para FILA (Tabla/Dashboard Propietario)
+ * Crear card de propiedad para fila (Dashboard Propietario)
  */
 function crearCardPropiedadFila(prop) {
   const imagen = prop.thumbnail_url || prop.imagen_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200';
   const estado = prop.estado_publicacion === 'PUBLICADO' ? 'published' : 'review';
   const estadoTexto = prop.estado_publicacion === 'PUBLICADO' ? 'Publicado' : 'En Revisión';
+  
+  // Clase de color según estado
   const badgeClass = prop.estado_publicacion === 'PUBLICADO' ? 'status-badge published' : 'status-badge review';
 
   return `
@@ -161,42 +163,38 @@ function crearCardPropiedadFila(prop) {
 }
 
 /**
- * Cargar MIS propiedades (Privada - Requiere Token)
- * ✅ Esta función incluye la autorización JWT necesaria para el backend.
+ * Cargar mis propiedades (para propietario)
+ * CORREGIDO: Ahora incluye el token de autorización
  */
 export async function cargarMisPropiedades(usuarioId) {
   try {
-    // 1. Obtener el token guardado en el login
+    // 1. Obtener el token guardado
     const token = localStorage.getItem('inmoapp_token');
     
-    // 2. Preparar encabezados
+    // 2. Preparar headers con el token
     const headers = {
       'Content-Type': 'application/json'
     };
-    
-    // 3. Si hay token, agregarlo como Bearer
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // 4. Hacer la petición CON los headers
-    // Nota: Usamos API_URL si estás usando CORS, o ruta relativa si tienes proxy
-    // Para asegurar compatibilidad con tu código actual, uso ruta relativa:
+    // 3. Hacer la petición incluyendo headers
     const response = await fetch(`/propiedades/mis-propiedades?usuarioId=${usuarioId}`, {
-      method: 'GET',
-      headers: headers
+        method: 'GET',
+        headers: headers
     });
     
     if (!response.ok) {
       if (response.status === 401) {
-        console.warn("Sesión expirada o inválida.");
+          console.warn("Sesión no válida o expirada.");
+          // Opcional: window.location.href = '/'; 
       }
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
     
     const propiedades = await response.json();
     return propiedades;
-
   } catch (error) {
     console.error('❌ Error cargando mis propiedades:', error);
     return [];
@@ -215,44 +213,4 @@ export function obtenerUsuario() {
     console.error('Error parseando usuario:', e);
     return null;
   }
-}
-
-/**
- * ✅ NUEVA FUNCIÓN: Crear una propiedad (POST)
- * Esta es la función que te faltaba y causaba el error de SyntaxError.
- */
-export async function crearPropiedad(datosPropiedad) {
-    try {
-        const token = localStorage.getItem('inmoapp_token');
-        
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-
-        // Agregar autenticación
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        // Realizar la petición POST
-        // Usamos la API_URL absoluta para asegurar que llegue al backend correcto
-        const response = await fetch(`${API_URL}/propiedades`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(datosPropiedad)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Error al crear la propiedad');
-        }
-
-        const data = await response.json();
-        return true; // Retornamos éxito
-
-    } catch (error) {
-        console.error("❌ Error en crearPropiedad:", error);
-        alert(`Error al publicar: ${error.message}`);
-        return false;
-    }
 }
