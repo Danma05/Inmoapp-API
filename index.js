@@ -119,7 +119,7 @@ app.use('/api/visitas', visitasRouter);
 app.use('/api/postulaciones', postulacionesRouter);
 
 // Mensajes
-app.use("/mensajes", mensajesRouter);
+app.use("/api/mensajes", mensajesRouter);
 
 // Usuarios y perfil
 app.use("/usuarios", usuariosRouter);
