@@ -18,6 +18,8 @@ router.get("/", async (req, res) => {
     let query = `
       SELECT 
         po.id as postulacion_id,
+        po.usuario_id,          
+        p.propietario_id,
         po.mensaje,
         po.mensaje_respuesta,
         po.estado,
